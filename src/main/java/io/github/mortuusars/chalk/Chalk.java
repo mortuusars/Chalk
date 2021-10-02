@@ -1,5 +1,6 @@
 package io.github.mortuusars.chalk;
 
+import io.github.mortuusars.chalk.setup.Registry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,6 +28,8 @@ public class Chalk
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Chalk() {
+
+        Registry.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         MinecraftForge.EVENT_BUS.register(this);
     }
