@@ -1,0 +1,75 @@
+{
+  "variants": {
+    "facing=up,orientation=4": {"model": "chalk:block/chalk_mark_up_center"},
+
+    "facing=up,orientation=1": {"model": "chalk:block/chalk_mark_up_straight"},
+    "facing=up,orientation=5": {"model": "chalk:block/chalk_mark_up_straight", "y": 90},
+    "facing=up,orientation=7": {"model": "chalk:block/chalk_mark_up_straight", "y": 180},
+    "facing=up,orientation=3": {"model": "chalk:block/chalk_mark_up_straight", "y": 270},
+
+    "facing=up,orientation=0": {"model": "chalk:block/chalk_mark_up_diagonal", "y": 0},
+    "facing=up,orientation=2": {"model": "chalk:block/chalk_mark_up_diagonal", "y": 90},
+    "facing=up,orientation=8": {"model": "chalk:block/chalk_mark_up_diagonal", "y": 180},
+    "facing=up,orientation=6": {"model": "chalk:block/chalk_mark_up_diagonal", "y": 270},
+
+    "facing=down,orientation=4": {"model": "chalk:block/chalk_mark_down_center"},
+
+    "facing=down,orientation=1": {"model": "chalk:block/chalk_mark_down_straight"},
+    "facing=down,orientation=5": {"model": "chalk:block/chalk_mark_down_straight", "y": 90},
+    "facing=down,orientation=7": {"model": "chalk:block/chalk_mark_down_straight", "y": 180},
+    "facing=down,orientation=3": {"model": "chalk:block/chalk_mark_down_straight", "y": 270},
+
+    "facing=down,orientation=0": {"model": "chalk:block/chalk_mark_down_diagonal", "y": 270},
+    "facing=down,orientation=2": {"model": "chalk:block/chalk_mark_down_diagonal", "y": 0},
+    "facing=down,orientation=8": {"model": "chalk:block/chalk_mark_down_diagonal", "y": 90},
+    "facing=down,orientation=6": {"model": "chalk:block/chalk_mark_down_diagonal", "y": 180},
+
+    "facing=north,orientation=4": {"model": "chalk:block/chalk_mark_north_south_center", "y": 90},
+
+    "facing=north,orientation=1": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 0, "y": 90},
+    "facing=north,orientation=5": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 90, "y": 90},
+    "facing=north,orientation=7": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 180, "y": 90},
+    "facing=north,orientation=3": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 270, "y": 90},
+
+    "facing=north,orientation=0": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 270, "y": 90},
+    "facing=north,orientation=2": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 0, "y": 90},
+    "facing=north,orientation=8": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 90, "y": 90},
+    "facing=north,orientation=6": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 180, "y": 90},
+
+    "facing=south,orientation=4": {"model": "chalk:block/chalk_mark_north_south_center", "x": 0, "y": 270},
+
+    "facing=south,orientation=1": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 0, "y": 270},
+    "facing=south,orientation=5": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 270, "y": 270},
+    "facing=south,orientation=7": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 180, "y": 270},
+    "facing=south,orientation=3": {"model": "chalk:block/chalk_mark_north_south_straight", "x": 90, "y": 270},
+
+    "facing=south,orientation=0": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 0, "y": 270},
+    "facing=south,orientation=2": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 270, "y": 270},
+    "facing=south,orientation=8": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 180, "y": 270},
+    "facing=south,orientation=6": {"model": "chalk:block/chalk_mark_north_south_diagonal", "x": 90, "y": 270},
+
+    "facing=west,orientation=4": {"model": "chalk:block/chalk_mark_west_east_center"},
+
+    "facing=west,orientation=1": {"model": "chalk:block/chalk_mark_west_east_straight"},
+    "facing=west,orientation=5": {"model": "chalk:block/chalk_mark_west_east_straight", "x": 270},
+    "facing=west,orientation=7": {"model": "chalk:block/chalk_mark_west_east_straight", "x": 180},
+    "facing=west,orientation=3": {"model": "chalk:block/chalk_mark_west_east_straight", "x": 90},
+
+    "facing=west,orientation=0": {"model": "chalk:block/chalk_mark_west_east_diagonal"},
+    "facing=west,orientation=2": {"model": "chalk:block/chalk_mark_west_east_diagonal", "x": 270},
+    "facing=west,orientation=8": {"model": "chalk:block/chalk_mark_west_east_diagonal", "x": 180},
+    "facing=west,orientation=6": {"model": "chalk:block/chalk_mark_west_east_diagonal", "x": 90},
+
+    "facing=east,orientation=4": {"model": "chalk:block/chalk_mark_west_east_center", "y": 180},
+
+    "facing=east,orientation=1": {"model": "chalk:block/chalk_mark_west_east_straight", "x": 0, "y": 180},
+    "facing=east,orientation=5": {"model": "chalk:block/chalk_mark_west_east_straight", "x": 90, "y": 180},
+    "facing=east,orientation=7": {"model": "chalk:block/chalk_mark_west_east_straight", "x": 180, "y": 180},
+    "facing=east,orientation=3": {"model": "chalk:block/chalk_mark_west_east_straight", "x": 270, "y": 180},
+
+    "facing=east,orientation=0": {"model": "chalk:block/chalk_mark_west_east_diagonal", "x": 270, "y": 180},
+    "facing=east,orientation=2": {"model": "chalk:block/chalk_mark_west_east_diagonal", "x": 0, "y": 180},
+    "facing=east,orientation=8": {"model": "chalk:block/chalk_mark_west_east_diagonal", "x": 90, "y": 180},
+    "facing=east,orientation=6": {"model": "chalk:block/chalk_mark_west_east_diagonal", "x": 180, "y": 180}
+  }
+}

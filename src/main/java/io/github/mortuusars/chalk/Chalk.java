@@ -1,10 +1,12 @@
 package io.github.mortuusars.chalk;
 
+import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.setup.Registry;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -28,9 +30,18 @@ public class Chalk
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Chalk() {
+        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        Registry.register(FMLJavaModLoadingContext.get().getModEventBus());
+        modEventBus.addListener(this::onClientSetup);
+
+        Registry.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void onClientSetup(final FMLClientSetupEvent event)
+    {
+        ModBlocks.processContentClientSide(event);
     }
 }
