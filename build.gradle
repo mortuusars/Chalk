@@ -12,9 +12,9 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.1.0'
+version = '1.0.0'
 group = 'io.github.mortuusars' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'chalk'
+archivesBaseName = 'chalk-1.16.5'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
@@ -85,7 +85,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'chalk', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 chalk {

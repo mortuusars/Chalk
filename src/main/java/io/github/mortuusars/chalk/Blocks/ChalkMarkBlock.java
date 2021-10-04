@@ -87,13 +87,13 @@ public class ChalkMarkBlock extends Block {
             world.playSound(null, pos, SoundEvents.WART_BLOCK_HIT, SoundCategory.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
         else{
             Random r = new Random();
-            world.addParticle(ParticleTypes.CLOUD,  pos.getX() + (0.5 * (r.nextFloat() + 0.15)), pos.getY() + 0.2, pos.getZ() + (0.5 * (r.nextFloat() + 0.15)), 0.0D, 0.06D, 0.0D);
+            world.addParticle(ParticleTypes.CLOUD,  pos.getX() + (0.5 * (r.nextFloat() + 0.15)), pos.getY() + 0.3, pos.getZ() + (0.5 * (r.nextFloat() + 0.15)), 0.0D, 0.0D, 0.0D);
         }
     }
 
     @Override
-    public void attack(BlockState p_196270_1_, World world, BlockPos pos, PlayerEntity p_196270_4_) {
-        world.removeBlock(pos, false);
+    public void attack(BlockState blockState, World world, BlockPos pos, PlayerEntity player) {
+        removeMark(world, pos, false);
     }
 
     @Override
