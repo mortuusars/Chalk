@@ -1,5 +1,6 @@
 # eclipse
 bin
+mcmodsrepo
 *.launch
 .settings
 .metadata
@@ -12,6 +13,7 @@ out
 *.iws
 *.iml
 .idea
+mcmodsrepo
 
 # gradle
 build
