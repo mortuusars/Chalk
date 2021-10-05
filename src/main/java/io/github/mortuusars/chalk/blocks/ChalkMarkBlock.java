@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.Blocks;
+package io.github.mortuusars.chalk.blocks;
 
 import io.github.mortuusars.chalk.setup.ModItems;
 import net.minecraft.block.*;

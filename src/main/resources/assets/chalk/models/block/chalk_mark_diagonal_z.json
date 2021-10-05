@@ -1,18 +1,18 @@
 {
-    "ambientocclusion": true,
+    "ambientocclusion": false,
     "textures": {
-        "particle": "chalk:block/chalk",
-        "tex": "chalk:block/chalk"
+        "particle": "chalk:block/mark",
+        "tex": "chalk:block/mark"
     },
     "elements": [
         {   "from": [ 15.9, 0, 0 ],
             "to": [ 16, 16, 16 ],
+            "shade": true,
             "rotation": {
                 "origin": [8,8,8], "axis": "x", "angle": -45
             },
-            "shade": true,
             "faces": {
-                "west": { "uv": [ 0, 0, 16, 16 ], "texture": "#tex" }
+                "west": { "uv": [ 16, 16, 0, 0 ], "texture": "#tex" }
             }
         }
     ]

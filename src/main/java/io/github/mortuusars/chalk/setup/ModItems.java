@@ -1,6 +1,6 @@
 package io.github.mortuusars.chalk.setup;
 
-import io.github.mortuusars.chalk.Items.ChalkItem;
+import io.github.mortuusars.chalk.items.ChalkItem;
 import net.minecraft.item.Item;
 import net.minecraftforge.fml.RegistryObject;
 

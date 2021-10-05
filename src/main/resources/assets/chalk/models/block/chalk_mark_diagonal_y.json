@@ -1,0 +1,19 @@
+{
+    "ambientocclusion": false,
+    "textures": {
+        "particle": "chalk:block/mark",
+        "tex": "chalk:block/mark"
+    },
+    "elements": [
+        {   "from": [ 0, 0, 0 ],
+            "to": [ 16, 0.1, 16 ],
+            "shade": true,
+            "rotation": {
+                "origin": [8,8,8], "axis": "y", "angle": -45
+            },
+            "faces": {
+                "up": { "uv": [ 16, 16, 0, 0 ], "texture": "#tex" }
+            }
+        }
+    ]
+}

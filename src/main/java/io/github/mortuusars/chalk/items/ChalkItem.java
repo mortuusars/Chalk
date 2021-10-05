@@ -1,7 +1,8 @@
-package io.github.mortuusars.chalk.Items;
+package io.github.mortuusars.chalk.items;
 
-import io.github.mortuusars.chalk.Blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.setup.ModBlocks;
+import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
@@ -63,6 +64,8 @@ public class ChalkItem extends Item {
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
 
+
+
         final World world = context.getLevel();
         final BlockPos pos = context.getClickedPos();
         Direction clickedFace = context.getClickedFace();
@@ -86,7 +89,7 @@ public class ChalkItem extends Item {
             return ActionResultType.PASS;
         }
 
-        final int orientation = getClickedRegion(context.getClickLocation(), clickedFace);
+        final int orientation = ClickLocationUtils.getBlockRegion(context.getClickLocation(), pos, clickedFace);
 
         BlockState blockState = ModBlocks.CHALK_MARK_BLOCK.get().defaultBlockState()
                 .setValue(ChalkMarkBlock.FACING, clickedFace)
@@ -107,47 +110,5 @@ public class ChalkItem extends Item {
         }
 
         return ActionResultType.FAIL;
-    }
-
-    private int getClickedRegion(Vector3d clickLocation, Direction face) {
-
-        // Calculates which region of the block was clicked:
-        // Matrix represents the block regions:
-        final int[][] blockRegions = new int[][]{
-                new int[]{0, 1, 2},
-                new int[]{3, 4, 5},
-                new int[]{6, 7, 8}
-        };
-
-        final double x = clickLocation.x;
-        final double y = clickLocation.y;
-        final double z = clickLocation.z;
-
-        // Remove whole number: 21.31 => 0.31
-        final double fracx = x - (int) x;
-        final double fracz = z - (int) z;
-
-        // Normalize negative values
-        final double dx = fracx > 0 ? fracx : fracx + 1;
-        final double dy = y - (int) y;
-        final double dz = fracz > 0 ? fracz : fracz + 1;
-
-        if (face == Direction.UP || face == Direction.DOWN) {
-            final int xpart = Math.min(2, (int) (dx / 0.333));
-            final int zpart = Math.min(2, (int) (dz / 0.333));
-
-            return blockRegions[zpart][xpart];
-        } else if (face == Direction.NORTH || face == Direction.SOUTH) {
-            final int xpart = Math.min(2, (int) (dx / 0.333));
-            final int ypart = Math.min(2, (int) ((1 - dy) / 0.333));
-
-            return blockRegions[ypart][xpart];
-        } else if (face == Direction.WEST || face == Direction.EAST) {
-            final int zpart = Math.min(2, (int) (dz / 0.333));
-            final int ypart = Math.min(2, (int) ((1 - dy) / 0.333));
-
-            return blockRegions[ypart][zpart];
-        } else
-            return 4; // Center of the block by default
     }
 }

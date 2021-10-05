@@ -1,6 +1,6 @@
 package io.github.mortuusars.chalk.setup;
 
-import io.github.mortuusars.chalk.Blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -11,7 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ModBlocks {
     public static final RegistryObject<ChalkMarkBlock> CHALK_MARK_BLOCK =
-            Registry.BLOCKS.register("chalk_mark_block",
+            Registry.BLOCKS.register("chalk_mark",
                     () -> new ChalkMarkBlock(AbstractBlock.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT)
                             .instabreak()
                             .noCollission()
