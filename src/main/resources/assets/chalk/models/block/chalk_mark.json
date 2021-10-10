@@ -1,16 +1,6 @@
 {
-    "ambientocclusion": false,
-    "textures": {
-        "particle": "chalk:block/white_mark",
-        "tex": "chalk:block/white_mark"
-    },
-    "elements": [
-        {   "from": [ 0, 0, 0 ],
-            "to": [ 16, 0.1, 16 ],
-            "shade": true,
-            "faces": {
-                "up": { "uv": [ 16, 16, 0, 0 ], "texture": "#tex" }
-            }
-        }
-    ]
+  "textures": {
+    "particle": "chalk:/block/white_mark",
+    "tex": "chalk:/block/white_mark"
+  }
 }
