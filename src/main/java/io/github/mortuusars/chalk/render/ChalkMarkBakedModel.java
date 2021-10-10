@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.render;
 
-import com.sun.media.sound.ModelTransform;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import net.minecraft.block.BlockState;
@@ -8,31 +7,22 @@ import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.item.DyeColor;
-import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.IBlockDisplayReader;
-import net.minecraftforge.client.extensions.IForgeBakedModel;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.SimpleModelTransform;
-import net.minecraftforge.client.model.b3d.B3DModel;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
-import net.minecraftforge.client.model.pipeline.TRSRTransformer;
-import net.minecraftforge.common.model.TransformationHelper;
-import org.antlr.v4.runtime.atn.SemanticContext;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.system.CallbackI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 import static net.minecraftforge.client.model.SimpleModelTransform.IDENTITY;
 
