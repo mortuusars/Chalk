@@ -1,6 +1,17 @@
-# Chalk
-Minecraft mod to never lose you way again.
+<div align=center
 
-Forge mod for Minecraft.
+Forge 1.16.5 mod for Minecraft.
+
+</div>
+
+<div align=center
+  
+<a href="https://www.curseforge.com/minecraft/mc-mods/chalk"><img src="https://github.com/mortuusars/Chalk/blob/master/All_Chalks_Large.png" width="500"><a>
+
+[Changelog](CHANGELOG.md)
+  
+Never lose you way again.
 
 https://www.curseforge.com/minecraft/mc-mods/chalk
+  
+</div>
