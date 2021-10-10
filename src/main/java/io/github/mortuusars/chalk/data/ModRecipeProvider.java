@@ -15,18 +15,18 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildShapelessRecipes(Consumer<IFinishedRecipe> recipeBuilder) {
-        ShapelessRecipeBuilder.shapeless(ModItems.CHALK.get(), 1)
+        ShapelessRecipeBuilder.shapeless(ModItems.WHITE_CHALK.get(), 1)
                 .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
                 .group("chalk:chalk")
                 .requires(Items.CLAY_BALL)
                 .requires(Items.WHITE_DYE)
                 .save(recipeBuilder, Chalk.MOD_ID + ":chalk_from_white_dye");
 
-        ShapelessRecipeBuilder.shapeless(ModItems.CHALK.get(), 1)
+        ShapelessRecipeBuilder.shapeless(ModItems.RED_CHALK.get(), 1)
                 .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
                 .group("chalk:chalk")
                 .requires(Items.CLAY_BALL)
-                .requires(Items.LIGHT_GRAY_DYE)
-                .save(recipeBuilder, Chalk.MOD_ID + ":chalk_from_light_gray_dye");
+                .requires(Items.RED_DYE)
+                .save(recipeBuilder, Chalk.MOD_ID + ":chalk_from_red_dye");
     }
 }

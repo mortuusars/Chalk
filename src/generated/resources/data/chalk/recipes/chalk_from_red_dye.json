@@ -6,10 +6,10 @@
       "item": "minecraft:clay_ball"
     },
     {
-      "item": "minecraft:light_gray_dye"
+      "item": "minecraft:red_dye"
     }
   ],
   "result": {
-    "item": "chalk:chalk"
+    "item": "chalk:red_chalk"
   }
 }

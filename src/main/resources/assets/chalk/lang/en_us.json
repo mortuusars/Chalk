@@ -1,4 +1,5 @@
 {
-  "item.chalk.chalk": "Chalk",
+  "item.chalk.white_chalk": "White Chalk",
+  "item.chalk.red_chalk": "Red Chalk",
   "block.chalk.chalk_mark_block": "Chalk Mark"
 }

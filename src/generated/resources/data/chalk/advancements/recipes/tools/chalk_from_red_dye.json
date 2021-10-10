@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "chalk:chalk_from_light_gray_dye"
+      "chalk:chalk_from_red_dye"
     ]
   },
   "criteria": {
@@ -19,7 +19,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "chalk:chalk_from_light_gray_dye"
+        "recipe": "chalk:chalk_from_red_dye"
       }
     }
   },
