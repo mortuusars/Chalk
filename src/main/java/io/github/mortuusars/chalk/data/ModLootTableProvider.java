@@ -40,11 +40,10 @@ public class ModLootTableProvider extends LootTableProvider {
 
         @Override
         protected void addTables() {
-            this.add(ModBlocks.WHITE_CHALK_MARK_BLOCK.get(), noDrop());
-            this.add(ModBlocks.RED_CHALK_MARK_BLOCK.get(), noDrop());
 
-//            this.add(ModBlocks.WHITE_PLACED_CHALK_BLOCK.get(), createSingleItemTable(ModItems.WHITE_CHALK.get()));
-//            this.add(ModBlocks.RED_PLACED_CHALK_BLOCK.get(), createSingleItemTable(ModItems.RED_CHALK.get()));
+            ModBlocks.MARKS.forEach((name, block) -> {
+                this.add(block.get(), noDrop());
+            });
         }
 
         @Override
@@ -52,5 +51,4 @@ public class ModLootTableProvider extends LootTableProvider {
             return Registry.BLOCKS.getEntries().stream().map(RegistryObject::get).collect(Collectors.toList());
         }
     }
-
 }

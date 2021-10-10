@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "chalk:block/chalk_mark"
+    }
+  }
+}

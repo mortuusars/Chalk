@@ -94,7 +94,7 @@ public class ChalkItem extends Item {
             return ActionResultType.SUCCESS;
         }
 
-        return ActionResultType.FAIL;
+        return ActionResultType.PASS;
     }
 
     @Override

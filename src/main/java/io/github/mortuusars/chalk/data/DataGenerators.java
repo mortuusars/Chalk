@@ -20,5 +20,6 @@ public class DataGenerators {
         dataGenerator.addProvider(new ModLootTableProvider(dataGenerator));
 
         dataGenerator.addProvider(new BlockStateGenerator(dataGenerator, existingFileHelper));
+        dataGenerator.addProvider(new ItemModelGenerator(dataGenerator, existingFileHelper));
     }
 }

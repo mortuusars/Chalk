@@ -7,6 +7,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.item.DyeColor;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -37,12 +38,17 @@ import static net.minecraftforge.client.model.SimpleModelTransform.IDENTITY;
 
 public class ChalkMarkBakedModel implements IBakedModel {
 
+    private enum TextureType{
+        CENTER, ARROW
+    }
+
     public static ModelProperty<Integer> ORIENTATION = new ModelProperty<>();
     public static ModelProperty<Direction> FACING = new ModelProperty<>();
     public static ModelProperty<Boolean> GLOWING = new ModelProperty<>();
+    public static ModelProperty<DyeColor> COLOR = new ModelProperty<>();
 
-    public static final ResourceLocation centerTextureRL = new ResourceLocation("chalk:/block/white_mark_center");
-    public static final ResourceLocation arrowTextureRL = new ResourceLocation("chalk:/block/white_mark");
+//    public static final ResourceLocation centerTextureRL = new ResourceLocation("chalk:/block/white_mark_center");
+//    public static final ResourceLocation arrowTextureRL = new ResourceLocation("chalk:/block/white_mark");
 
     private static final FaceBakery _faceBakery = new FaceBakery();
     private final IBakedModel _baseModel;
@@ -56,6 +62,7 @@ public class ChalkMarkBakedModel implements IBakedModel {
         builder.withInitial(ORIENTATION, 4);
         builder.withInitial(FACING, Direction.UP);
         builder.withInitial(GLOWING, false);
+        builder.withInitial(COLOR, DyeColor.WHITE);
         ModelDataMap modelDataMap = builder.build();
         return modelDataMap;
     }
@@ -66,10 +73,12 @@ public class ChalkMarkBakedModel implements IBakedModel {
         int orientation = state.getValue(ChalkMarkBlock.ORIENTATION);
         Direction facing = state.getValue(ChalkMarkBlock.FACING);
         boolean glowing = state.getValue(ChalkMarkBlock.GLOWING);
+        DyeColor color = DyeColor.byName(state.getBlock().getRegistryName().getPath().replace("_chalk_mark", ""), DyeColor.WHITE);
         ModelDataMap modelDataMap = getEmptyModelData();
         modelDataMap.setData(ORIENTATION, orientation);
         modelDataMap.setData(FACING, facing);
         modelDataMap.setData(GLOWING, glowing);
+        modelDataMap.setData(COLOR, color);
         return modelDataMap;
     }
 
@@ -96,16 +105,14 @@ public class ChalkMarkBakedModel implements IBakedModel {
             return _baseModel.getQuads(state, side, rand);
         }
 
-//        if (!extraData.getData(ORIENTATION).isPresent() || !extraData.getData(FACING).isPresent())
-//            return _baseModel.getQuads(state, side, rand);
-
         int orientation = extraData.getData(ORIENTATION);
         Direction facing = extraData.getData(FACING);
         boolean isGlowing = extraData.getData(GLOWING);
+        DyeColor color = extraData.getData(COLOR);
 
         List<BakedQuad> quads = new ArrayList<BakedQuad>();
 
-        BakedQuad quad = getQuadByFacing(facing, orientation);
+        BakedQuad quad = getQuadByFacing(facing, orientation, color);
 
         if (isGlowing)
             quad = convertToFullBright(quad);
@@ -133,33 +140,33 @@ public class ChalkMarkBakedModel implements IBakedModel {
         );
     }
 
-    private BakedQuad getQuadByFacing(Direction facing, int orientation) {
+    private BakedQuad getQuadByFacing(Direction facing, int orientation, DyeColor color) {
         switch (facing) {
             case DOWN:
-                return getBakedQuad(facing, orientation, new Vector3f(0, 15.9f, 0), new Vector3f(16, 16, 16), 180);
+                return getBakedQuad(color, facing, orientation, new Vector3f(0, 15.9f, 0), new Vector3f(16, 16, 16), 180);
             case UP:
-                return getBakedQuad(facing, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
+                return getBakedQuad(color, facing, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
             case NORTH:
-                return getBakedQuad(facing, orientation, new Vector3f(0, 0, 15.9f), new Vector3f(16, 16, 16), 0);
+                return getBakedQuad(color, facing, orientation, new Vector3f(0, 0, 15.9f), new Vector3f(16, 16, 16), 0);
             case SOUTH:
-                return getBakedQuad(facing, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 16, 0.1f), 0);
+                return getBakedQuad(color, facing, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 16, 0.1f), 0);
             case WEST:
-                return getBakedQuad(facing, orientation, new Vector3f(15.9f, 0, 0), new Vector3f(16, 16, 16), 0);
+                return getBakedQuad(color, facing, orientation, new Vector3f(15.9f, 0, 0), new Vector3f(16, 16, 16), 0);
             case EAST:
-                return getBakedQuad(facing, orientation, new Vector3f(0, 0, 0), new Vector3f(0.1f, 16, 16), 0);
+                return getBakedQuad(color, facing, orientation, new Vector3f(0, 0, 0), new Vector3f(0.1f, 16, 16), 0);
             default:
-                return getBakedQuad(facing, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
+                return getBakedQuad(color, facing, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
         }
     }
 
-    private BakedQuad getBakedQuad(Direction facing, int orientation,Vector3f from, Vector3f to, int uvRotation) {
+    private BakedQuad getBakedQuad(DyeColor color, Direction facing, int orientation,Vector3f from, Vector3f to, int uvRotation) {
         AtlasTexture blocksStitchedTextures = ModelLoader.instance().getSpriteMap().getAtlas(AtlasTexture.LOCATION_BLOCKS);
         TextureAtlasSprite texture;
 
         if (orientation == 4)
-            texture = blocksStitchedTextures.getSprite(centerTextureRL);
+            texture = getTextureForColor(blocksStitchedTextures, TextureType.CENTER, color);
         else
-            texture = blocksStitchedTextures.getSprite(arrowTextureRL);
+            texture = getTextureForColor(blocksStitchedTextures, TextureType.ARROW, color);
 
         final float[] uvs = new float[]{0f, 0f, 16f, 16f};
 
@@ -197,6 +204,17 @@ public class ChalkMarkBakedModel implements IBakedModel {
                 blockPartRotation, true, new ResourceLocation("chalk_mark_" + facing));
 
         return quad;
+    }
+
+    private TextureAtlasSprite getTextureForColor(AtlasTexture atlas, TextureType type, DyeColor color){
+        switch (type) {
+            case CENTER:
+                return atlas.getSprite(new ResourceLocation("chalk:block/" + color + "_mark_center"));
+            case ARROW:
+                return atlas.getSprite(new ResourceLocation("chalk:block/" + color + "_mark"));
+        }
+
+        throw new IllegalStateException("Invalid texture type: " + type);
     }
 
     private int rotationFromOrientation(int orientation){
