@@ -8,21 +8,21 @@ import net.minecraft.util.math.vector.Vector3i;
 
 public class PositionUtils {
 
+    /**
+     * Returns coords of a center of BlockPos
+     */
     public static Vector3f blockCenter(BlockPos blockPos){
         return new Vector3f(blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f);
     }
 
+    /**
+     * Returns coords from a center of BlockPos with offset (from center) to one of the faces.
+     */
     public static Vector3f blockFaceCenter(BlockPos blockPos, Direction facing,  float offset){
         Vector3f vec = blockCenter(blockPos);
         Vector3i normal = facing.getNormal();
 
-//        Chalk.LOGGER.debug("Block Center: " + vec);
-
-//        Chalk.LOGGER.debug("Normal: " + normal);
-
         Vector3f finalVec = new Vector3f(vec.x() - (normal.getX() * offset), vec.y() - (normal.getY() * offset), vec.z() - (normal.getZ() * offset));
-
-//        Chalk.LOGGER.debug("Final: " + finalVec);
 
         return finalVec;
     }

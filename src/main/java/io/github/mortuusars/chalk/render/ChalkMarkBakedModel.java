@@ -37,9 +37,6 @@ public class ChalkMarkBakedModel implements IBakedModel {
     public static ModelProperty<Boolean> GLOWING = new ModelProperty<>();
     public static ModelProperty<DyeColor> COLOR = new ModelProperty<>();
 
-//    public static final ResourceLocation centerTextureRL = new ResourceLocation("chalk:/block/white_mark_center");
-//    public static final ResourceLocation arrowTextureRL = new ResourceLocation("chalk:/block/white_mark");
-
     private static final FaceBakery _faceBakery = new FaceBakery();
     private final IBakedModel _baseModel;
 
@@ -82,17 +79,17 @@ public class ChalkMarkBakedModel implements IBakedModel {
 
         if (!extraData.hasProperty(ORIENTATION)){
             Chalk.LOGGER.error("IModelData did not have expected property: ORIENTATION");
-            return _baseModel.getQuads(state, side, rand);
+            return _baseModel.getQuads(state, side, rand, extraData);
         }
 
         if (!extraData.hasProperty(FACING)){
             Chalk.LOGGER.error("IModelData did not have expected property: FACING");
-            return _baseModel.getQuads(state, side, rand);
+            return _baseModel.getQuads(state, side, rand, extraData);
         }
 
         if (!extraData.hasProperty(GLOWING)){
             Chalk.LOGGER.error("IModelData did not have expected property: GLOWING");
-            return _baseModel.getQuads(state, side, rand);
+            return _baseModel.getQuads(state, side, rand, extraData);
         }
 
         int orientation = extraData.getData(ORIENTATION);

@@ -8,6 +8,9 @@ import java.util.Random;
 
 public class ParticleUtils {
 
+    /**
+     * Spawns a particle with slight random offset to each. Includes velocity.
+     */
     public static void spawnParticle(World world, IParticleData particleType, Vector3f position, Vector3f velocity, int count){
         if (!world.isClientSide() || count < 1)
             return;
@@ -25,6 +28,9 @@ public class ParticleUtils {
         }
     }
 
+    /**
+     * Spawns a particle with slight random offset to each.
+     */
     public static void spawnParticle(World world, IParticleData particleType, Vector3f position, int count){
         spawnParticle(world, particleType, position, new Vector3f(0f, 0f, 0f), count);
     }

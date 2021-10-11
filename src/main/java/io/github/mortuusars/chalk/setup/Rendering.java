@@ -16,11 +16,9 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-public class StartupClient {
-
+public class Rendering {
     @SubscribeEvent
     public static void onModelBakeEvent(ModelBakeEvent event) {
-
         // Register custom IBakedModel for all mark blocks
         ModBlocks.MARKS.forEach( (name, block) -> {
             for (BlockState blockState : block.get().getStateDefinition().getPossibleStates()) {
@@ -40,17 +38,6 @@ public class StartupClient {
     }
 
     @SubscribeEvent
-    public static void onClientSetupEvent(FMLClientSetupEvent event) {
-        setRenderLayerForMarks();
-    }
-
-    private static void setRenderLayerForMarks() {
-        ModBlocks.MARKS.forEach( (name, block) -> {
-            RenderTypeLookup.setRenderLayer(block.get(), RenderType.cutout());
-        });
-    }
-
-    @SubscribeEvent
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         // Register textures for use in IBakedModel
         if (event.getMap().location() == AtlasTexture.LOCATION_BLOCKS) {
@@ -59,5 +46,16 @@ public class StartupClient {
                 event.addSprite(new ResourceLocation("chalk:block/" + color + "_mark_center"));
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onClientSetupEvent(FMLClientSetupEvent event) {
+        setRenderLayerForMarks();
+    }
+
+    private static void setRenderLayerForMarks() {
+        ModBlocks.MARKS.forEach( (name, block) -> {
+            RenderTypeLookup.setRenderLayer(block.get(), RenderType.cutout());
+        });
     }
 }

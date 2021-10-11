@@ -8,13 +8,10 @@ import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.DyeColor;
 import net.minecraftforge.fml.RegistryObject;
 
-
 import java.util.*;
 
 public class ModBlocks {
-
     public static final HashMap<String, RegistryObject<ChalkMarkBlock>> MARKS = new HashMap<String, RegistryObject<ChalkMarkBlock>>();
-
 
     public static final RegistryObject<ChalkMarkBlock> BLACK_CHALK_MARK_BLOCK = createColoredMark("black_chalk_mark", DyeColor.BLACK, MaterialColor.COLOR_BLACK);
     public static final RegistryObject<ChalkMarkBlock> RED_CHALK_MARK_BLOCK = createColoredMark("red_chalk_mark", DyeColor.RED, MaterialColor.COLOR_RED);
