@@ -143,6 +143,18 @@ public class ChalkMarkBlock extends Block {
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void animateTick(BlockState blockState, World world, BlockPos blockPos, Random random) {
+        if (blockState.getValue(GLOWING) == false)
+            return;
+
+        if (random.nextInt(30) == 0) {
+            ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockFaceCenter(blockPos, blockState.getValue(FACING),
+                    0.33f), new Vector3f(0f, 0.015f, 0f), 1);
+        }
+    }
+
     @Override
     public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         if (state.getValue(GLOWING))

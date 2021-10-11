@@ -1,3 +1,12 @@
+## 1.1.2 - 2021-10-12
+
+- Glowing Inc Sac from "Caves and Cliffs Backport" can be used to make mark glowing
+- Glowing marks sometimes will emit shiny particles
+
+
+- Fixed Glowstone not consuming when used on a mark
+
+
 ### 1.1.1 - 2021-10-11
 
 - Moved chalks to Decorations creative tab
