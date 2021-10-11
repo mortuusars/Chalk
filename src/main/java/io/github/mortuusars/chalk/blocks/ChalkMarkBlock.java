@@ -24,6 +24,8 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
@@ -85,15 +87,26 @@ public class ChalkMarkBlock extends Block {
     public ActionResultType use(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
 
         if (blockState.getValue(GLOWING) == true)
-            return ActionResultType.FAIL;
+            return ActionResultType.PASS;
 
         ItemStack usedItem = player.getItemInHand(hand);
 
-        if (usedItem.getItem() == Items.GLOWSTONE_DUST) {
-            ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockFaceCenter(blockPos, blockState.getValue(FACING),
-                    0.3f), new Vector3f(0f, 0.03f, 0f), 2);
-            world.playSound(null, blockPos, SoundEvents.TURTLE_SHAMBLE, SoundCategory.BLOCKS, 1.5f, 1f);
-            world.setBlock(blockPos, blockState.setValue(GLOWING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+        if (usedItem.getItem() == Items.GLOWSTONE_DUST ||
+                usedItem.getItem().getRegistryName().getPath().contains("glow_ink_sac")) {
+            if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER)) {
+
+                if (!player.isCreative()) {
+                    int itemsCount = usedItem.getCount();
+                    if (itemsCount-- <= 0)
+                        player.setItemInHand(hand, ItemStack.EMPTY);
+                    else
+                        usedItem.setCount(itemsCount);
+                }
+
+                world.playSound(null, blockPos, SoundEvents.TURTLE_SHAMBLE, SoundCategory.BLOCKS, 1.5f, 1f);
+                ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockFaceCenter(blockPos, blockState.getValue(FACING),
+                        0.3f), new Vector3f(0f, 0.03f, 0f), 2);
+            }
 
             return ActionResultType.SUCCESS;
         }
