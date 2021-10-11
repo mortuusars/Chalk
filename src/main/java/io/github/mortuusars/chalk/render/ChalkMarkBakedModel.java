@@ -227,12 +227,10 @@ public class ChalkMarkBakedModel implements IBakedModel {
         return _baseModel.getParticleTexture(data);
     }
 
-    // UNUSED
-
     // IBakedModel method
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState p_200117_1_, @Nullable Direction p_200117_2_, Random p_200117_3_) {
-        throw new AssertionError("IBakedModel::getQuads should never be called, only IForgeBakedModel::getQuads");
+        return Collections.EMPTY_LIST;
     }
 
     @Override
@@ -259,8 +257,6 @@ public class ChalkMarkBakedModel implements IBakedModel {
     public TextureAtlasSprite getParticleIcon() {
         return _baseModel.getParticleIcon();
     }
-
-
 
     @Override
     public ItemOverrideList getOverrides() {
