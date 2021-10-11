@@ -1,3 +1,11 @@
+### 1.1.1 - 2021-10-11
+
+- Moved chalks to Decorations creative tab
+
+  
+- Fixed crash when starting a dedicated server
+- Fixed crash with Xaero's Minimap
+
 ### 1.1.0 - 2021-10-10 - Shining Colors 🌈
 **WARNING: Due to internal changes - existing drawn marks and chalks from previous version would be removed from world. 
 
