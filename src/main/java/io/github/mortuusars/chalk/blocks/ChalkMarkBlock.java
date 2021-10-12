@@ -92,7 +92,8 @@ public class ChalkMarkBlock extends Block {
         ItemStack usedItem = player.getItemInHand(hand);
 
         if (usedItem.getItem() == Items.GLOWSTONE_DUST ||
-                usedItem.getItem().getRegistryName().getPath().contains("glow_ink_sac")) {
+                usedItem.getItem().getRegistryName().getPath().contains("glow_ink_sac") ||
+                usedItem.getItem().getRegistryName().getPath().contains("glowing_ink_sac")) {
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER)) {
 
                 if (!player.isCreative()) {
