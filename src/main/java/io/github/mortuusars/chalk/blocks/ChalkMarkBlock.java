@@ -1,5 +1,6 @@
 package io.github.mortuusars.chalk.blocks;
 
+import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
@@ -19,6 +20,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3f;
@@ -53,6 +55,20 @@ public class ChalkMarkBlock extends Block {
                 .setValue(GLOWING, false));
 
         _color = dyeColor;
+    }
+
+    @Override
+    public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player) {
+        if (player.isCreative())
+            return new ItemStack(ModItems.getChalkByColor(_color));
+
+        ItemStack item = getMatchingItemStack(player, ModItems.getChalkByColor(_color));
+        return item == ItemStack.EMPTY ? new ItemStack(ModItems.getChalkByColor(_color)) : item;
+    }
+
+    private ItemStack getMatchingItemStack(PlayerEntity player, Item item){
+        return player.inventory.items.stream().filter(invItem ->
+                invItem.getItem().getRegistryName() == item.getRegistryName()).findFirst().orElse(ItemStack.EMPTY);
     }
 
     @Override
@@ -94,6 +110,7 @@ public class ChalkMarkBlock extends Block {
         if (usedItem.getItem() == Items.GLOWSTONE_DUST ||
                 usedItem.getItem().getRegistryName().getPath().contains("glow_ink_sac") ||
                 usedItem.getItem().getRegistryName().getPath().contains("glowing_ink_sac")) {
+
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER)) {
 
                 if (!player.isCreative()) {
@@ -107,9 +124,9 @@ public class ChalkMarkBlock extends Block {
                 world.playSound(null, blockPos, SoundEvents.TURTLE_SHAMBLE, SoundCategory.BLOCKS, 1.5f, 1f);
                 ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockFaceCenter(blockPos, blockState.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
-            }
 
-            return ActionResultType.SUCCESS;
+                return ActionResultType.SUCCESS;
+            }
         }
 
         return ActionResultType.PASS;
@@ -134,7 +151,7 @@ public class ChalkMarkBlock extends Block {
                 float G = (colorValue & 0x0000FF00) >> 8;
                 float B = (colorValue & 0x000000FF);
 
-                ParticleUtils.spawnParticle(world, new RedstoneParticleData(R / 255, G / 255, B / 255, 1.8f),
+                ParticleUtils.spawnParticle(world, new RedstoneParticleData(R / 255, G / 255, B / 255, 2f),
                         PositionUtils.blockFaceCenter(pos, facing, 0.25f), 1);
             }
             return true;
@@ -175,11 +192,6 @@ public class ChalkMarkBlock extends Block {
         if (relative.equals(fromPos)) {
             removeMark(world, pos, isMoving);
         }
-    }
-
-    @Override
-    public Item asItem() {
-        return ModItems.getChalkByColor(_color);
     }
 
     @Override
