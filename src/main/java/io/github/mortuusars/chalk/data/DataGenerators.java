@@ -19,6 +19,8 @@ public class DataGenerators {
         dataGenerator.addProvider(new ModRecipeProvider(dataGenerator));
         dataGenerator.addProvider(new ModLootTableProvider(dataGenerator));
 
+        dataGenerator.addProvider(new ModItemTagsProvider(dataGenerator, new ModBlockTagsProvider(dataGenerator, existingFileHelper), existingFileHelper));
+
         dataGenerator.addProvider(new BlockStateGenerator(dataGenerator, existingFileHelper));
         dataGenerator.addProvider(new ItemModelGenerator(dataGenerator, existingFileHelper));
     }
