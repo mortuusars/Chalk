@@ -128,7 +128,6 @@ public class ChalkMarkBlock extends Block {
             if (!world.isClientSide())
                 world.playSound(null, pos, SoundEvents.WART_BLOCK_HIT, SoundCategory.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
             else {
-                Random r = new Random();
                 int colorValue = _color.getColorValue();
 
                 float R = (colorValue & 0x00FF0000) >> 16;
@@ -194,7 +193,7 @@ public class ChalkMarkBlock extends Block {
     }
 
     @Override
-    public boolean canBeReplaced(BlockState p_196253_1_, BlockItemUseContext p_196253_2_) {
+    public boolean canBeReplaced(BlockState blockState, BlockItemUseContext blockItemUseContext) {
         return true;
     }
 }
