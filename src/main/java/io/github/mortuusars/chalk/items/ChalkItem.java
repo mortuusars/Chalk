@@ -1,6 +1,7 @@
 package io.github.mortuusars.chalk.items;
 
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
@@ -77,6 +78,9 @@ public class ChalkItem extends Item {
         BlockState blockState = ModBlocks.getMarkBlockByColor(_color).defaultBlockState()
                 .setValue(ChalkMarkBlock.FACING, clickedFace)
                 .setValue(ChalkMarkBlock.ORIENTATION, orientation);
+
+        if (context.isSecondaryUseActive())
+            blockState = blockState.setValue(ChalkMarkBlock.SYMBOL, MarkSymbol.CROSS);
 
         world.setBlock(markPosition, blockState, Constants.BlockFlags.DEFAULT_AND_RERENDER);
 

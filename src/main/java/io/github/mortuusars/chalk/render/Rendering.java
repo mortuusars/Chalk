@@ -7,17 +7,22 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.item.DyeColor;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class Rendering {
+
+    public static final ChalkMarkBlockColor CHALK_MARK_BLOCK_COLOR = new ChalkMarkBlockColor();
+
     @SubscribeEvent
     public static void onModelBakeEvent(ModelBakeEvent event) {
         // Register custom IBakedModel for all mark blocks
@@ -39,13 +44,21 @@ public class Rendering {
     }
 
     @SubscribeEvent
+    public static void registerBlockColors(ColorHandlerEvent.Block event){
+        BlockColors blockColors = event.getBlockColors();
+
+        ModBlocks.MARKS.forEach((name, block) -> {
+            blockColors.register(CHALK_MARK_BLOCK_COLOR, block.get());
+        });
+    }
+
+    @SubscribeEvent
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         // Register textures for use in IBakedModel
         if (event.getMap().location() == AtlasTexture.LOCATION_BLOCKS) {
-            for (DyeColor color : DyeColor.values()) {
-                event.addSprite(new ResourceLocation("chalk:block/" + color + "_mark"));
-                event.addSprite(new ResourceLocation("chalk:block/" + color + "_mark_center"));
-            }
+            event.addSprite(new ResourceLocation("chalk:block/mark_arrow"));
+            event.addSprite(new ResourceLocation("chalk:block/mark_center"));
+            event.addSprite(new ResourceLocation("chalk:block/mark_cross"));
         }
     }
 

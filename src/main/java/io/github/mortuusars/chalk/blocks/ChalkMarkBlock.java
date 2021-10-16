@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.blocks;
 
-import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
@@ -12,10 +11,7 @@ import net.minecraft.item.*;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer;
+import net.minecraft.state.*;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -32,11 +28,13 @@ import net.minecraftforge.common.util.Constants;
 
 import java.util.Random;
 
-@SuppressWarnings({"deprecation", "NullableProblems"})
+@SuppressWarnings({"deprecation", "NullableProblems", "PointlessBooleanExpression"})
 public class ChalkMarkBlock extends Block {
+
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final IntegerProperty ORIENTATION = IntegerProperty.create("orientation", 0, 8);
     public static final BooleanProperty GLOWING = BooleanProperty.create("is_glowing");
+    public static final EnumProperty<MarkSymbol> SYMBOL = EnumProperty.create("symbol", MarkSymbol.class);
 
     private final DyeColor _color;
 
@@ -52,7 +50,8 @@ public class ChalkMarkBlock extends Block {
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(ORIENTATION, 4)
-                .setValue(GLOWING, false));
+                .setValue(GLOWING, false)
+                .setValue(SYMBOL, MarkSymbol.NONE));
 
         _color = dyeColor;
     }
@@ -73,13 +72,14 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(FACING).add(ORIENTATION).add(GLOWING);
+        builder.add(FACING).add(ORIENTATION).add(GLOWING).add(SYMBOL);
     }
 
     public DyeColor getColor() {
         return _color;
     }
 
+    @Override
     public VoxelShape getShape(BlockState state, IBlockReader source, BlockPos pos, ISelectionContext selectionContext) {
         Direction facing = state.getValue(FACING);
 
@@ -102,14 +102,12 @@ public class ChalkMarkBlock extends Block {
     @Override
     public ActionResultType use(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
 
-        if (blockState.getValue(GLOWING) == true)
+        if (blockState.getValue(GLOWING))
             return ActionResultType.PASS;
 
         ItemStack usedItem = player.getItemInHand(hand);
 
-        if (usedItem.getItem() == Items.GLOWSTONE_DUST ||
-                usedItem.getItem().getRegistryName().getPath().contains("glow_ink_sac") ||
-                usedItem.getItem().getRegistryName().getPath().contains("glowing_ink_sac")) {
+        if (isGlowingItem(usedItem.getItem())) {
 
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER)) {
 
@@ -130,6 +128,17 @@ public class ChalkMarkBlock extends Block {
         }
 
         return ActionResultType.PASS;
+    }
+
+    private boolean isGlowingItem(Item item){
+        if (item == Items.GLOWSTONE_DUST)
+            return true;
+
+        ResourceLocation itemRegistryName = item.getRegistryName();
+
+        return itemRegistryName != null && (
+               itemRegistryName.getPath().contains("glow_ink_sac") ||
+               itemRegistryName.getPath().contains("glowing_ink_sac"));
     }
 
     @Override

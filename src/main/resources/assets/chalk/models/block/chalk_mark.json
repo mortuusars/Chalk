@@ -1,6 +1,6 @@
 {
   "textures": {
-    "particle": "chalk:/block/white_mark",
-    "tex": "chalk:/block/white_mark"
+    "particle": "chalk:/block/mark_center",
+    "tex": "chalk:/block/mark_center"
   }
 }
