@@ -1,7 +1,8 @@
 
 - Enhanced Pick Block (Middle Click) - it will now select proper chalk from your inventory 
 - Glowing Inc Sac from Upgrade Aquatic can be used to make mark glowing
-- Added dye tags to chalks. You can now draw on Supplementaries Blackboard with them. Enable colored_blackboard in Supplementaries config for better results. 
+- Added dye tags to all chalks. You can now draw on Supplementaries Blackboard with them. Enable colored_blackboard in Supplementaries config for better results. 
+- Added all chalks to "forge:chalk" tag.
 - Better offhand interactions: if you have something in offhand while drawing the mark - offhand item will not be used
 
 

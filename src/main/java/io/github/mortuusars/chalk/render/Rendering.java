@@ -1,7 +1,8 @@
-package io.github.mortuusars.chalk.setup;
+package io.github.mortuusars.chalk.render;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.render.ChalkMarkBakedModel;
+import io.github.mortuusars.chalk.setup.ModBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.RenderType;

@@ -2,6 +2,7 @@ package io.github.mortuusars.chalk.data;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.setup.ModItems;
+import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.ItemTagsProvider;
@@ -17,6 +18,11 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags() {
+
+        ModItems.CHALKS.forEach((name, item) -> {
+            tag(ModTags.Items.CHALK).add(item.get());
+        });
+
         for (DyeColor color : DyeColor.values()){
             tag(color.getTag()).add(ModItems.getChalkByColor(color));
         }

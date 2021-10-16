@@ -78,6 +78,7 @@ cbad6f6c1aaec3672dd7adb9ace269f9e0f5ad95 data/chalk/recipes/chalk_from_purple_dy
 33bb91efbbf792cdcfb0528319d5333ebb4a6d1f data/chalk/recipes/chalk_from_red_dye.json
 34b2057dff6416487c2ec274baddecd93da44e4d data/chalk/recipes/chalk_from_white_dye.json
 8092a775ad950833b0d42b3e0534041049f6a7a2 data/chalk/recipes/chalk_from_yellow_dye.json
+b6f63254a8e5b196ff513ff559db34d8e8d52e9a data/forge/tags/items/chalk.json
 c734da82e827be306b700f078bf455e69fb04b01 data/forge/tags/items/dyes/black.json
 cbdce203a3eb9e39e2bcd48d67cd5d4cd1133edf data/forge/tags/items/dyes/blue.json
 c15776f6a52f1c6f96cd004c38016813c7a8f106 data/forge/tags/items/dyes/brown.json

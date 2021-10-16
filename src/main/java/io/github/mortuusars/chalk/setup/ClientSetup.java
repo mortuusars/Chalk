@@ -1,5 +1,6 @@
 package io.github.mortuusars.chalk.setup;
 
+import io.github.mortuusars.chalk.render.Rendering;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public class ClientSetup {
