@@ -175,7 +175,7 @@ public class ChalkMarkBlock extends Block {
         if (blockState.getValue(GLOWING) == false)
             return;
 
-        if (random.nextInt(30) == 0) {
+        if (random.nextInt(90) == 0) {
             ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockFaceCenter(blockPos, blockState.getValue(FACING),
                     0.33f), new Vector3f(0f, 0.015f, 0f), 1);
         }
