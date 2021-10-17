@@ -1,5 +1,8 @@
 
 Added ❌-mark: drawn by Sneak-RightClicking.
+Chalks now can be found in underground in dungeon and mineshaft chests, as well as in some village chests
+
+Added config file. Chalk durability, glow items, generation in chests can be changed.
 
 - Enhanced Pick Block (Middle Click) - it will now select proper chalk from your inventory 
 - Glowing Inc Sac from Upgrade Aquatic can be used to make mark glowing
