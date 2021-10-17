@@ -1,23 +1,26 @@
+### 1.2.0 - 2021-10-17
 
-Added ❌-mark: drawn by Sneak-RightClicking.
-Chalks now can be found in underground in dungeon and mineshaft chests, as well as in some village chests
+- Added ❌-mark: drawn while sneaking
+- Chalks now can be found in underground in dungeon and mineshaft chests. Villagers seems to be understanding usefulness of chalk too, some of their chests will contain chalk too.
+- Added config file: Chalk durability, glow items, generation in chests can be changed
+- Glowing Inc Sac from Upgrade Aquatic can be used to make mark glowing
 
-Added config file. Chalk durability, glow items, generation in chests can be changed.
 
 - Enhanced Pick Block (Middle Click) - it will now select proper chalk from your inventory 
-- Glowing Inc Sac from Upgrade Aquatic can be used to make mark glowing
 - Added dye tags to all chalks. You can now draw on Supplementaries Blackboard with them. Enable colored_blackboard in Supplementaries config for better results. 
 - Added all chalks to "forge:chalk" tag
 - Better offhand interactions: if you have something in offhand while drawing the mark - offhand item will not be used
-- Marks are now colored programmatically
-- Toned down Glowing mark particles frequency 
+
+
+- Toned down Glowing mark particles frequency
+- Marks are now colored programmatically instead of colored textures
 
 ---
 
 ### 1.1.2 - 2021-10-12
 
 - Glowing Inc Sac from "Caves and Cliffs Backport" can be used to make mark glowing
-- Glowing marks sometimes will emit shiny particles
+- Glowing marks will sometimes emit shiny particles
 
 
 - Fixed Glowstone not consuming when used on a mark
