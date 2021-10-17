@@ -1,7 +1,9 @@
 package io.github.mortuusars.chalk.items;
 
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
+import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
@@ -20,18 +22,21 @@ import net.minecraftforge.common.util.Constants;
 
 public class ChalkItem extends Item {
 
-    public static final int Durability = 64;
-
     private final DyeColor _color;
 
     public ChalkItem(DyeColor dyeColor, Properties properties) {
         super(properties
                 .tab(ItemGroup.TAB_DECORATIONS)
                 .stacksTo(1)
-                .defaultDurability(Durability)
+                .defaultDurability(64)
                 .setNoRepair());
 
         _color = dyeColor;
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return CommonConfig.CHALK_DURABILITY.get();
     }
 
     public DyeColor getColor() {

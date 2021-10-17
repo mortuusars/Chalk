@@ -1,5 +1,6 @@
 package io.github.mortuusars.chalk.blocks;
 
+import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
@@ -131,14 +132,17 @@ public class ChalkMarkBlock extends Block {
     }
 
     private boolean isGlowingItem(Item item){
-        if (item == Items.GLOWSTONE_DUST)
-            return true;
-
         ResourceLocation itemRegistryName = item.getRegistryName();
 
-        return itemRegistryName != null && (
-               itemRegistryName.getPath().contains("glow_ink_sac") ||
-               itemRegistryName.getPath().contains("glowing_ink_sac"));
+        if (itemRegistryName == null)
+            return false;
+
+        for (String itemName : CommonConfig.GLOWING_ITEMS.get()){
+            if (itemRegistryName.toString().equals(itemName))
+                return true;
+        }
+
+        return false;
     }
 
     @Override
