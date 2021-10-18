@@ -1,8 +1,9 @@
 package io.github.mortuusars.chalk.blocks;
 
-import net.minecraft.util.IStringSerializable;
 
-public enum MarkSymbol implements IStringSerializable {
+import net.minecraft.util.StringRepresentable;
+
+public enum MarkSymbol implements StringRepresentable {
     NONE("none"),
     CROSS("cross");
 

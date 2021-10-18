@@ -4,7 +4,7 @@ package io.github.mortuusars.chalk.data;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.setup.ModBlocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

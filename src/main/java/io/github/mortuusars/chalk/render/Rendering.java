@@ -1,18 +1,16 @@
 package io.github.mortuusars.chalk.render;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.render.ChalkMarkBakedModel;
 import io.github.mortuusars.chalk.setup.ModBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -28,8 +26,8 @@ public class Rendering {
         // Register custom IBakedModel for all mark blocks
         ModBlocks.MARKS.forEach( (name, block) -> {
             for (BlockState blockState : block.get().getStateDefinition().getPossibleStates()) {
-                ModelResourceLocation variantMRL = BlockModelShapes.stateToModelLocation(blockState);
-                IBakedModel existingModel = event.getModelRegistry().get(variantMRL);
+                ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
+                BakedModel existingModel = event.getModelRegistry().get(variantMRL);
 
                 if (existingModel == null) {
                     Chalk.LOGGER.warn("Did not find the expected vanilla baked model(s) for " + block + " in registry");
@@ -55,7 +53,7 @@ public class Rendering {
     @SubscribeEvent
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         // Register textures for use in IBakedModel
-        if (event.getMap().location() == AtlasTexture.LOCATION_BLOCKS) {
+        if (event.getMap().location() == TextureAtlas.LOCATION_BLOCKS) {
             event.addSprite(new ResourceLocation("chalk:block/mark_arrow"));
             event.addSprite(new ResourceLocation("chalk:block/mark_center"));
             event.addSprite(new ResourceLocation("chalk:block/mark_cross"));
@@ -69,7 +67,7 @@ public class Rendering {
 
     private static void setRenderLayerForMarks() {
         ModBlocks.MARKS.forEach( (name, block) -> {
-            RenderTypeLookup.setRenderLayer(block.get(), RenderType.cutout());
+            ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout());
         });
     }
 }

@@ -14,13 +14,13 @@ apply plugin: 'maven-publish'
 
 version = '1.2.0'
 group = 'io.github.mortuusars'
-archivesBaseName = 'chalk-1.16.5'
+archivesBaseName = 'chalk-1.17.1'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.16.5'
+    mappings channel: 'official', version: '1.17.1'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -117,12 +117,12 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.2.6'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.97'
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121:api")
-    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121")
-
-    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.1.4-22")
+//    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121:api")
+//    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121")
+//
+//    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.1.4-22")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

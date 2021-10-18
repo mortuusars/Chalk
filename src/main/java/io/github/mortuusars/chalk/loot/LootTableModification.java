@@ -2,9 +2,9 @@ package io.github.mortuusars.chalk.loot;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.TableLootEntry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -20,7 +20,7 @@ public class LootTableModification {
 
             Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString());
 
-            event.getTable().addPool(LootPool.lootPool().add(TableLootEntry.lootTableReference(
+            event.getTable().addPool(LootPool.lootPool().add(LootTableReference.lootTableReference(
                     new ResourceLocation(Chalk.MOD_ID, "chests/dungeon_chalk_loot"))).build());
         }
         else if (event.getName().toString().equals("minecraft:chests/village/village_cartographer") ||
@@ -29,7 +29,7 @@ public class LootTableModification {
 
             Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString());
 
-            event.getTable().addPool(LootPool.lootPool().add(TableLootEntry.lootTableReference(
+            event.getTable().addPool(LootPool.lootPool().add(LootTableReference.lootTableReference(
                     new ResourceLocation(Chalk.MOD_ID, "chests/village_chalk_loot"))).build());
         }
     }
