@@ -1,0 +1,19 @@
+{
+  "item.chalk.black_chalk": "黒色のチョーク",
+  "item.chalk.red_chalk": "赤色のチョーク",
+  "item.chalk.green_chalk": "緑色のチョーク",
+  "item.chalk.brown_chalk": "茶色のチョーク",
+  "item.chalk.blue_chalk": "青色のチョーク",
+  "item.chalk.purple_chalk": "紫色のチョーク",
+  "item.chalk.cyan_chalk": "青緑色のチョーク",
+  "item.chalk.light_gray_chalk": "薄灰色のチョーク",
+  "item.chalk.gray_chalk": "灰色のチョーク",
+  "item.chalk.pink_chalk": "桃色のチョーク",
+  "item.chalk.lime_chalk": "黄緑色のチョーク",
+  "item.chalk.yellow_chalk": "黄色のチョーク",
+  "item.chalk.light_blue_chalk": "空色のチョーク",
+  "item.chalk.magenta_chalk": "赤紫色のチョーク",
+  "item.chalk.orange_chalk": "橙色のチョーク",
+  "item.chalk.white_chalk": "白色のチョーク",
+  "block.chalk.chalk_mark_block": "チョークの印"
+}
