@@ -1,3 +1,7 @@
+### 1.2.1 - 2021-10-19
+
+- Added chalks to Desert Pyramid and Mason House chests
+
 ### 1.2.0 - 2021-10-17
 
 - Added ❌-mark: drawn while sneaking

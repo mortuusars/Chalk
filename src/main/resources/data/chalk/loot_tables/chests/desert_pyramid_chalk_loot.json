@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "weight": 5,
+          "name": "chalk:white_chalk"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "name": "chalk:light_gray_chalk"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "name": "chalk:gray_chalk"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "name": "chalk:black_chalk"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "name": "chalk:yellow_chalk"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "name": "chalk:light_blue_chalk"
+        },
+        {
+          "type": "item",
+          "weight": 5,
+          "name": "chalk:orange_chalk"
+        },
+        {
+          "type": "empty",
+          "weight": 30
+        }
+      ]
+    }
+  ]
+}
