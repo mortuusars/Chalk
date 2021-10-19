@@ -1,6 +1,6 @@
 package io.github.mortuusars.chalk.items;
 
-import io.github.mortuusars.chalk.Chalk;
+import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
@@ -8,17 +8,27 @@ import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.Random;
 
 public class ChalkItem extends Item {
 
@@ -26,7 +36,7 @@ public class ChalkItem extends Item {
 
     public ChalkItem(DyeColor dyeColor, Properties properties) {
         super(properties
-                .tab(ItemGroup.TAB_DECORATIONS)
+                .tab(CreativeModeTab.TAB_DECORATIONS)
                 .stacksTo(1)
                 .defaultDurability(64)
                 .setNoRepair());
@@ -43,23 +53,25 @@ public class ChalkItem extends Item {
         return this._color;
     }
 
+
+
     //This is called when the item is used, before the block is activated.
     //Return PASS to allow vanilla handling, any other to skip normal code.
     @Override
-    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (stack.getItem() != this)
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
 
-        final World world = context.getLevel();
+        final Level world = context.getLevel();
         final BlockPos pos = context.getClickedPos();
         Direction clickedFace = context.getClickedFace();
         final BlockState clickedBlockState = world.getBlockState(pos);
         BlockPos markPosition = pos.relative(clickedFace);
-        final PlayerEntity player = context.getPlayer();
+        final Player player = context.getPlayer();
 
         // Do not draw from offhand if drawn from main hand
-        if (context.getHand() == Hand.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
-            return ActionResultType.FAIL;
+        if (context.getHand() == InteractionHand.OFF_HAND.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
+            return InteractionResult.FAIL;
 
         if (clickedBlockState.getBlock() instanceof ChalkMarkBlock) {
             // Replace mark
@@ -67,15 +79,15 @@ public class ChalkItem extends Item {
             markPosition = pos;
             world.removeBlock(pos, false);
         }
-        else if (!Block.isFaceFull(clickedBlockState.getCollisionShape(world, pos, ISelectionContext.of(player)), clickedFace))
-            return ActionResultType.PASS;
+        else if (!Block.isFaceFull(clickedBlockState.getCollisionShape(world, pos, CollisionContext.of(player)), clickedFace))
+            return InteractionResult.PASS;
         else if (!world.isEmptyBlock(markPosition) && !(world.getBlockState(markPosition).getBlock() instanceof ChalkMarkBlock))
             // Surface is suitable but something is blocking the mark
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
 
         if (world.isClientSide){
             spawnDustParticles(world, clickedFace, markPosition);
-            return ActionResultType.CONSUME;
+            return InteractionResult.CONSUME;
         }
 
         final int orientation = ClickLocationUtils.getBlockRegion(context.getClickLocation(), pos, clickedFace);
@@ -93,23 +105,24 @@ public class ChalkItem extends Item {
             stack.setDamageValue(stack.getDamageValue() + 1);
             if (stack.getDamageValue() >= stack.getMaxDamage()) {
                 player.setItemInHand(context.getHand(), ItemStack.EMPTY);
-                world.playSound(null, markPosition, SoundEvents.GRAVEL_BREAK, SoundCategory.BLOCKS, 0.65f, 1f);
+                world.playSound(null, markPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 0.65f, 1f);
             }
         }
 
-        world.playSound(null, markPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundCategory.BLOCKS, 0.6f, random.nextFloat() * 0.2f + 0.8f);
+        world.playSound(null, markPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
+                SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);
 
-        return ActionResultType.CONSUME;
+        return InteractionResult.CONSUME;
     }
 
-    private void spawnDustParticles(World world, Direction clickedFace, BlockPos markPosition) {
-        int colorValue = _color.getColorValue();
+    private void spawnDustParticles(Level world, Direction clickedFace, BlockPos markPosition) {
+        int colorValue = _color.getTextColor();
 
         float R = (colorValue & 0x00FF0000) >> 16;
         float G = (colorValue & 0x0000FF00) >> 8;
         float B = (colorValue & 0x000000FF);
 
-        ParticleUtils.spawnParticle(world, new RedstoneParticleData(R / 255, G / 255, B / 255, 1.8f),
+        ParticleUtils.spawnParticle(world, new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 1.8f),
                 PositionUtils.blockFaceCenter(markPosition, clickedFace, 0.25f), 1);
     }
 

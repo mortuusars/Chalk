@@ -2,44 +2,44 @@ package io.github.mortuusars.chalk.loot;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTables;
-import net.minecraft.loot.TableLootEntry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class LootTableModification {
     @SubscribeEvent
-    public static void LootTablesLoad(final LootTableLoadEvent event){
+    public static void LootTablesLoad(final LootTableLoadEvent event) {
 
         if (!CommonConfig.GENERATE_IN_CHESTS.get())
             return;
 
         ResourceLocation tableId = event.getTable().getLootTableId();
-
-        if (tableId.equals( LootTables.ABANDONED_MINESHAFT) ||
-                tableId.equals(LootTables.SIMPLE_DUNGEON)) {
+      
+        if (tableId.equals(BuiltInLootTables.ABANDONED_MINESHAFT) ||
+                tableId.equals(BuiltInLootTables.SIMPLE_DUNGEON)) {
             Chalk.LOGGER.info("Adding Chalks to loot_table: " + event.getName().toString() + "...");
             event.getTable()
                     .addPool(LootPool.lootPool()
-                            .add(TableLootEntry.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/dungeon_chalk_loot")))
+                            .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/dungeon_chalk_loot")))
                             .build());
-        } else if (tableId.equals(LootTables.VILLAGE_CARTOGRAPHER) ||
-                tableId.equals(LootTables.VILLAGE_MASON) ||
-                tableId.equals(LootTables.VILLAGE_PLAINS_HOUSE) ||
-                tableId.equals(LootTables.VILLAGE_SAVANNA_HOUSE) ||
-                tableId.equals(LootTables.SPAWN_BONUS_CHEST)) {
+        } else if (tableId.equals(BuiltInLootTables.VILLAGE_CARTOGRAPHER) ||
+                tableId.equals(BuiltInLootTables.VILLAGE_MASON) ||
+                tableId.equals(BuiltInLootTables.VILLAGE_PLAINS_HOUSE) ||
+                tableId.equals(BuiltInLootTables.VILLAGE_SAVANNA_HOUSE) ||
+                tableId.equals(BuiltInLootTables.SPAWN_BONUS_CHEST)) {
             Chalk.LOGGER.info("Adding Chalks to loot_table: " + event.getName().toString() + "...");
             event.getTable()
                     .addPool(LootPool.lootPool()
-                            .add(TableLootEntry.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/village_chalk_loot")))
+                            .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/village_chalk_loot")))
                             .build());
-        } else if (tableId.equals(LootTables.DESERT_PYRAMID)) {
+        } else if (tableId.equals(BuiltInLootTables.DESERT_PYRAMID)) {
             Chalk.LOGGER.info("Adding Chalks to loot_table: " + event.getName().toString() + "...");
             event.getTable()
                     .addPool(LootPool.lootPool()
-                            .add(TableLootEntry.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/desert_pyramid_chalk_loot")))
+                            .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/desert_pyramid_chalk_loot")))
                             .build());
         }
     }

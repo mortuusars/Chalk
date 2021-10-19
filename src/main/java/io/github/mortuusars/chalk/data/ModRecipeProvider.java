@@ -3,12 +3,12 @@ package io.github.mortuusars.chalk.data;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.setup.ModItems;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.RecipeProvider;
-import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.function.Consumer;
@@ -17,7 +17,7 @@ public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(DataGenerator generator) { super(generator); }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> recipeBuilder) {
+    protected void buildCraftingRecipes(Consumer<FinishedRecipe> recipeBuilder) {
         ModItems.CHALKS.forEach( (name, item) -> {
 
             DyeColor color = DyeColor.byName(name.replace("chalk:", "").replace("_chalk", ""), DyeColor.WHITE);

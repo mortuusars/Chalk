@@ -14,7 +14,7 @@ public class CommonConfig {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> GLOWING_ITEMS;
     public static final ForgeConfigSpec.BooleanValue GENERATE_IN_CHESTS;
 
-    public static final List<String> GLOWING_ITEMS_DEFAULT = Arrays.asList("minecraft:glowstone_dust", "cavesandcliffs:glow_ink_sac", "upgrade_aquatic:glowing_ink_sac");
+    public static final List<String> GLOWING_ITEMS_DEFAULT = Arrays.asList("minecraft:glowstone_dust", "minecraft:glow_ink_sac");
 
     static {
         CHALK_DURABILITY = BUILDER.comment("How many marks you can draw with a single chalk. Default: 64")
