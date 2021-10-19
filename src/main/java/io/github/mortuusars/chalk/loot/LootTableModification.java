@@ -5,7 +5,7 @@ import io.github.mortuusars.chalk.config.CommonConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.entries.LootTableReference;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -17,7 +17,7 @@ public class LootTableModification {
             return;
 
         ResourceLocation tableId = event.getTable().getLootTableId();
-
+      
         if (tableId.equals(BuiltInLootTables.ABANDONED_MINESHAFT) ||
                 tableId.equals(BuiltInLootTables.SIMPLE_DUNGEON)) {
             Chalk.LOGGER.info("Adding Chalks to loot_table: " + event.getName().toString() + "...");
