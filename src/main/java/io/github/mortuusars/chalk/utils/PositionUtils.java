@@ -1,10 +1,9 @@
 package io.github.mortuusars.chalk.utils;
 
-import io.github.mortuusars.chalk.Chalk;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
+import com.mojang.math.Vector3f;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 
 public class PositionUtils {
 
@@ -18,9 +17,9 @@ public class PositionUtils {
     /**
      * Returns coords from a center of BlockPos with offset (from center) to one of the faces.
      */
-    public static Vector3f blockFaceCenter(BlockPos blockPos, Direction facing,  float offset){
+    public static Vector3f blockFaceCenter(BlockPos blockPos, Direction facing, float offset){
         Vector3f vec = blockCenter(blockPos);
-        Vector3i normal = facing.getNormal();
+        Vec3i normal = facing.getNormal();
 
         Vector3f finalVec = new Vector3f(vec.x() - (normal.getX() * offset), vec.y() - (normal.getY() * offset), vec.z() - (normal.getZ() * offset));
 

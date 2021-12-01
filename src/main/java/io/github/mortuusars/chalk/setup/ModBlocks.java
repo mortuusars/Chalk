@@ -1,14 +1,14 @@
 package io.github.mortuusars.chalk.setup;
 
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.DyeColor;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.registries.RegistryObject;
 
-import java.util.*;
+import java.util.HashMap;
 
 public class ModBlocks {
     public static final HashMap<String, RegistryObject<ChalkMarkBlock>> MARKS = new HashMap<String, RegistryObject<ChalkMarkBlock>>();
@@ -39,7 +39,7 @@ public class ModBlocks {
 
     private static RegistryObject<ChalkMarkBlock> createColoredMark(String registryName, DyeColor dyeColor, MaterialColor materialColor){
         RegistryObject<ChalkMarkBlock> registeredBlock = Registry.BLOCKS.register(registryName,
-                () -> new ChalkMarkBlock(dyeColor, AbstractBlock.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, materialColor)
+                () -> new ChalkMarkBlock(dyeColor, BlockBehaviour.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, materialColor)
                         .instabreak()
                         .noOcclusion()
                         .noCollission()

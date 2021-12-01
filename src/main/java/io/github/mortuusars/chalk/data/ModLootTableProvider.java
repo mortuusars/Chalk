@@ -3,16 +3,17 @@ package io.github.mortuusars.chalk.data;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.setup.ModBlocks;
-import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.setup.Registry;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.LootTableProvider;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.data.loot.ChestLootTables;
-import net.minecraft.loot.*;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.ValidationContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 import java.util.Map;
@@ -27,18 +28,18 @@ public class ModLootTableProvider extends LootTableProvider {
     }
 
     @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootParameterSet>> getTables() {
+    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
         return ImmutableList.of(
-                Pair.of(ModBlockLootTables::new, LootParameterSets.BLOCK)
+                Pair.of(ModBlockLootTables::new, LootContextParamSets.BLOCK)
         );
     }
 
     @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationtracker) {
-        map.forEach((resLocation, table) -> LootTableManager.validate(validationtracker, resLocation, table));
+    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationContext) {
+        super.validate(map, validationContext);
     }
 
-    public static class ModBlockLootTables extends BlockLootTables {
+    public static class ModBlockLootTables extends BlockLoot {
 
         @Override
         protected void addTables() {

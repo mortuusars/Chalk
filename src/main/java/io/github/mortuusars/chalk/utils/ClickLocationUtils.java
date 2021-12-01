@@ -1,8 +1,9 @@
 package io.github.mortuusars.chalk.utils;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import com.mojang.math.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 
 import java.awt.geom.Point2D;
 
@@ -17,7 +18,7 @@ public class ClickLocationUtils {
      * |3 4 5|<p>
      * |6 7 8|<p>
      */
-    public static int getBlockRegion(Vector3d clickLocation, BlockPos pos, Direction facing){
+    public static int getBlockRegion(Vec3 clickLocation, BlockPos pos, Direction facing){
 
         Point2D.Double point = getClickedBlockSpaceCoords(clickLocation, pos, facing);
 
@@ -36,7 +37,7 @@ public class ClickLocationUtils {
     /**
      * Returns a point representing where in a block was clicked. 0.0 to 1.0.
      */
-    public static Point2D.Double getClickedBlockSpaceCoords(Vector3d clickLocation, BlockPos pos, Direction facing){
+    public static Point2D.Double getClickedBlockSpaceCoords(Vec3 clickLocation, BlockPos pos, Direction facing){
 
         final double x = clickLocation.x - pos.getX();
         final double y = clickLocation.y - pos.getY();

@@ -3,10 +3,10 @@ package io.github.mortuusars.chalk.data;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.setup.ModTags;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.ItemTagsProvider;
-import net.minecraft.item.DyeColor;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;

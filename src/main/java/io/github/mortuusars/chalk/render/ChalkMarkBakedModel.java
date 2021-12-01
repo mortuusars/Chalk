@@ -1,18 +1,20 @@
 package io.github.mortuusars.chalk.render;
 
+import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -24,13 +26,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static net.minecraftforge.client.model.SimpleModelTransform.IDENTITY;
+import static net.minecraftforge.client.model.SimpleModelState.IDENTITY;
 
 /**
  * Baked model is used to programmatically create proper Chalk Mark block model.
  * Based on particular blockstate properties it chooses proper block rotation, texture, texture rotation (for arrow mark), glowing.
  */
-public class ChalkMarkBakedModel implements IBakedModel {
+public class ChalkMarkBakedModel implements BakedModel {
 
     private enum TextureType{
         CENTER, ARROW, CROSS
@@ -42,9 +44,9 @@ public class ChalkMarkBakedModel implements IBakedModel {
     public static ModelProperty<MarkSymbol> SYMBOL = new ModelProperty<>();
 
     private static final FaceBakery _faceBakery = new FaceBakery();
-    private final IBakedModel _baseModel;
+    private final BakedModel _baseModel;
 
-    public ChalkMarkBakedModel(IBakedModel baseModel){
+    public ChalkMarkBakedModel(BakedModel baseModel){
         _baseModel = baseModel;
     }
 
@@ -60,7 +62,7 @@ public class ChalkMarkBakedModel implements IBakedModel {
 
     @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
         int orientation = state.getValue(ChalkMarkBlock.ORIENTATION);
         Direction facing = state.getValue(ChalkMarkBlock.FACING);
         boolean glowing = state.getValue(ChalkMarkBlock.GLOWING);
@@ -158,9 +160,10 @@ public class ChalkMarkBakedModel implements IBakedModel {
 
         TextureAtlasSprite texture = getTextureForMark(symbol, orientation);
 
+
         // Direction, TintIndex, TextureName(from json), UVs
         // Tint index is set to 0 (-1 is off) to color the marks with ChalkMarkBlockColor
-        BlockPartFace blockPartFace = new BlockPartFace(facing, 0, "", new BlockFaceUV(new float[]{0f, 0f, 16f, 16f}, uvRotation));
+        BlockElementFace blockPartFace = new BlockElementFace(facing, 0, "", new BlockFaceUV(new float[]{0f, 0f, 16f, 16f}, uvRotation));
 
         // Rotate the texture
         int rotation = symbol == MarkSymbol.CROSS ? 45 : rotationFromOrientation(orientation);
@@ -170,7 +173,7 @@ public class ChalkMarkBakedModel implements IBakedModel {
             rotation = 360 - rotation;
 
         // Origin, Axis, RotationAngle(22.5), Rescale
-        BlockPartRotation blockPartRotation = new BlockPartRotation(new Vector3f(0.5f,0.5f,0.5f), facing.getAxis(), (float)rotation, false);
+        BlockElementRotation blockPartRotation = new BlockElementRotation(new Vector3f(0.5f,0.5f,0.5f), facing.getAxis(), (float)rotation, false);
 
         // From pos, To pos, Face, Texture, Facing, Transform, Rotation, Shading, Dummy RL
         BakedQuad quad = _faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, IDENTITY,
@@ -180,7 +183,7 @@ public class ChalkMarkBakedModel implements IBakedModel {
     }
 
     private TextureAtlasSprite getTextureForMark(MarkSymbol symbol, int orientation){
-        AtlasTexture atlas = ModelLoader.instance().getSpriteMap().getAtlas(AtlasTexture.LOCATION_BLOCKS);
+        TextureAtlas atlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
 
         if (symbol == MarkSymbol.CROSS)
             return atlas.getSprite(new ResourceLocation("chalk:block/mark_cross"));
@@ -206,11 +209,6 @@ public class ChalkMarkBakedModel implements IBakedModel {
             case 0: return 45;
             default: return 0;
         }
-    }
-
-    @Override
-    public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
-        return _baseModel.getParticleTexture(data);
     }
 
     // IBakedModel method
@@ -245,7 +243,7 @@ public class ChalkMarkBakedModel implements IBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return _baseModel.getOverrides();
     }
 }

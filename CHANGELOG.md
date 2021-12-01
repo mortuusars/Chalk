@@ -1,6 +1,17 @@
+### 1.18 - 1.0.0 - 2021-12-01
+
+- Updated to 1.18
+
+- Added Japanese translation provided by RascalNiki
+- Added Italian translation provided by Sim5
+
+---
+
 ### 1.2.1 - 2021-10-19
 
 - Added chalks to Desert Pyramid and Mason House chests
+
+---
 
 ### 1.2.0 - 2021-10-17
 
@@ -46,7 +57,7 @@
 
 I'm sorry, hopefully it will never happen again. (But who knows?)** 
 
---
+---
 
 Added:
 - **Colored Chalks** for all 16 colors

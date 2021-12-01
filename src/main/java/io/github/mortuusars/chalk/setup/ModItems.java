@@ -1,9 +1,9 @@
 package io.github.mortuusars.chalk.setup;
 
 import io.github.mortuusars.chalk.items.ChalkItem;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
 

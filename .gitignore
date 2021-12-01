@@ -1,6 +1,5 @@
 # eclipse
 bin
-mcmodsrepo
 *.launch
 .settings
 .metadata
@@ -13,7 +12,6 @@ out
 *.iws
 *.iml
 .idea
-mcmodsrepo
 
 # gradle
 build
@@ -22,6 +20,7 @@ build
 # other
 eclipse
 run
+mcmodsrepo
 
 # Files from Forge MDK
 forge*changelog.txt

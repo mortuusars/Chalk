@@ -1,8 +1,8 @@
 package io.github.mortuusars.chalk.utils;
 
-import net.minecraft.particles.IParticleData;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import com.mojang.math.Vector3f;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -11,7 +11,7 @@ public class ParticleUtils {
     /**
      * Spawns a particle with slight random offset to each. Includes velocity.
      */
-    public static void spawnParticle(World world, IParticleData particleType, Vector3f position, Vector3f velocity, int count){
+    public static void spawnParticle(Level world, ParticleOptions particleType, Vector3f position, Vector3f velocity, int count){
         if (!world.isClientSide() || count < 1)
             return;
 
@@ -31,7 +31,7 @@ public class ParticleUtils {
     /**
      * Spawns a particle with slight random offset to each.
      */
-    public static void spawnParticle(World world, IParticleData particleType, Vector3f position, int count){
+    public static void spawnParticle(Level world, ParticleOptions particleType, Vector3f position, int count){
         spawnParticle(world, particleType, position, new Vector3f(0f, 0f, 0f), count);
     }
 }
