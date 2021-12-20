@@ -1,3 +1,10 @@
+### 1.0.1 - 2021-12-20
+
+- Improved mark drawing:
+  - If clicked on a usable block (such as barrel) block will activate instead of drawing a mark.
+  - Shift can be held to draw on activatable blocks, but only cross-mark can be drawn this way.
+
+
 ### 1.18 - 1.0.0 - 2021-12-01
 
 - Updated to 1.18

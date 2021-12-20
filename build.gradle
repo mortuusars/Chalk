@@ -13,15 +13,15 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0.0'
+version = '1.0.1'
 group = 'io.github.mortuusars'
-archivesBaseName = 'chalk-1.18'
+archivesBaseName = 'chalk-1.18.1'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.18'
+    mappings channel: 'official', version: '1.18.1'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -118,7 +118,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18-38.0.2'
+    minecraft 'net.minecraftforge:forge:1.18.1-39.0.6'
 
 //    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121:api")
 //    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121")
