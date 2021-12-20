@@ -170,7 +170,7 @@ public class ChalkMarkBlock extends Block {
                 }
 
                 world.playSound(null, blockPos, SoundEvents.TURTLE_SHAMBLE, SoundSource.BLOCKS, 1.5f, 1f);
-                ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockFaceCenter(blockPos, blockState.getValue(FACING),
+                ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
 
                 return InteractionResult.SUCCESS;
@@ -214,7 +214,7 @@ public class ChalkMarkBlock extends Block {
                 float B = (colorValue & 0x000000FF);
 
                 ParticleUtils.spawnParticle(world, new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
-                        PositionUtils.blockFaceCenter(pos, facing, 0.25f), 1);
+                        PositionUtils.blockCenterOffsetToFace(pos, facing, 0.25f), 1);
             }
             return true;
         }
@@ -234,7 +234,7 @@ public class ChalkMarkBlock extends Block {
             return;
 
         if (random.nextInt(90) == 0) {
-            ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockFaceCenter(blockPos, blockState.getValue(FACING),
+            ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                     0.33f), new Vector3f(0f, 0.015f, 0f), 1);
         }
     }

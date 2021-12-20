@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
@@ -52,40 +53,39 @@ public class ChalkItem extends Item {
         return this._color;
     }
 
-
-
-    //This is called when the item is used, before the block is activated.
-    //Return PASS to allow vanilla handling, any other to skip normal code.
     @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        if (stack.getItem() != this)
-            return InteractionResult.FAIL;
-
-        final Level world = context.getLevel();
-        final BlockPos pos = context.getClickedPos();
-        Direction clickedFace = context.getClickedFace();
-        final BlockState clickedBlockState = world.getBlockState(pos);
-        BlockPos markPosition = pos.relative(clickedFace);
+    public @NotNull InteractionResult useOn(UseOnContext context) {
+        final InteractionHand hand = context.getHand();
+        final ItemStack itemStack = context.getItemInHand();
         final Player player = context.getPlayer();
 
-        // Do not draw from offhand if drawn from main hand
-        if (context.getHand() == InteractionHand.OFF_HAND.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
+        if (player == null || !(itemStack.getItem() instanceof ChalkItem))
             return InteractionResult.FAIL;
+
+        // When holding chalks in both hands - skip drawing from offhand
+        if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
+            return InteractionResult.FAIL;
+
+        final Level level = context.getLevel();
+        final BlockPos pos = context.getClickedPos();
+        final BlockState clickedBlockState = level.getBlockState(pos);
+        Direction clickedFace = context.getClickedFace();
+        BlockPos markPosition = pos.relative(clickedFace);
 
         if (clickedBlockState.getBlock() instanceof ChalkMarkBlock) {
             // Replace mark
             clickedFace = clickedBlockState.getValue(ChalkMarkBlock.FACING);
             markPosition = pos;
-            world.removeBlock(pos, false);
+            level.removeBlock(pos, false);
         }
-        else if (!Block.isFaceFull(clickedBlockState.getCollisionShape(world, pos, CollisionContext.of(player)), clickedFace))
+        else if (!Block.isFaceFull(clickedBlockState.getCollisionShape(level, pos, CollisionContext.of(player)), clickedFace))
             return InteractionResult.PASS;
-        else if (!world.isEmptyBlock(markPosition) && !(world.getBlockState(markPosition).getBlock() instanceof ChalkMarkBlock))
+        else if (!level.isEmptyBlock(markPosition) && !(level.getBlockState(markPosition).getBlock() instanceof ChalkMarkBlock))
             // Surface is suitable but something is blocking the mark
             return InteractionResult.PASS;
 
-        if (world.isClientSide){
-            spawnDustParticles(world, clickedFace, markPosition);
+        if (level.isClientSide){
+            spawnDustParticles(level, clickedFace, markPosition);
             return InteractionResult.CONSUME;
         }
 
@@ -98,24 +98,28 @@ public class ChalkItem extends Item {
         if (context.isSecondaryUseActive())
             blockState = blockState.setValue(ChalkMarkBlock.SYMBOL, MarkSymbol.CROSS);
 
-        final int NOTIFY_NEIGHBORS = 1 << 0;
-        final int BLOCK_UPDATE = 1 << 1;
-        final int RERENDER_MAIN_THREAD = 1 << 3;
-
-        world.setBlock(markPosition, blockState, NOTIFY_NEIGHBORS | BLOCK_UPDATE | RERENDER_MAIN_THREAD);
+        level.setBlock(markPosition, blockState, Block.UPDATE_ALL_IMMEDIATE);
 
         if (!player.isCreative()) {
-            stack.setDamageValue(stack.getDamageValue() + 1);
-            if (stack.getDamageValue() >= stack.getMaxDamage()) {
+            itemStack.setDamageValue(itemStack.getDamageValue() + 1);
+            if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
                 player.setItemInHand(context.getHand(), ItemStack.EMPTY);
-                world.playSound(null, markPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 0.65f, 1f);
+                level.playSound(null, markPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 0.75f, 1f);
             }
         }
 
-        world.playSound(null, markPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
+        level.playSound(null, markPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
                 SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);
 
         return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        if (context.getPlayer() != null && context.getPlayer().isSecondaryUseActive())
+            return useOn(context);
+
+        return InteractionResult.PASS;
     }
 
     private void spawnDustParticles(Level world, Direction clickedFace, BlockPos markPosition) {
@@ -126,7 +130,7 @@ public class ChalkItem extends Item {
         float B = (colorValue & 0x000000FF);
 
         ParticleUtils.spawnParticle(world, new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 1.8f),
-                PositionUtils.blockFaceCenter(markPosition, clickedFace, 0.25f), 1);
+                PositionUtils.blockCenterOffsetToFace(markPosition, clickedFace, 0.25f), 1);
     }
 
     @Override
@@ -135,12 +139,12 @@ public class ChalkItem extends Item {
     }
 
     @Override
-    public boolean isRepairable(ItemStack stack) {
+    public boolean isRepairable(@NotNull ItemStack stack) {
         return false;
     }
 
     @Override
-    public boolean isEnchantable(ItemStack stack) {
+    public boolean isEnchantable(@NotNull ItemStack stack) {
         return false;
     }
 

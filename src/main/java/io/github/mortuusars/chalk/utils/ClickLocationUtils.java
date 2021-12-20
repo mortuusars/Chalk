@@ -43,12 +43,12 @@ public class ClickLocationUtils {
         final double y = clickLocation.y - pos.getY();
         final double z = clickLocation.z - pos.getZ();
 
-        switch (facing) {
-            case NORTH: return new Point2D.Double(1 - x, 1 - y);
-            case SOUTH: return new Point2D.Double(x, 1 - y);
-            case WEST: return new Point2D.Double(z, 1- y);
-            case EAST: return new Point2D.Double(1 - z, 1 - y);
-            default: return new Point2D.Double(x, z);
-        }
+        return switch (facing) {
+            case NORTH -> new Point2D.Double(1 - x, 1 - y);
+            case SOUTH -> new Point2D.Double(x, 1 - y);
+            case WEST -> new Point2D.Double(z, 1 - y);
+            case EAST -> new Point2D.Double(1 - z, 1 - y);
+            default -> new Point2D.Double(x, z);
+        };
     }
 }
