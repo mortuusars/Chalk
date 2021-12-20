@@ -23,8 +23,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,6 +56,14 @@ public class ChalkItem extends Item {
     }
 
     @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        if (context.getPlayer() != null && context.getPlayer().isSecondaryUseActive())
+            return useOn(context);
+
+        return InteractionResult.PASS;
+    }
+
+    @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {
         final InteractionHand hand = context.getHand();
         final ItemStack itemStack = context.getItemInHand();
@@ -66,60 +76,89 @@ public class ChalkItem extends Item {
         if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
             return InteractionResult.FAIL;
 
+        final boolean isSecondaryUseActive = context.isSecondaryUseActive();
         final Level level = context.getLevel();
-        final BlockPos pos = context.getClickedPos();
-        final BlockState clickedBlockState = level.getBlockState(pos);
-        Direction clickedFace = context.getClickedFace();
-        BlockPos markPosition = pos.relative(clickedFace);
+        final BlockPos clickedPos = context.getClickedPos();
+        final BlockState clickedBlockState = level.getBlockState(clickedPos);
+        final Direction clickedFace = context.getClickedFace();
 
-        if (clickedBlockState.getBlock() instanceof ChalkMarkBlock) {
-            // Replace mark
-            clickedFace = clickedBlockState.getValue(ChalkMarkBlock.FACING);
-            markPosition = pos;
-            level.removeBlock(pos, false);
-        }
-        else if (!Block.isFaceFull(clickedBlockState.getCollisionShape(level, pos, CollisionContext.of(player)), clickedFace))
-            return InteractionResult.PASS;
-        else if (!level.isEmptyBlock(markPosition) && !(level.getBlockState(markPosition).getBlock() instanceof ChalkMarkBlock))
-            // Surface is suitable but something is blocking the mark
+        final boolean isClickedOnAMark = isClickedBlockAMark(clickedPos, level);
+
+        BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
+        final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
+        BlockState newMarkBlockState = getNewMarkBlockState(isSecondaryUseActive, context.getClickLocation(), clickedPos, newMarkFacing);
+
+        final BlockState blockStateOnMarkPosition = level.getBlockState(newMarkPosition);
+
+        if (!isDrawableThere(newMarkPosition, clickedBlockState, clickedPos, newMarkBlockState.getValue(ChalkMarkBlock.FACING), level))
             return InteractionResult.PASS;
 
-        if (level.isClientSide){
-            spawnDustParticles(level, clickedFace, markPosition);
-            return InteractionResult.CONSUME;
+        if (blockStateOnMarkPosition.getBlock() instanceof ChalkMarkBlock) {
+            if (isNewMarkSameAsOld(blockStateOnMarkPosition, newMarkBlockState, isSecondaryUseActive))
+                return InteractionResult.FAIL;
+
+            // Remove old mark. It would be replaced with new one.
+            level.removeBlock(newMarkPosition, false);
         }
 
-        final int orientation = ClickLocationUtils.getBlockRegion(context.getClickLocation(), pos, clickedFace);
-
-        BlockState blockState = ModBlocks.getMarkBlockByColor(_color).defaultBlockState()
-                .setValue(ChalkMarkBlock.FACING, clickedFace)
-                .setValue(ChalkMarkBlock.ORIENTATION, orientation);
-
-        if (context.isSecondaryUseActive())
-            blockState = blockState.setValue(ChalkMarkBlock.SYMBOL, MarkSymbol.CROSS);
-
-        level.setBlock(markPosition, blockState, Block.UPDATE_ALL_IMMEDIATE);
-
-        if (!player.isCreative()) {
-            itemStack.setDamageValue(itemStack.getDamageValue() + 1);
-            if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
-                player.setItemInHand(context.getHand(), ItemStack.EMPTY);
-                level.playSound(null, markPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 0.75f, 1f);
-            }
-        }
-
-        level.playSound(null, markPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
-                SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);
-
+        drawMarkAndDamageItem(hand, itemStack, player, level, newMarkFacing, newMarkPosition, newMarkBlockState);
         return InteractionResult.CONSUME;
     }
 
-    @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        if (context.getPlayer() != null && context.getPlayer().isSecondaryUseActive())
-            return useOn(context);
+    private boolean isClickedBlockAMark(BlockPos clickedPos, Level level){
+        final Block clickedBlock = level.getBlockState(clickedPos).getBlock();
+        return clickedBlock instanceof ChalkMarkBlock;
+    }
 
-        return InteractionResult.PASS;
+    private BlockState getNewMarkBlockState(boolean isSecondaryUseActive, Vec3 clickLocation, BlockPos clickedPos, Direction clickedFace) {
+        final BlockState defaultBlockState = ModBlocks.getMarkBlockByColor(_color).defaultBlockState().setValue(ChalkMarkBlock.FACING, clickedFace);
+
+        if (isSecondaryUseActive)
+            return defaultBlockState.setValue(ChalkMarkBlock.SYMBOL, MarkSymbol.CROSS);
+        else {
+            final int orientation = ClickLocationUtils.getBlockRegion(clickLocation, clickedPos, clickedFace);
+            return defaultBlockState.setValue(ChalkMarkBlock.ORIENTATION, orientation);
+        }
+    }
+
+    private boolean isDrawableThere(BlockPos markPosition, BlockState drawingTarget, BlockPos targetBlockPos, Direction face, Level level){
+        if (drawingTarget.getBlock() instanceof ChalkMarkBlock)
+            return true;
+
+        final boolean isFaceFull = Block.isFaceFull(drawingTarget.getCollisionShape(level, targetBlockPos), face);
+
+        final Block blockAtDrawingPos = level.getBlockState(markPosition).getBlock();
+        return isFaceFull && (blockAtDrawingPos instanceof AirBlock || blockAtDrawingPos instanceof ChalkMarkBlock);
+    }
+
+    private boolean isNewMarkSameAsOld(BlockState oldMark, BlockState newMark, boolean isSecondaryUseActive){
+        final boolean sameFacing = newMark.getValue(ChalkMarkBlock.FACING) == oldMark.getValue(ChalkMarkBlock.FACING);
+        final boolean sameOrientation = newMark.getValue(ChalkMarkBlock.ORIENTATION).equals(oldMark.getValue(ChalkMarkBlock.ORIENTATION));
+        final boolean isBothCross = isSecondaryUseActive && oldMark.getValue(ChalkMarkBlock.SYMBOL) == MarkSymbol.CROSS;
+
+        return (sameFacing && sameOrientation) || (sameFacing && isBothCross);
+    }
+
+    private void damageItemStack(InteractionHand hand, ItemStack itemStack, Player player, Level level, BlockPos markPosition) {
+        itemStack.setDamageValue(itemStack.getDamageValue() + 1);
+        if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
+            player.setItemInHand(hand, ItemStack.EMPTY);
+            level.playSound(null, markPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 0.75f, 1f);
+        }
+    }
+
+    private void drawMarkAndDamageItem(InteractionHand hand, ItemStack itemStack, Player player, Level level, Direction facing, BlockPos newMarkPosition, BlockState newMarkBlockState) {
+        if (level.isClientSide)
+            spawnDustParticles(level, facing, newMarkPosition);
+        else {
+            level.setBlock(newMarkPosition, newMarkBlockState, Block.UPDATE_ALL_IMMEDIATE);
+
+            if (!player.isCreative())
+                damageItemStack(hand, itemStack, player, level, newMarkPosition);
+
+            level.playSound(null, newMarkPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
+                    SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);
+        }
     }
 
     private void spawnDustParticles(Level world, Direction clickedFace, BlockPos markPosition) {

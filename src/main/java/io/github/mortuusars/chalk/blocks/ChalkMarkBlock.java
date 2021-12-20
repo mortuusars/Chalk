@@ -2,6 +2,7 @@ package io.github.mortuusars.chalk.blocks;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.math.Vector3f;
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -73,7 +75,7 @@ public class ChalkMarkBlock extends Block {
         shapesCache = ImmutableMap.copyOf(this.getStateDefinition().getPossibleStates().stream().collect(Collectors.toMap(Function.identity(), ChalkMarkBlock::calculateShapes)));
     }
 
-    private static VoxelShape calculateShapes(BlockState blockState){
+    private static VoxelShape calculateShapes(BlockState blockState) {
         return switch (blockState.getValue(FACING)) {
             case DOWN -> DOWN_AABB;
             case UP -> UP_AABB;
@@ -95,14 +97,15 @@ public class ChalkMarkBlock extends Block {
         return new ItemStack(ModItems.getChalkByColor(this._color));
     }
 
-//    @Override
-//    public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-//        if (player.isCreative())
-//            return new ItemStack(ModItems.getChalkByColor(_color));
-//
-//        ItemStack item = getMatchingItemStack(player, ModItems.getChalkByColor(_color));
-//        return item == ItemStack.EMPTY ? new ItemStack(ModItems.getChalkByColor(_color)) : item;
-//    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        if (player.isCreative())
+            return new ItemStack(ModItems.getChalkByColor(_color));
+
+        ItemStack item = getMatchingItemStack(player, ModItems.getChalkByColor(_color));
+        return item == ItemStack.EMPTY ? new ItemStack(ModItems.getChalkByColor(_color)) : item;
+    }
 
     private ItemStack getMatchingItemStack(Player player, Item item){
         return player.getInventory().items.stream().filter(invItem ->
@@ -118,28 +121,34 @@ public class ChalkMarkBlock extends Block {
         return _color;
     }
 
-    @Override
-    protected ImmutableMap<BlockState, VoxelShape> getShapeForEachState(Function<BlockState, VoxelShape> p_152459_) {
-        return super.getShapeForEachState(p_152459_);
-    }
+//    @Override
+//    protected ImmutableMap<BlockState, VoxelShape> getShapeForEachState(Function<BlockState, VoxelShape> p_152459_) {
+//        return super.getShapeForEachState(p_152459_);
+//    }
+
+
 
     @Override
     public VoxelShape getVisualShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         Direction facing = blockState.getValue(FACING);
 
-        switch (facing) {
-            case UP:
-                return UP_AABB;
-            case NORTH:
-                return NORTH_AABB;
-            case WEST:
-                return WEST_AABB;
-            case EAST:
-                return EAST_AABB;
-            case SOUTH:
-                return SOUTH_AABB;
-            default:
-                return DOWN_AABB;
+        return switch (facing) {
+            case UP -> UP_AABB;
+            case NORTH -> NORTH_AABB;
+            case WEST -> WEST_AABB;
+            case EAST -> EAST_AABB;
+            case SOUTH -> SOUTH_AABB;
+            default -> DOWN_AABB;
+        };
+    }
+
+    @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos pos, BlockState state, boolean p_60570_) {
+        super.onPlace(blockState, level, pos, state, p_60570_);
+
+        if (level.isClientSide){
+            Chalk.LOGGER.info(blockState);
+            Chalk.LOGGER.info(state);
         }
     }
 
@@ -153,14 +162,7 @@ public class ChalkMarkBlock extends Block {
 
         if (isGlowingItem(usedItem.getItem())) {
 
-            final int NOTIFY_NEIGHBORS = 1 << 0;
-            final int BLOCK_UPDATE = 1 << 1;
-            final int RERENDER_MAIN_THREAD = 1 << 3;
-
-//            if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER)) {
-
-            if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), NOTIFY_NEIGHBORS | BLOCK_UPDATE | RERENDER_MAIN_THREAD)) {
-
+            if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
                 if (!player.isCreative()) {
                     int itemsCount = usedItem.getCount();
                     if (itemsCount-- <= 0)
@@ -180,13 +182,13 @@ public class ChalkMarkBlock extends Block {
         return InteractionResult.PASS;
     }
 
-    private boolean isGlowingItem(Item item){
+    private boolean isGlowingItem(Item item) {
         ResourceLocation itemRegistryName = item.getRegistryName();
 
         if (itemRegistryName == null)
             return false;
 
-        for (String itemName : CommonConfig.GLOWING_ITEMS.get()){
+        for (String itemName : CommonConfig.GLOWING_ITEMS.get()) {
             if (itemRegistryName.toString().equals(itemName))
                 return true;
         }
@@ -230,12 +232,11 @@ public class ChalkMarkBlock extends Block {
     @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState blockState, Level world, BlockPos blockPos, Random random) {
-        if (blockState.getValue(GLOWING) == false)
-            return;
-
-        if (random.nextInt(90) == 0) {
-            ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
-                    0.33f), new Vector3f(0f, 0.015f, 0f), 1);
+        if (blockState.getValue(GLOWING)) {
+            if (random.nextInt(90) == 0) {
+                ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
+                        0.33f), new Vector3f(0f, 0.015f, 0f), 1);
+            }
         }
     }
 
@@ -270,8 +271,6 @@ public class ChalkMarkBlock extends Block {
     public PushReaction getPistonPushReaction(BlockState p_149656_1_) {
         return PushReaction.DESTROY;
     }
-
-
 
     @Override
     public boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockItemUseContext) {
