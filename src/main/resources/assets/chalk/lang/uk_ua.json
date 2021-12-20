@@ -1,0 +1,19 @@
+{
+  "item.chalk.black_chalk": "Чорна Крейда",
+  "item.chalk.red_chalk": "Червона Крейда",
+  "item.chalk.green_chalk": "Зелена Крейда",
+  "item.chalk.brown_chalk": "Коричнева Крейда",
+  "item.chalk.blue_chalk": "Синя Крейда",
+  "item.chalk.purple_chalk": "Фіолетова Крейда",
+  "item.chalk.cyan_chalk": "Бірюзова Крейда",
+  "item.chalk.light_gray_chalk": "Світло-сіра Крейда",
+  "item.chalk.gray_chalk": "Сіра Крейда",
+  "item.chalk.pink_chalk": "Рожева Крейда",
+  "item.chalk.lime_chalk": "Лаймова Крейда",
+  "item.chalk.yellow_chalk": "Жовта Крейда",
+  "item.chalk.light_blue_chalk": "Світло-синя Крейда",
+  "item.chalk.magenta_chalk": "Пурпурна Крейда",
+  "item.chalk.orange_chalk": "Оранжева Крейда",
+  "item.chalk.white_chalk": "Біла Крейда",
+  "block.chalk.chalk_mark_block": "Малюнок крейдою"
+}

@@ -1,11 +1,13 @@
 ### 1.0.1 - 2021-12-20
 
 - Improved mark drawing:
-  - If clicked on a usable block (such as barrel or dispenser) block will activate instead of drawing a mark.
-  - Shift can be held to draw on usable blocks, but only cross-mark can be drawn this way.
-  - New mark will not be drawn if it would be same as the old one (to save durability).
+  - If clicked on a usable block (such as barrel or dispenser) block will activate instead of drawing a mark
+  - Shift can be held to draw on usable blocks, but only cross-mark can be drawn this way
+  - New mark will not be drawn if it would be same as the old one (to save durability)
 
-- Restored middle-click on a mark switching to appropriate colored chalk in survival.
+- Restored middle-click on a mark switching to appropriate colored chalk in survival
+
+- Added Russian and Ukrainian translations
 
 ### 1.18 - 1.0.0 - 2021-12-01
 
