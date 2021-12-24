@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -34,9 +33,11 @@ import static net.minecraftforge.client.model.SimpleModelState.IDENTITY;
  */
 public class ChalkMarkBakedModel implements BakedModel {
 
-    private enum TextureType{
+    private enum MarkType {
         CENTER, ARROW, CROSS
     }
+
+//    public static Map<>
 
     public static ModelProperty<Integer> ORIENTATION = new ModelProperty<>();
     public static ModelProperty<Direction> FACING = new ModelProperty<>();
@@ -159,7 +160,6 @@ public class ChalkMarkBakedModel implements BakedModel {
     private BakedQuad getBakedQuad(Direction facing, MarkSymbol symbol, int orientation, Vector3f from, Vector3f to, int uvRotation) {
 
         TextureAtlasSprite texture = getTextureForMark(symbol, orientation);
-
 
         // Direction, TintIndex, TextureName(from json), UVs
         // Tint index is set to 0 (-1 is off) to color the marks with ChalkMarkBlockColor

@@ -2,18 +2,22 @@ buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://maven.parchmentmc.org' }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
+
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0.1'
+version = '1.1.0'
 group = 'io.github.mortuusars'
 archivesBaseName = 'chalk-1.18.1'
 
@@ -21,7 +25,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'official', version: '1.18.1'
+//    mappings channel: 'official', version: '1.18.1'
+    mappings channel: 'parchment', version: '2021.12.19-1.18.1'
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -111,19 +116,15 @@ repositories {
 //        name = "ModMaven"
 //        url = "https://modmaven.k-4u.nl"
 //    }
-//    maven { // TOP
-//        name 'tterrag maven'
-//        url "https://maven.tterrag.com/"
-//    }
 }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.18.1-39.0.6'
 
-//    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121:api")
-//    runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.1.121")
-//
-//    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.1.4-22")
+//    compileOnly fg.deobf("mezz.jei:jei-${jei_version}-api")
+//    implementation fg.deobf("mezz.jei:jei-${jei_version}")
+
+//    implementation fg.deobf("curse.maven:the-one-probe-2452211:3550084")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

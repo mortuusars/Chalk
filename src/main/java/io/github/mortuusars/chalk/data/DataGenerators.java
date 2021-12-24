@@ -9,19 +9,25 @@ import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @Mod.EventBusSubscriber(modid = Chalk.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DataGenerators {
-    private DataGenerators() {}
+    private DataGenerators() {
+    }
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent gatherDataEvent){
+    public static void gatherData(GatherDataEvent gatherDataEvent) {
         DataGenerator dataGenerator = gatherDataEvent.getGenerator();
         ExistingFileHelper existingFileHelper = gatherDataEvent.getExistingFileHelper();
 
-        dataGenerator.addProvider(new ModRecipeProvider(dataGenerator));
-        dataGenerator.addProvider(new ModLootTableProvider(dataGenerator));
+        if (gatherDataEvent.includeServer()) {
+            dataGenerator.addProvider(new ModRecipeProvider(dataGenerator));
+//            this is not needed yet          dataGenerator.addProvider(new ModLootTableProvider(dataGenerator));
 
-        dataGenerator.addProvider(new ModItemTagsProvider(dataGenerator, new ModBlockTagsProvider(dataGenerator, existingFileHelper), existingFileHelper));
 
-        dataGenerator.addProvider(new BlockStateGenerator(dataGenerator, existingFileHelper));
-        dataGenerator.addProvider(new ItemModelGenerator(dataGenerator, existingFileHelper));
+            dataGenerator.addProvider(new ModItemTagsProvider(dataGenerator, new ModBlockTagsProvider(dataGenerator, existingFileHelper), existingFileHelper));
+        }
+
+        if (gatherDataEvent.includeClient()) {
+            dataGenerator.addProvider(new BlockStateGenerator(dataGenerator, existingFileHelper));
+            dataGenerator.addProvider(new ItemModelGenerator(dataGenerator, existingFileHelper));
+        }
     }
 }

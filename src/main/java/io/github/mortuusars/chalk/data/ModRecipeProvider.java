@@ -11,6 +11,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider {
@@ -23,10 +24,10 @@ public class ModRecipeProvider extends RecipeProvider {
             DyeColor color = DyeColor.byName(name.replace("chalk:", "").replace("_chalk", ""), DyeColor.WHITE);
 
             ShapelessRecipeBuilder.shapeless(item.get(), 1)
-                    .unlockedBy("has_clay_ball", has(Items.CLAY_BALL))
+                    .unlockedBy("has_calcite", has(Items.CALCITE))
                     .group("chalk:chalk")
-                    .requires(Items.CLAY_BALL)
-                    .requires(ForgeRegistries.ITEMS.getValue(new ResourceLocation(color + "_dye")).asItem())
+                    .requires(Items.CALCITE)
+                    .requires(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(new ResourceLocation(color + "_dye"))).asItem())
                     .save(recipeBuilder, Chalk.MOD_ID + ":chalk_from_" + color + "_dye");
         });
     }

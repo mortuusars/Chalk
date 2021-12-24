@@ -6,22 +6,22 @@
       "entries": [
         {
           "type": "item",
-          "weight": 5,
+          "weight": 10,
           "name": "chalk:white_chalk"
         },
         {
           "type": "item",
-          "weight": 5,
-          "name": "chalk:gray_chalk"
+          "weight": 8,
+          "name": "chalk:light_gray_chalk"
         },
         {
           "type": "item",
-          "weight": 5,
+          "weight": 4,
           "name": "chalk:black_chalk"
         },
         {
           "type": "empty",
-          "weight": 10
+          "weight": 15
         }
       ]
     }

@@ -11,17 +11,17 @@
         },
         {
           "type": "item",
-          "weight": 5,
+          "weight": 4,
           "name": "chalk:light_gray_chalk"
         },
         {
           "type": "item",
-          "weight": 5,
+          "weight": 3,
           "name": "chalk:gray_chalk"
         },
         {
           "type": "item",
-          "weight": 5,
+          "weight": 2,
           "name": "chalk:black_chalk"
         },
         {
@@ -41,7 +41,7 @@
         },
         {
           "type": "empty",
-          "weight": 10
+          "weight": 15
         }
       ]
     }

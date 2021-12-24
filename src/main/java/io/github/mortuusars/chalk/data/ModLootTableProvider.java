@@ -10,11 +10,13 @@ import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTables;
 import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -34,10 +36,16 @@ public class ModLootTableProvider extends LootTableProvider {
         );
     }
 
-    @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationContext) {
-        super.validate(map, validationContext);
-    }
+//    @Override
+//    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationContext) {
+//
+////        validationContext.
+////
+//        map.forEach((resourceLocation, lootTable) -> {
+//            LootTables.validate(validationContext, resourceLocation, lootTable);
+//        });
+//        super.validate(map, validationContext);
+//    }
 
     public static class ModBlockLootTables extends BlockLoot {
 
@@ -51,7 +59,15 @@ public class ModLootTableProvider extends LootTableProvider {
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
-            return Registry.BLOCKS.getEntries().stream().map(RegistryObject::get).collect(Collectors.toList());
+
+            ArrayList<Block> modBlocks = new ArrayList<Block>();
+
+            for (RegistryObject<Block> registryBlock : Registry.BLOCKS.getEntries()) {
+                modBlocks.add(registryBlock.get());
+            }
+
+            return modBlocks;
+//            return Registry.BLOCKS.getEntries().stream().map(RegistryObject::get).collect(Collectors.toList());
         }
     }
 }

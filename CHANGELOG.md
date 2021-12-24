@@ -1,3 +1,8 @@
+### 1.1.0 - 2021-12-24
+
+- Slightly reduced chance of Chalks appearing in loot chests
+- 
+
 ### 1.0.1 - 2021-12-20
 
 - Improved mark drawing:
