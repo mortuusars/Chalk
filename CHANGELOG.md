@@ -1,7 +1,10 @@
 ### 1.1.0 - 2021-12-24
 
+- Changed recipes of Chalks to Calcite and Dye, instead of Clay
 - Slightly reduced chance of Chalks appearing in loot chests
-- 
+
+
+- Added Catalan translation - provided by VerdaPegasus
 
 ### 1.0.1 - 2021-12-20
 
