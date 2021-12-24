@@ -1,0 +1,19 @@
+{
+  "item.chalk.black_chalk": "Guix Negre",
+  "item.chalk.red_chalk": "Guix Vermell",
+  "item.chalk.green_chalk": "Guix Verd",
+  "item.chalk.brown_chalk": "Guix Marró",
+  "item.chalk.blue_chalk": "Guix Blau",
+  "item.chalk.purple_chalk": "Guix Lila",
+  "item.chalk.cyan_chalk": "Guix Cyan",
+  "item.chalk.light_gray_chalk": "Guix Gris Clar",
+  "item.chalk.gray_chalk": "Guix Gris",
+  "item.chalk.pink_chalk": "Gruix Rosa",
+  "item.chalk.lime_chalk": "Guix Llima",
+  "item.chalk.yellow_chalk": "Guix Groc",
+  "item.chalk.light_blue_chalk": "Gruix Blau Cel",
+  "item.chalk.magenta_chalk": "Guix Magenta",
+  "item.chalk.orange_chalk": "Guix Taronja",
+  "item.chalk.white_chalk": "Guix Blanc",
+  "block.chalk.chalk_mark_block": "Marca de Guix"
+}
