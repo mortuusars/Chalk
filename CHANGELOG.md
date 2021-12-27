@@ -1,5 +1,6 @@
 ### 1.1.1 - 2021-12-27
 
+- Added ability to draw glowing marks by holding glowing item in offhand (suggestion by welpstudent)
 - Added Simplified Chinese translation - provided by Lyaiya
 
 ---

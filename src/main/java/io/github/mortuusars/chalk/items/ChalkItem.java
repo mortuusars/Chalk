@@ -6,6 +6,7 @@ import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
+import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
@@ -88,6 +89,9 @@ public class ChalkItem extends Item {
         final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
         BlockState newMarkBlockState = getNewMarkBlockState(isSecondaryUseActive, context.getClickLocation(), clickedPos, newMarkFacing);
 
+//        if (hand == InteractionHand.MAIN_HAND && DrawingUtils.isGlowingItem(player.getOffhandItem().getItem()))
+//            newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
+
         final BlockState blockStateOnMarkPosition = level.getBlockState(newMarkPosition);
 
         if (!isDrawableThere(newMarkPosition, clickedBlockState, clickedPos, newMarkBlockState.getValue(ChalkMarkBlock.FACING), level))
@@ -148,13 +152,22 @@ public class ChalkItem extends Item {
     }
 
     private void drawMarkAndDamageItem(InteractionHand hand, ItemStack itemStack, Player player, Level level, Direction facing, BlockPos newMarkPosition, BlockState newMarkBlockState) {
+        boolean glowingItemInOffHand = false;
+        if (hand == InteractionHand.MAIN_HAND && DrawingUtils.isGlowingItem(player.getOffhandItem().getItem())){
+            newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
+            glowingItemInOffHand = true;
+        }
+
         if (level.isClientSide)
             spawnDustParticles(level, facing, newMarkPosition);
         else {
             level.setBlock(newMarkPosition, newMarkBlockState, Block.UPDATE_ALL_IMMEDIATE);
 
-            if (!player.isCreative())
+            if (!player.isCreative()){
                 damageItemStack(hand, itemStack, player, level, newMarkPosition);
+                if (glowingItemInOffHand)
+                    player.getOffhandItem().shrink(1);
+            }
 
             level.playSound(null, newMarkPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
                     SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);

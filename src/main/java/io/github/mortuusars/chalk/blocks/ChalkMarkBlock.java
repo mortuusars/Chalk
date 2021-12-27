@@ -5,6 +5,7 @@ import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModItems;
+import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
@@ -160,7 +161,7 @@ public class ChalkMarkBlock extends Block {
 
         ItemStack usedItem = player.getItemInHand(hand);
 
-        if (isGlowingItem(usedItem.getItem())) {
+        if (DrawingUtils.isGlowingItem(usedItem.getItem())) {
 
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
                 if (!player.isCreative()) {
@@ -180,20 +181,6 @@ public class ChalkMarkBlock extends Block {
         }
 
         return InteractionResult.PASS;
-    }
-
-    private boolean isGlowingItem(Item item) {
-        ResourceLocation itemRegistryName = item.getRegistryName();
-
-        if (itemRegistryName == null)
-            return false;
-
-        for (String itemName : CommonConfig.GLOWING_ITEMS.get()) {
-            if (itemRegistryName.toString().equals(itemName))
-                return true;
-        }
-
-        return false;
     }
 
     @Override
