@@ -1,3 +1,9 @@
+### 1.1.1 - 2021-12-27
+
+- Added Simplified Chinese translation - provided by Lyaiya
+
+---
+
 ### 1.1.0 - 2021-12-24
 
 - Changed recipes of Chalks to Calcite and Dye, instead of Clay
