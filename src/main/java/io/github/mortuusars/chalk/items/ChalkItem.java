@@ -84,19 +84,20 @@ public class ChalkItem extends Item {
         final BlockState clickedBlockState = level.getBlockState(clickedPos);
         final Direction clickedFace = context.getClickedFace();
 
-        final boolean isClickedOnAMark = isClickedBlockAMark(clickedPos, level);
+        final boolean isClickedOnAMark = level.getBlockState(clickedPos).getBlock() instanceof ChalkMarkBlock;
 
         BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
         final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
         BlockState newMarkBlockState = getNewMarkBlockState(isSecondaryUseActive, context.getClickLocation(), clickedPos, newMarkFacing);
 
-        final BlockState blockStateOnMarkPosition = level.getBlockState(newMarkPosition);
-
         if (!isDrawableThere(newMarkPosition, clickedBlockState, clickedPos, newMarkBlockState.getValue(ChalkMarkBlock.FACING), level))
             return InteractionResult.PASS;
 
-        if (blockStateOnMarkPosition.getBlock() instanceof ChalkMarkBlock) {
-            if (isNewMarkSameAsOld(blockStateOnMarkPosition, newMarkBlockState, isSecondaryUseActive))
+        // Cancel drawing if marks are same.
+        // Remove old mark if different.
+        final BlockState oldMarkBlockState = level.getBlockState(newMarkPosition);
+        if (oldMarkBlockState.getBlock() instanceof ChalkMarkBlock) {
+            if (oldMarkBlockState == newMarkBlockState)
                 return InteractionResult.FAIL;
 
             // Remove old mark. It would be replaced with new one.
@@ -105,11 +106,6 @@ public class ChalkItem extends Item {
 
         drawMarkAndDamageItem(hand, itemStack, player, level, newMarkFacing, newMarkPosition, newMarkBlockState);
         return InteractionResult.CONSUME;
-    }
-
-    private boolean isClickedBlockAMark(BlockPos clickedPos, Level level){
-        final Block clickedBlock = level.getBlockState(clickedPos).getBlock();
-        return clickedBlock instanceof ChalkMarkBlock;
     }
 
     private BlockState getNewMarkBlockState(boolean isSecondaryUseActive, Vec3 clickLocation, BlockPos clickedPos, Direction clickedFace) {
@@ -133,14 +129,6 @@ public class ChalkItem extends Item {
         return isFaceFull && (blockAtDrawingPos instanceof AirBlock || blockAtDrawingPos instanceof ChalkMarkBlock);
     }
 
-    private boolean isNewMarkSameAsOld(BlockState oldMark, BlockState newMark, boolean isSecondaryUseActive){
-        final boolean sameFacing = newMark.getValue(ChalkMarkBlock.FACING) == oldMark.getValue(ChalkMarkBlock.FACING);
-        final boolean sameOrientation = newMark.getValue(ChalkMarkBlock.ORIENTATION).equals(oldMark.getValue(ChalkMarkBlock.ORIENTATION));
-        final boolean isBothCross = isSecondaryUseActive && oldMark.getValue(ChalkMarkBlock.SYMBOL) == MarkSymbol.CROSS;
-
-        return (sameFacing && sameOrientation) || (sameFacing && isBothCross);
-    }
-
     private void damageItemStack(InteractionHand hand, ItemStack itemStack, Player player, Level level, BlockPos markPosition) {
         itemStack.setDamageValue(itemStack.getDamageValue() + 1);
         if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
@@ -157,7 +145,7 @@ public class ChalkItem extends Item {
         }
 
         if (level.isClientSide)
-            spawnDustParticles(level, facing, newMarkPosition);
+            ParticleUtils.spawnColorDustParticles(_color, level, newMarkPosition, facing);
         else {
             level.setBlock(newMarkPosition, newMarkBlockState, Block.UPDATE_ALL_IMMEDIATE);
 
@@ -170,10 +158,6 @@ public class ChalkItem extends Item {
             level.playSound(null, newMarkPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
                     SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);
         }
-    }
-
-    private void spawnDustParticles(Level level, Direction clickedFace, BlockPos markPosition) {
-        ParticleUtils.spawnColorDustParticles(_color, level, markPosition, clickedFace);
     }
 
     @Override
