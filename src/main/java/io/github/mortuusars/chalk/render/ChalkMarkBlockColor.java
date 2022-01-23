@@ -3,6 +3,7 @@ package io.github.mortuusars.chalk.render;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -14,6 +15,7 @@ public class ChalkMarkBlockColor implements BlockColor {
         if ( !(blockState.getBlock() instanceof ChalkMarkBlock) )
             return 0xffffff;
 
-        return ((ChalkMarkBlock)blockState.getBlock()).getColor().getTextColor();
+        DyeColor blockColor = ((ChalkMarkBlock) blockState.getBlock()).getColor();
+        return ChalkColors.fromDyeColor(blockColor);
     }
 }

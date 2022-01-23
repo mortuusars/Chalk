@@ -189,25 +189,16 @@ public class ChalkMarkBlock extends Block {
     }
 
     private boolean removeMark(Level world, BlockPos pos, boolean isMoving) {
-
-        Direction facing = world.getBlockState(pos).getValue(FACING);
+        Direction facing = world.getBlockState(pos).getValue(FACING); // Get facing before removing the block.
 
         if (world.removeBlock(pos, isMoving)) {
             if (!world.isClientSide())
                 world.playSound(null, pos, SoundEvents.WART_BLOCK_HIT, SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
             else {
-                int colorValue = _color.getTextColor();
-
-                float R = (colorValue & 0x00FF0000) >> 16;
-                float G = (colorValue & 0x0000FF00) >> 8;
-                float B = (colorValue & 0x000000FF);
-
-                ParticleUtils.spawnParticle(world, new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
-                        PositionUtils.blockCenterOffsetToFace(pos, facing, 0.25f), 1);
+                ParticleUtils.spawnColorDustParticles(_color, world, pos, facing);
             }
             return true;
         }
-
         return false;
     }
 

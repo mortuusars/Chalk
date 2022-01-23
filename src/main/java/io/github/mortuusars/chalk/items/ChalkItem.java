@@ -4,6 +4,7 @@ import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.DrawingUtils;
@@ -89,9 +90,6 @@ public class ChalkItem extends Item {
         final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
         BlockState newMarkBlockState = getNewMarkBlockState(isSecondaryUseActive, context.getClickLocation(), clickedPos, newMarkFacing);
 
-//        if (hand == InteractionHand.MAIN_HAND && DrawingUtils.isGlowingItem(player.getOffhandItem().getItem()))
-//            newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
-
         final BlockState blockStateOnMarkPosition = level.getBlockState(newMarkPosition);
 
         if (!isDrawableThere(newMarkPosition, clickedBlockState, clickedPos, newMarkBlockState.getValue(ChalkMarkBlock.FACING), level))
@@ -174,15 +172,8 @@ public class ChalkItem extends Item {
         }
     }
 
-    private void spawnDustParticles(Level world, Direction clickedFace, BlockPos markPosition) {
-        int colorValue = _color.getTextColor();
-
-        float R = (colorValue & 0x00FF0000) >> 16;
-        float G = (colorValue & 0x0000FF00) >> 8;
-        float B = (colorValue & 0x000000FF);
-
-        ParticleUtils.spawnParticle(world, new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 1.8f),
-                PositionUtils.blockCenterOffsetToFace(markPosition, clickedFace, 0.25f), 1);
+    private void spawnDustParticles(Level level, Direction clickedFace, BlockPos markPosition) {
+        ParticleUtils.spawnColorDustParticles(_color, level, markPosition, clickedFace);
     }
 
     @Override
