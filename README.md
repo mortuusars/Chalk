@@ -10,7 +10,7 @@ Forge 1.16.5 mod for Minecraft.
 
 [Changelog](CHANGELOG.md)
   
-Never lose you way again.
+Never lose your way again.
 
 https://www.curseforge.com/minecraft/mc-mods/chalk
   
