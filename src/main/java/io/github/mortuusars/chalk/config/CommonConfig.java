@@ -11,6 +11,7 @@ public class CommonConfig {
     public static final ForgeConfigSpec SPEC;
 
     public static final ForgeConfigSpec.IntValue CHALK_DURABILITY;
+    public static final ForgeConfigSpec.IntValue GLOWING_CHALK_MARK_LIGHT_LEVEL;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> GLOWING_ITEMS;
     public static final ForgeConfigSpec.BooleanValue GENERATE_IN_CHESTS;
 
@@ -20,8 +21,11 @@ public class CommonConfig {
         CHALK_DURABILITY = BUILDER.comment("How many marks you can draw with a single chalk. Default: 64")
                                   .defineInRange("ChalkUses", 64, 0, Integer.MAX_VALUE);
 
+        GLOWING_CHALK_MARK_LIGHT_LEVEL = BUILDER.comment("How many light glowing mark produces. Default: 5")
+                .defineInRange("GlowingMarkLightLevel", 5, 0, 14);
+
         GLOWING_ITEMS = BUILDER.comment("List of items that can make mark glow. \"modid:itemRegistryName\"\nDefault values: " + GLOWING_ITEMS_DEFAULT)
-                               .define("GlowItems", GLOWING_ITEMS_DEFAULT, cfgList -> validateGlowItems(cfgList));
+                               .define("GlowItems", GLOWING_ITEMS_DEFAULT, CommonConfig::validateGlowItems);
 
         GENERATE_IN_CHESTS = BUILDER.comment("If enabled, Chalks will generate in Dungeons, Abandoned Mineshafts, Planes and Savanna villages, Cartographer houses\nDefault: true")
                                     .define("ShouldGenerateInChests", true);
@@ -30,14 +34,14 @@ public class CommonConfig {
     }
 
     private static boolean validateGlowItems(Object list){
-        if (list == null)
+        if (!(list instanceof List))
             return false;
 
-        boolean isItemsValid = ((List<String>)list).size() > 0;
-
-        if (!isItemsValid)
+        if (((List<String>)list).size() == 0){
             Chalk.LOGGER.error("GlowItems must have at least 1 item. Default values will be used.");
+            return false;
+        }
 
-        return isItemsValid;
+        return  true;
     }
 }

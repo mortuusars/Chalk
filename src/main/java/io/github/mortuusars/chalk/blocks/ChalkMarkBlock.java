@@ -10,9 +10,7 @@ import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +23,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CommandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
@@ -34,10 +33,10 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfig;
 
 import java.util.Map;
 import java.util.Random;
@@ -51,6 +50,8 @@ public class ChalkMarkBlock extends Block {
     public static final IntegerProperty ORIENTATION = IntegerProperty.create("orientation", 0, 8);
     public static final BooleanProperty GLOWING = BooleanProperty.create("is_glowing");
     public static final EnumProperty<MarkSymbol> SYMBOL = EnumProperty.create("symbol", MarkSymbol.class);
+
+    public static int GlowingLightLevel = -1; // This is later updated from config.
 
     private final DyeColor _color;
 
@@ -84,7 +85,6 @@ public class ChalkMarkBlock extends Block {
             case SOUTH -> SOUTH_AABB;
             case WEST -> WEST_AABB;
             case EAST -> EAST_AABB;
-            default -> Shapes.block();
         };
     }
 
@@ -97,7 +97,6 @@ public class ChalkMarkBlock extends Block {
     public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState blockState) {
         return new ItemStack(ModItems.getChalkByColor(this._color));
     }
-
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
@@ -121,13 +120,6 @@ public class ChalkMarkBlock extends Block {
     public DyeColor getColor() {
         return _color;
     }
-
-//    @Override
-//    protected ImmutableMap<BlockState, VoxelShape> getShapeForEachState(Function<BlockState, VoxelShape> p_152459_) {
-//        return super.getShapeForEachState(p_152459_);
-//    }
-
-
 
     @Override
     public VoxelShape getVisualShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
@@ -220,10 +212,9 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        if (state.getValue(GLOWING))
-            return 5;
-        else
-            return 0;
+        if (GlowingLightLevel == -1) // I need to do this terribleness to get ACTUAL value from config. In constructor it is still not loaded.
+            GlowingLightLevel = CommonConfig.GLOWING_CHALK_MARK_LIGHT_LEVEL.get();
+        return state.getValue(GLOWING) ? GlowingLightLevel : 0;
     }
 
     @Override
