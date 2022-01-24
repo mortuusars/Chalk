@@ -1,3 +1,12 @@
+### 1.2.0 - 2022-01-24
+
+- Added glowing chalks. Draws glowing marks. Temporary until I find a better solution.
+- Added config option for the glowing mark light level.
+
+- Moved chalks to the Tools creative tab.
+- Tweaked chalk mark colors.
+- Fixed small mark redrawing bug.
+
 ### 1.1.1 - 2021-12-27
 
 - Added ability to draw glowing marks by holding glowing item in offhand (suggestion by welpstudent)
