@@ -18,7 +18,11 @@ public class ItemModelGenerator extends ItemModelProvider {
         ModelFile itemGenerated = getExistingFile(mcLoc("item/generated"));
 
         ModItems.CHALKS.forEach( (name, item) -> {
-            getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + name);
+            getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + item.get().getColor() + "_chalk");
+        });
+
+        ModItems.GLOWING_CHALKS.forEach( (name, item) -> {
+            getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + item.get().getColor() + "_chalk");
         });
     }
 }

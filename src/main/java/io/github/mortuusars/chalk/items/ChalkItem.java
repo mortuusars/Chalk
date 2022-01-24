@@ -13,39 +13,59 @@ import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Random;
 
 public class ChalkItem extends Item {
 
+    private boolean _glowing;
     private final DyeColor _color;
 
-    public ChalkItem(DyeColor dyeColor, Properties properties) {
+    public ChalkItem(DyeColor dyeColor, boolean isGlowing, Properties properties) {
         super(properties
                 .tab(CreativeModeTab.TAB_TOOLS)
                 .stacksTo(1)
                 .defaultDurability(64)
                 .setNoRepair());
 
+//        if (isGlowing)
+
         _color = dyeColor;
+        _glowing = isGlowing;
+    }
+
+
+//    @Override
+//    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+//
+//        pTooltipComponents.add(new StringText)
+//
+//    }
+
+
+    @Override
+    public boolean isFoil(ItemStack pStack) {
+        return _glowing;
     }
 
     @Override
@@ -139,7 +159,10 @@ public class ChalkItem extends Item {
 
     private void drawMarkAndDamageItem(InteractionHand hand, ItemStack itemStack, Player player, Level level, Direction facing, BlockPos newMarkPosition, BlockState newMarkBlockState) {
         boolean glowingItemInOffHand = false;
-        if (hand == InteractionHand.MAIN_HAND && DrawingUtils.isGlowingItem(player.getOffhandItem().getItem())){
+
+        if (_glowing)
+            newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
+        else if (hand == InteractionHand.MAIN_HAND && DrawingUtils.isGlowingItem(player.getOffhandItem().getItem())){
             newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
             glowingItemInOffHand = true;
         }
@@ -158,11 +181,6 @@ public class ChalkItem extends Item {
             level.playSound(null, newMarkPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
                     SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);
         }
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return 0;
     }
 
     @Override

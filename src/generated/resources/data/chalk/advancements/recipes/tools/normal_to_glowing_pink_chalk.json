@@ -1,0 +1,45 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "chalk:normal_to_glowing_pink_chalk"
+    ]
+  },
+  "criteria": {
+    "has_chalk": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:chalk"
+          }
+        ]
+      }
+    },
+    "has_glowing_ink": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:glow_ink_sac"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "chalk:normal_to_glowing_pink_chalk"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_chalk",
+      "has_glowing_ink",
+      "has_the_recipe"
+    ]
+  ]
+}

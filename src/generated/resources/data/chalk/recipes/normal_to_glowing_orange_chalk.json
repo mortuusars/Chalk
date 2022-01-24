@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "chalk:glowing_chalk",
+  "ingredients": [
+    {
+      "item": "minecraft:glow_ink_sac"
+    },
+    {
+      "item": "chalk:orange_chalk"
+    }
+  ],
+  "result": {
+    "item": "chalk:glowing_orange_chalk"
+  }
+}
