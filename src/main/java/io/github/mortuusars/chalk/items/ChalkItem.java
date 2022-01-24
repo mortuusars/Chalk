@@ -40,7 +40,7 @@ public class ChalkItem extends Item {
 
     public ChalkItem(DyeColor dyeColor, Properties properties) {
         super(properties
-                .tab(CreativeModeTab.TAB_DECORATIONS)
+                .tab(CreativeModeTab.TAB_TOOLS)
                 .stacksTo(1)
                 .defaultDurability(64)
                 .setNoRepair());
