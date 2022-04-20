@@ -15,5 +15,22 @@
   "item.chalk.magenta_chalk": "赤紫色のチョーク",
   "item.chalk.orange_chalk": "橙色のチョーク",
   "item.chalk.white_chalk": "白色のチョーク",
+  "item.chalk.glowing_black_chalk": "輝く黒色のチョーク",
+  "item.chalk.glowing_red_chalk": "輝く赤色のチョーク",
+  "item.chalk.glowing_green_chalk": "輝く緑色のチョーク",
+  "item.chalk.glowing_brown_chalk": "輝く茶色のチョーク",
+  "item.chalk.glowing_blue_chalk": "輝く青色のチョーク",
+  "item.chalk.glowing_purple_chalk": "輝く紫色のチョーク",
+  "item.chalk.glowing_cyan_chalk": "輝く青緑色のチョーク",
+  "item.chalk.glowing_light_gray_chalk": "輝く薄灰色のチョーク",
+  "item.chalk.glowing_gray_chalk": "輝く灰色のチョーク",
+  "item.chalk.glowing_pink_chalk": "輝く桃色のチョーク",
+  "item.chalk.glowing_lime_chalk": "輝く黄緑色のチョーク",
+  "item.chalk.glowing_yellow_chalk": "輝く黄色のチョーク",
+  "item.chalk.glowing_light_blue_chalk": "輝く空色のチョーク",
+  "item.chalk.glowing_magenta_chalk": "輝く赤紫色のチョーク",
+  "item.chalk.glowing_orange_chalk": "輝く橙色のチョーク",
+  "item.chalk.glowing_white_chalk": "輝く白色のチョーク",
   "block.chalk.chalk_mark_block": "チョークの印"
 }
+
