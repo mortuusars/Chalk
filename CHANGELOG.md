@@ -1,3 +1,6 @@
+### 1.2.2 - 2022-04-20
+- Changed GlowItems config entry to allow no items to be defined. 
+
 ### 1.2.0 - 2022-01-24
 
 - Added glowing chalks. Draws glowing marks. Temporary until I find a better solution.

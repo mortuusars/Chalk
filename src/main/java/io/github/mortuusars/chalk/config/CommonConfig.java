@@ -24,7 +24,8 @@ public class CommonConfig {
         GLOWING_CHALK_MARK_LIGHT_LEVEL = BUILDER.comment("How many light glowing mark produces. Default: 5")
                 .defineInRange("GlowingMarkLightLevel", 5, 0, 14);
 
-        GLOWING_ITEMS = BUILDER.comment("List of items that can make mark glow. \"modid:itemRegistryName\"\nDefault values: " + GLOWING_ITEMS_DEFAULT)
+        GLOWING_ITEMS = BUILDER.comment("List of items that can make mark glow. \"modid:itemRegistryName\"\n" +
+                        "If no items are defined - you will not be able to make marks glow.\nDefault values: " + GLOWING_ITEMS_DEFAULT)
                                .define("GlowItems", GLOWING_ITEMS_DEFAULT, CommonConfig::validateGlowItems);
 
         GENERATE_IN_CHESTS = BUILDER.comment("If enabled, Chalks will generate in Dungeons, Abandoned Mineshafts, Planes and Savanna villages, Cartographer houses\nDefault: true")
@@ -34,14 +35,11 @@ public class CommonConfig {
     }
 
     private static boolean validateGlowItems(Object list){
-        if (!(list instanceof List))
-            return false;
+        return list instanceof List;
 
-        if (((List<String>)list).size() == 0){
-            Chalk.LOGGER.error("GlowItems must have at least 1 item. Default values will be used.");
-            return false;
-        }
-
-        return  true;
+//        if (((List<String>)list).size() == 0){
+//            Chalk.LOGGER.error("GlowItems must have at least 1 item. Default values will be used.");
+//            return false;
+//        }
     }
 }
