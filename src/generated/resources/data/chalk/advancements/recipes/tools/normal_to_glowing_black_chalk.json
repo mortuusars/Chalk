@@ -6,12 +6,14 @@
     ]
   },
   "criteria": {
-    "has_chalk": {
+    "has_calcite": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:chalk"
+            "items": [
+              "minecraft:calcite"
+            ]
           }
         ]
       }
@@ -37,7 +39,7 @@
   },
   "requirements": [
     [
-      "has_chalk",
+      "has_calcite",
       "has_glowing_ink",
       "has_the_recipe"
     ]

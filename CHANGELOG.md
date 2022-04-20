@@ -1,5 +1,6 @@
-### 1.2.2 - 2022-04-20
+### 1.2.1 - 2022-04-20
 - Changed GlowItems config entry to allow no items to be defined. 
+- Updated localization files.
 
 ### 1.2.0 - 2022-01-24
 
