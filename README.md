@@ -1,6 +1,6 @@
 <div align=center
 
-Forge 1.16.5 mod for Minecraft.
+Forge mod for Minecraft.
 
 </div>
 
