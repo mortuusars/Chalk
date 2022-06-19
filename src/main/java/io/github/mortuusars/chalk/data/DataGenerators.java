@@ -19,9 +19,6 @@ public class DataGenerators {
 
         if (gatherDataEvent.includeServer()) {
             dataGenerator.addProvider(new ModRecipeProvider(dataGenerator));
-//            this is not needed yet          dataGenerator.addProvider(new ModLootTableProvider(dataGenerator));
-
-
             dataGenerator.addProvider(new ModItemTagsProvider(dataGenerator, new ModBlockTagsProvider(dataGenerator, existingFileHelper), existingFileHelper));
         }
 

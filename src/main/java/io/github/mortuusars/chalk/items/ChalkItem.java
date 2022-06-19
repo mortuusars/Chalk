@@ -38,7 +38,7 @@ import java.util.Random;
 
 public class ChalkItem extends Item {
 
-    private boolean _glowing;
+    private final boolean _glowing;
     private final DyeColor _color;
 
     public ChalkItem(DyeColor dyeColor, boolean isGlowing, Properties properties) {
@@ -48,20 +48,9 @@ public class ChalkItem extends Item {
                 .defaultDurability(64)
                 .setNoRepair());
 
-//        if (isGlowing)
-
         _color = dyeColor;
         _glowing = isGlowing;
     }
-
-
-//    @Override
-//    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-//
-//        pTooltipComponents.add(new StringText)
-//
-//    }
-
 
     @Override
     public boolean isFoil(ItemStack pStack) {
