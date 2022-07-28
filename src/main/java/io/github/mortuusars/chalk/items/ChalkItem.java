@@ -1,21 +1,14 @@
 package io.github.mortuusars.chalk.items;
 
-import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
-import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
-import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
-import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -28,34 +21,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Random;
 
 public class ChalkItem extends Item {
 
-    private final boolean _glowing;
-    private final DyeColor _color;
+    private final DyeColor color;
 
-    public ChalkItem(DyeColor dyeColor, boolean isGlowing, Properties properties) {
+    public ChalkItem(DyeColor dyeColor, Properties properties) {
         super(properties
                 .tab(CreativeModeTab.TAB_TOOLS)
                 .stacksTo(1)
                 .defaultDurability(64)
                 .setNoRepair());
 
-        _color = dyeColor;
-        _glowing = isGlowing;
-    }
-
-    @Override
-    public boolean isFoil(ItemStack pStack) {
-        return _glowing;
+        color = dyeColor;
     }
 
     @Override
@@ -64,7 +46,7 @@ public class ChalkItem extends Item {
     }
 
     public DyeColor getColor() {
-        return this._color;
+        return this.color;
     }
 
     @Override
@@ -119,7 +101,7 @@ public class ChalkItem extends Item {
     }
 
     private BlockState getNewMarkBlockState(boolean isSecondaryUseActive, Vec3 clickLocation, BlockPos clickedPos, Direction clickedFace) {
-        final BlockState defaultBlockState = ModBlocks.getMarkBlockByColor(_color).defaultBlockState().setValue(ChalkMarkBlock.FACING, clickedFace);
+        final BlockState defaultBlockState = ModBlocks.getMarkBlockByColor(color).defaultBlockState().setValue(ChalkMarkBlock.FACING, clickedFace);
 
         if (isSecondaryUseActive)
             return defaultBlockState.setValue(ChalkMarkBlock.SYMBOL, MarkSymbol.CROSS);
@@ -150,15 +132,13 @@ public class ChalkItem extends Item {
     private void drawMarkAndDamageItem(InteractionHand hand, ItemStack itemStack, Player player, Level level, Direction facing, BlockPos newMarkPosition, BlockState newMarkBlockState) {
         boolean glowingItemInOffHand = false;
 
-        if (_glowing)
-            newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
-        else if (hand == InteractionHand.MAIN_HAND && player.getOffhandItem().is(ModTags.Items.GLOWING)){
+        if (hand == InteractionHand.MAIN_HAND && player.getOffhandItem().is(ModTags.Items.GLOWING)){
             newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
             glowingItemInOffHand = true;
         }
 
         if (level.isClientSide)
-            ParticleUtils.spawnColorDustParticles(_color, level, newMarkPosition, facing);
+            ParticleUtils.spawnColorDustParticles(color, level, newMarkPosition, facing);
         else {
             level.setBlock(newMarkPosition, newMarkBlockState, Block.UPDATE_ALL_IMMEDIATE);
 

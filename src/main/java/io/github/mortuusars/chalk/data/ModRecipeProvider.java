@@ -33,16 +33,5 @@ public class ModRecipeProvider extends RecipeProvider {
                     .requires(Objects.requireNonNull(ForgeRegistries.ITEMS.getValue(new ResourceLocation(color + "_dye"))).asItem())
                     .save(recipeBuilder, Chalk.MOD_ID + ":chalk_from_" + color + "_dye");
         });
-
-        ModItems.GLOWING_CHALKS.forEach( (name, item) -> {
-            DyeColor color = item.get().getColor();
-            ShapelessRecipeBuilder.shapeless(item.get(), 1)
-                    .unlockedBy("has_calcite", has(Items.CALCITE))
-                    .unlockedBy("has_glowing_ink", has(Items.GLOW_INK_SAC))
-                    .group("chalk:glowing_chalk")
-                    .requires(Items.GLOW_INK_SAC)
-                    .requires(ModItems.getChalkByColor(color))
-                    .save(recipeBuilder, Chalk.MOD_ID + ":normal_to_glowing_" + color + "_chalk");
-        });
     }
 }
