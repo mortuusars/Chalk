@@ -24,12 +24,16 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         this.chalkBoxStack = chalkBoxStack;
         this.itemHandler = itemHandler;
 
-        addPlayerSlots(playerInventory);
+        // Order of slots is kinda important. QuickMoveStack depends on correct order.
 
         // Add chalk slots
         int index = 0;
         for (int row = 0; row < 2; row++) {
             for (int column = 0; column < 4; column++) {
+
+                if (index >= ChalkBox.GLOWING_ITEM_SLOT_ID)
+                    throw new IllegalStateException("Chalk slot ids should go before Glowing Item slot id and not exceed it.");
+
                 addSlot(new SlotItemHandler(itemHandler, index++, column * 18 + 53, row * 18 + 27));
             }
         }
@@ -37,6 +41,8 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         if (CommonConfig.CHALK_BOX_GLOWING.get()){
             addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWING_ITEM_SLOT_ID, 26, 36));
         }
+
+        addPlayerSlots(playerInventory);
     }
 
     public static ChalkBoxMenu fromBuffer(int containerID, Inventory playerInventory, FriendlyByteBuf dataBuffer) {
@@ -57,11 +63,11 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         if (slot.hasItem()) {
             ItemStack slotItemStack = slot.getItem();
             itemstack = slotItemStack.copy();
-            if (index < ChalkBox.SLOTS){
+            if (index < ChalkBox.SLOTS){ // From Chalk Box to player inventory.
                 if (!this.moveItemStackTo(slotItemStack, ChalkBox.SLOTS, this.slots.size(), true))
                     return ItemStack.EMPTY;
             }
-            else if (!this.moveItemStackTo(slotItemStack, 0, ChalkBox.SLOTS, false))
+            else if (!this.moveItemStackTo(slotItemStack, 0, ChalkBox.SLOTS, false)) // From player inventory to box.
                 return ItemStack.EMPTY;
 
 
@@ -80,10 +86,6 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     }
 
     private void addPlayerSlots(Inventory playerInventory) {
-        //Hotbar
-        for (int column = 0; column < 9; column++)
-            addSlot(new Slot(playerInventory, column, column * 18 + 8, 142));
-
         //Player Inventory
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
@@ -91,6 +93,11 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
                 addSlot(new Slot(playerInventory, index, column * 18 + 8, 84 + row * 18));
             }
         }
+
+        //Hotbar
+        for (int column = 0; column < 9; column++)
+            addSlot(new Slot(playerInventory, column, column * 18 + 8, 142));
+
     }
 
     @Override
