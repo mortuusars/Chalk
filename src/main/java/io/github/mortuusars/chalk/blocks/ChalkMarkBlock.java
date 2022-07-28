@@ -5,6 +5,7 @@ import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModItems;
+import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
@@ -153,7 +154,7 @@ public class ChalkMarkBlock extends Block {
 
         ItemStack usedItem = player.getItemInHand(hand);
 
-        if (DrawingUtils.isGlowingItem(usedItem.getItem())) {
+        if (usedItem.is(ModTags.Items.GLOWING)) {
 
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
                 if (!player.isCreative()) {

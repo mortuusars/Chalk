@@ -6,6 +6,7 @@ import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.setup.ModBlocks;
+import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
@@ -151,7 +152,7 @@ public class ChalkItem extends Item {
 
         if (_glowing)
             newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
-        else if (hand == InteractionHand.MAIN_HAND && DrawingUtils.isGlowingItem(player.getOffhandItem().getItem())){
+        else if (hand == InteractionHand.MAIN_HAND && player.getOffhandItem().is(ModTags.Items.GLOWING)){
             newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
             glowingItemInOffHand = true;
         }

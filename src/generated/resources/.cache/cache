@@ -17,6 +17,7 @@
 4fa2b76e97f5d44014865d3aefad3a1efa796833 assets/chalk/models/item/black_chalk.json
 435125dc7c908e51427ad1eddd36c4670dc026db assets/chalk/models/item/blue_chalk.json
 ad5207a7517d4c37912d1cf5ca3dc69b6781bd5a assets/chalk/models/item/brown_chalk.json
+eb9fea1f759e0de3d0740c4c0778ad1a280ac964 assets/chalk/models/item/chalk_box.json
 056e5f225d977079b41c0b5ab8a768facf0a3104 assets/chalk/models/item/cyan_chalk.json
 4fa2b76e97f5d44014865d3aefad3a1efa796833 assets/chalk/models/item/glowing_black_chalk.json
 435125dc7c908e51427ad1eddd36c4670dc026db assets/chalk/models/item/glowing_blue_chalk.json
@@ -110,7 +111,8 @@ baa57e217dcac4e9e45c2aad6c6e23bf5aa5e369 data/chalk/recipes/normal_to_glowing_ma
 068a384ca6cc7672317fafcbe5c8d77b4b5adae7 data/chalk/recipes/normal_to_glowing_red_chalk.json
 36767694c25bf26ff6cd602fe92995a15597fc8e data/chalk/recipes/normal_to_glowing_white_chalk.json
 d6abff90d7eacdd7e7a72e31e6111c42a4a2c885 data/chalk/recipes/normal_to_glowing_yellow_chalk.json
-b6f63254a8e5b196ff513ff559db34d8e8d52e9a data/forge/tags/items/chalk.json
+b6f63254a8e5b196ff513ff559db34d8e8d52e9a data/chalk/tags/items/chalk.json
+140624dc1649d37dcc5bd082a9caa5e94becb54e data/chalk/tags/items/glowing.json
 c734da82e827be306b700f078bf455e69fb04b01 data/forge/tags/items/dyes/black.json
 cbdce203a3eb9e39e2bcd48d67cd5d4cd1133edf data/forge/tags/items/dyes/blue.json
 c15776f6a52f1c6f96cd004c38016813c7a8f106 data/forge/tags/items/dyes/brown.json

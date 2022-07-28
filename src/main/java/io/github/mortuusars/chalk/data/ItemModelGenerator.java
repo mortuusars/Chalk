@@ -21,6 +21,8 @@ public class ItemModelGenerator extends ItemModelProvider {
             getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + item.get().getColor() + "_chalk");
         });
 
+        singleTexture("chalk_box", mcLoc("item/generated"), "layer0", modLoc("item/chalk_box"));
+
         ModItems.GLOWING_CHALKS.forEach( (name, item) -> {
             getBuilder(name).parent(itemGenerated).texture("layer0", "item/" + item.get().getColor() + "_chalk");
         });

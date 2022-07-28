@@ -1,6 +1,8 @@
 package io.github.mortuusars.chalk.setup;
 
+import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
@@ -10,6 +12,9 @@ import java.util.HashMap;
 public class ModItems {
     public static HashMap<String, RegistryObject<ChalkItem>> CHALKS = new HashMap<String, RegistryObject<ChalkItem>>();
     public static HashMap<String, RegistryObject<ChalkItem>> GLOWING_CHALKS = new HashMap<String, RegistryObject<ChalkItem>>();
+
+    public static final RegistryObject<ChalkBoxItem> CHALK_BOX = Registry.ITEMS.register("chalk_box",
+            () -> new ChalkBoxItem(new Item.Properties().tab(CreativeModeTab.TAB_TOOLS).stacksTo(1)));
 
     public static RegistryObject<ChalkItem> BLACK_CHALK = registerColoredChalk(DyeColor.BLACK);
     public static RegistryObject<ChalkItem> RED_CHALK = registerColoredChalk(DyeColor.RED);

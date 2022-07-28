@@ -29,6 +29,7 @@ public class Chalk
         final ClientSetup clientSetup = new ClientSetup(modEventBus);
         Registry.register(modEventBus);
 
+        modEventBus.addListener(ClientSetup::onClientSetupEvent);
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> clientSetup::registerClientOnlyEvents);
         MinecraftForge.EVENT_BUS.addListener(LootTableModification::LootTablesLoad);
         MinecraftForge.EVENT_BUS.register(this);

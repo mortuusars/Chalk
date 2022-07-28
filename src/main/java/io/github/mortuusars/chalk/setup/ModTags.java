@@ -8,6 +8,7 @@ import net.minecraft.world.item.Item;
 
 public class ModTags {
     public static final class Items {
-        public static final TagKey<Item> CHALK = ItemTags.create(new ResourceLocation("forge:chalk"));
+        public static final TagKey<Item> CHALK = ItemTags.create(new ResourceLocation("chalk:chalk"));
+        public static final TagKey<Item> GLOWING = ItemTags.create(new ResourceLocation("chalk:glowing"));
     }
 }
