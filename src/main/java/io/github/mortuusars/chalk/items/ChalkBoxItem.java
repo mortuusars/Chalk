@@ -1,7 +1,6 @@
 package io.github.mortuusars.chalk.items;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.core.ChalkMark;
@@ -23,38 +22,29 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 public class ChalkBoxItem extends Item {
 
     public ChalkBoxItem(Properties properties) {
-        super(properties);
-    }
-
-
-    @SuppressWarnings("ConstantConditions")
-    public float getSelectedChalkColor(ItemStack stack){
-
-        if (stack.hasTag()) {
-            for (int i = 0; i < ChalkBox.CHALK_SLOTS; i++) {
-                ItemStack chalkStack = ChalkBox.getItemInSlot(stack, i);
-                if (!chalkStack.isEmpty())
-                    return ((ChalkItem) chalkStack.getItem()).getColor().getId() + 1;
-            }
-        }
-
-        return 0f;
+        super(properties.setNoRepair());
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        // Mark will be drawn even if block can be activated (if shift is held)
+        if (context.getPlayer() != null && context.getPlayer().isSecondaryUseActive())
+            return useOn(context);
 
+        return InteractionResult.PASS;
+    }
 
+    @Override
+    public @NotNull InteractionResult useOn(UseOnContext context) {
         ItemStack chalkBoxStack = context.getItemInHand();
         if (!chalkBoxStack.is(this))
             return InteractionResult.FAIL;
@@ -70,59 +60,41 @@ public class ChalkBoxItem extends Item {
         BlockPos clickedPos = context.getClickedPos();
         Direction clickedFace = context.getClickedFace();
 
-
-
         Pair<ItemStack, Integer> chalkStack = getFirstChalkStack(chalkBoxStack);
 
         if ( chalkStack == null || !ChalkMark.canBeDrawnAt(clickedPos.relative(clickedFace), clickedPos, clickedFace, level) )
             return InteractionResult.FAIL;
 
         MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
-
-
         DyeColor chalkColor = ((ChalkItem) chalkStack.getFirst().getItem()).getColor();
-
-        final boolean isClickedOnAMark = level.getBlockState(clickedPos).is(ModTags.Blocks.CHALK_MARK);
         final boolean isGlowing = ChalkBox.getGlowingUses(chalkBoxStack) > 0;
 
-        BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
-        final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
+        if (ChalkMark.draw(symbol, chalkColor, isGlowing, clickedPos, clickedFace, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
+            if ( !player.isCreative() ) {
+                ItemStack chalkItemStack = chalkStack.getFirst();
+                chalkItemStack.setDamageValue(chalkItemStack.getDamageValue() + 1);
+                if (chalkItemStack.getDamageValue() >= chalkItemStack.getMaxDamage()){
+                    chalkItemStack = ItemStack.EMPTY;
+                    Vec3 playerPos = player.position();
+                    level.playSound(player, playerPos.x, playerPos.y, playerPos.z, SoundEvents.GRAVEL_BREAK,
+                            SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+                }
 
-        BlockState markBlockState = ChalkMark.createMarkBlockState(symbol, chalkColor, newMarkFacing, context.getClickLocation(), clickedPos, isGlowing);
+                ChalkBox.setSlot(chalkBoxStack, chalkStack.getSecond(), chalkItemStack);
 
-        if (isClickedOnAMark) {
-            BlockState oldMarkBlockState = level.getBlockState(newMarkPosition);
-            if (markBlockState == oldMarkBlockState)
-                return InteractionResult.FAIL;
-
-            // Remove old mark. It would be replaced with new one.
-            level.removeBlock(newMarkPosition, false);
-        }
-
-        if (ChalkMark.drawMark(markBlockState, newMarkPosition, level)) {
-            ItemStack chalkItemStack = chalkStack.getFirst();
-
-            chalkItemStack.setDamageValue(chalkItemStack.getDamageValue() + 1);
-            if (chalkItemStack.getDamageValue() >= chalkItemStack.getMaxDamage()){
-                chalkItemStack = ItemStack.EMPTY;
-                Vec3 playerPos = player.position();
-                level.playSound(player, playerPos.x, playerPos.y, playerPos.z, SoundEvents.GRAVEL_BREAK,
-                        SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+                if (isGlowing)
+                    ChalkBox.useGlow(chalkBoxStack);
             }
 
-            ChalkBox.setSlot(chalkBoxStack, chalkStack.getSecond(), chalkItemStack);
-
-            if (isGlowing) {
-                ChalkBox.useGlow(chalkBoxStack);
-            }
+            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
         }
 
-        return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        return InteractionResult.FAIL;
     }
 
+    // Called when not looking at a block
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
-
         ItemStack usedStack = player.getItemInHand(usedHand);
 
         if (!usedStack.is(this) || !(player instanceof ServerPlayer))
@@ -132,29 +104,11 @@ public class ChalkBoxItem extends Item {
             NetworkHooks.openGui((ServerPlayer) player,
                     new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
                             new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
-                            new TranslatableComponent("chalk.container.chalk_box")), buffer -> buffer.writeItem(usedStack.copy()));
+                            new TranslatableComponent("container.chalk.chalk_box")), buffer -> buffer.writeItem(usedStack.copy()));
         }
 
         return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);
     }
-
-    @SuppressWarnings("ConstantConditions")
-    private @Nullable DyeColor getSelectedColor(ItemStack stack){
-        return stack.hasTag() ? decodeColor(stack.getTag().getFloat(ChalkBox.SELECTED_CHALK_TAG_KEY)) : null;
-    }
-
-    private @Nullable DyeColor decodeColor(float value){
-        if (value < 1)
-            return null;
-
-        return DyeColor.byId(((int) (value - 1)));
-    }
-
-    private float encodeColor(DyeColor color){
-        return color.getId() + 1;
-    }
-
-
 
     private Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
         for (int slot = 0; slot < ChalkBox.CHALK_SLOTS; slot++) {
@@ -167,5 +121,36 @@ public class ChalkBoxItem extends Item {
         return null;
     }
 
+    // Used by ItemOverrides to determine what chalk to display with the item texture.
+    public float getSelectedChalkColor(ItemStack stack){
+        if (stack.hasTag()) {
+            for (int i = 0; i < ChalkBox.CHALK_SLOTS; i++) {
+                ItemStack chalkStack = ChalkBox.getItemInSlot(stack, i);
+                if (!chalkStack.isEmpty())
+                    return ((ChalkItem) chalkStack.getItem()).getColor().getId() + 1;
+            }
+        }
 
+        return 0f;
+    }
+
+    @Override
+    public boolean isRepairable(@NotNull ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean isEnchantable(@NotNull ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        return false;
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return false;
+    }
 }

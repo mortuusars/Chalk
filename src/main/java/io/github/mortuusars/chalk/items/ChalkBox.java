@@ -5,7 +5,6 @@ import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
@@ -18,7 +17,6 @@ public class ChalkBox {
     public static final int CHALK_SLOTS = 8;
     public static final int GLOWING_ITEM_SLOT_ID = 8;
 
-    public static final String SELECTED_CHALK_TAG_KEY = "SelectedChalk";
     public static final String GLOWING_USES_TAG_KEY = "GlowUses";
     public static final String ITEMS_TAG_KEY = "Items";
 
@@ -83,14 +81,13 @@ public class ChalkBox {
 
         if (slot == GLOWING_ITEM_SLOT_ID)
             updateGlowingUses(chalkBoxStack);
-        else
-            updateSelectedChalk(chalkBoxStack);
+//        else
+//            updateSelectedChalk(chalkBoxStack);
     }
 
     private static @Nullable ItemStack updateSelectedChalk(ItemStack chalkBoxStack) {
         List<ItemStack> contents = getContents(chalkBoxStack);
-        for (int index = 0; index < contents.size(); index++) {
-            ItemStack stack = contents.get(index);
+        for (ItemStack stack : contents) {
             if (stack.is(ModTags.Items.CHALK))
                 return stack;
         }
@@ -110,7 +107,7 @@ public class ChalkBox {
             updateGlowingUses(chalkBoxStack);
     }
 
-    public static void updateGlowingUses(ItemStack chalkBoxStack){
+    private static void updateGlowingUses(ItemStack chalkBoxStack){
         if (getGlowingUses(chalkBoxStack) > 0)
             return;
 

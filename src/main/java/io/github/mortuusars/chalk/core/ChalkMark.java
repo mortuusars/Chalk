@@ -2,6 +2,8 @@ package io.github.mortuusars.chalk.core;
 
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
+import io.github.mortuusars.chalk.items.ChalkBox;
+import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.setup.ModBlocks;
 import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
@@ -10,7 +12,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -20,6 +24,39 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Random;
 
 public class ChalkMark {
+
+
+    public static InteractionResult draw(MarkSymbol symbol, DyeColor color, boolean isGlowing, BlockPos clickedPos, Direction clickedFace, Vec3 clickLocation, Level level) {
+        if ( !ChalkMark.canBeDrawnAt(clickedPos.relative(clickedFace), clickedPos, clickedFace, level) )
+            return InteractionResult.FAIL;
+
+        final boolean isClickedOnAMark = level.getBlockState(clickedPos).is(ModTags.Blocks.CHALK_MARK);
+
+        BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
+        final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
+
+        BlockState markBlockState = ChalkMark.createMarkBlockState(symbol, color, newMarkFacing, clickLocation, clickedPos, isGlowing);
+
+        // Cancel drawing if marks are same.
+        // Remove old mark if different.
+        if (isClickedOnAMark) {
+            BlockState oldMarkBlockState = level.getBlockState(newMarkPosition);
+
+            if (markBlockState.getValue(ChalkMarkBlock.ORIENTATION).equals(oldMarkBlockState.getValue(ChalkMarkBlock.ORIENTATION))
+                    && newMarkFacing == oldMarkBlockState.getValue(ChalkMarkBlock.FACING)
+                    && symbol == oldMarkBlockState.getValue(ChalkMarkBlock.SYMBOL)
+                    && (!isGlowing || oldMarkBlockState.getValue(ChalkMarkBlock.GLOWING))) {
+                return InteractionResult.FAIL;
+            }
+
+            // Remove old mark. It would be replaced with new one.
+            level.removeBlock(newMarkPosition, false);
+        }
+
+        ChalkMark.drawMark(markBlockState, newMarkPosition, level);
+        return InteractionResult.SUCCESS;
+    }
+
     public static boolean canBeDrawnAt(BlockPos pos, BlockPos clickedBlockPos, Direction clickedFace, Level level){
 
         BlockState clickedBlockState = level.getBlockState(clickedBlockPos);
