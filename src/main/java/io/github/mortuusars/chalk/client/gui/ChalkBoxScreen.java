@@ -16,23 +16,36 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Chalk.MOD_ID, "textures/gui/chalk_box.png");
 
-    private static final int GLOWING_BAR_HEIGHT = 16;
+    private static final int GLOWING_BAR_WIDTH = 72;
+
+    private final boolean glowingEnabled;
 
     private final int maxGlowingUses;
-    private final int glowingUses;
 
     public ChalkBoxScreen(ChalkBoxMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
 
+        glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
         maxGlowingUses = CommonConfig.CHALK_BOX_GLOWING_USES.get();
-        glowingUses = menu.getGlowingUses();
     }
 
     @Override
     protected void init() {
         this.imageWidth = 176;
-        this.imageHeight = 166;
+        this.imageHeight = 180;
+        this.inventoryLabelY = this.imageHeight - 94;
         super.init();
+
+        // Default slots img = 52,32      Slots = 53,33
+        // Glowing slots img = 52,17
+
+        // Glowing img = 52,57 width: 72
+
+        //GLowing slot = 80,68
+
+        // Slots blit 180
+
+        // Glow blit 217
     }
 
     @Override
@@ -40,13 +53,7 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         this.renderBackground(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTick);
         this.renderTooltip(poseStack, mouseX, mouseY);
-
-        int textY = 5;
-        drawString(poseStack, font, "Glowing Uses: " + glowingUses, 5, textY, 0xFFAA5555);
-        drawString(poseStack, font, "Max Uses: " + maxGlowingUses, 5, textY += 10, 0xFFAA5555);
     }
-
-    int glowBarTest = 0;
 
     @Override
     protected void renderBg(@NotNull PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
@@ -55,20 +62,23 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(poseStack, getGuiLeft(), getGuiTop(), 0,0, imageWidth, imageHeight);
 
-        if (CommonConfig.CHALK_BOX_GLOWING.get()){
-            blit(poseStack, getGuiLeft() + 23, getGuiTop() + 33, 177, 1, 31, 22);
+        if (glowingEnabled){
+            // Chalk Slots
+            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 17, 0, 180, 72, 36);
 
-            // TODO: Glowing bar
-            int glowingBarFillLevel = calculateGlowingBarHeight(glowingUses, maxGlowingUses, GLOWING_BAR_HEIGHT);
-//            if (glowBarTest > 16)
-//                glowBarTest = 0;
-//            int glowingBarFillLevel = glowBarTest++;
-            blit(poseStack, getGuiLeft() + 45, getGuiTop() + 52 - glowingBarFillLevel, 177, 25, 4, glowingBarFillLevel);
+            // Bar + Slot
+            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 57, 0, 217, 72, 28);
+
+            int barSize = (int)Math.ceil((Math.min(menu.getGlowingUses(), maxGlowingUses) / (float) maxGlowingUses) * GLOWING_BAR_WIDTH);
+            int glowingBarFillLevel = Math.min(GLOWING_BAR_WIDTH, barSize);
+
+            // Fill
+            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 57, 72, 217, glowingBarFillLevel, 5);
+
         }
-    }
-
-    private int calculateGlowingBarHeight(int uses, int maxUses, int textureBarHeight){
-        int height = (int)Math.ceil((Math.min(uses, maxUses) / (float) maxUses) * textureBarHeight);
-        return Math.min(textureBarHeight, height);
+        else {
+            // Chalk slots
+            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 32, 0, 180, 72, 36);
+        }
     }
 }

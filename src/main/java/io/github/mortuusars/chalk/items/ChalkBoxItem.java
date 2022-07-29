@@ -1,13 +1,15 @@
 package io.github.mortuusars.chalk.items;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.blocks.MarkSymbol;
+import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
-import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.setup.ModTags;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -22,13 +24,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
 
 public class ChalkBoxItem extends Item {
 
@@ -39,14 +39,84 @@ public class ChalkBoxItem extends Item {
 
     @SuppressWarnings("ConstantConditions")
     public float getSelectedChalkColor(ItemStack stack){
-        return stack.hasTag() ? stack.getTag().getFloat(ChalkBox.SELECTED_CHALK_TAG_KEY) : 0f;
+
+        if (stack.hasTag()) {
+            for (int i = 0; i < ChalkBox.CHALK_SLOTS; i++) {
+                ItemStack chalkStack = ChalkBox.getItemInSlot(stack, i);
+                if (!chalkStack.isEmpty())
+                    return ((ChalkItem) chalkStack.getItem()).getColor().getId() + 1;
+            }
+        }
+
+        return 0f;
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
 
 
-        context.getLevel().playSound(context.getPlayer(), context.getClickedPos(), SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1f, 1f);
+        ItemStack chalkBoxStack = context.getItemInHand();
+        if (!chalkBoxStack.is(this))
+            return InteractionResult.FAIL;
+
+        Player player = context.getPlayer();
+        if (player == null)
+            return InteractionResult.PASS;
+
+        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().is(ModTags.Items.CHALK) || player.getMainHandItem().is(this)) )
+            return InteractionResult.FAIL; // Skip drawing from offhand if chalks in both hands.
+
+        Level level = context.getLevel();
+        BlockPos clickedPos = context.getClickedPos();
+        Direction clickedFace = context.getClickedFace();
+
+
+
+        Pair<ItemStack, Integer> chalkStack = getFirstChalkStack(chalkBoxStack);
+
+        if ( chalkStack == null || !ChalkMark.canBeDrawnAt(clickedPos.relative(clickedFace), clickedPos, clickedFace, level) )
+            return InteractionResult.FAIL;
+
+        MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
+
+
+        DyeColor chalkColor = ((ChalkItem) chalkStack.getFirst().getItem()).getColor();
+
+        final boolean isClickedOnAMark = level.getBlockState(clickedPos).is(ModTags.Blocks.CHALK_MARK);
+        final boolean isGlowing = ChalkBox.getGlowingUses(chalkBoxStack) > 0;
+
+        BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
+        final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
+
+        BlockState markBlockState = ChalkMark.createMarkBlockState(symbol, chalkColor, newMarkFacing, context.getClickLocation(), clickedPos, isGlowing);
+
+        if (isClickedOnAMark) {
+            BlockState oldMarkBlockState = level.getBlockState(newMarkPosition);
+            if (markBlockState == oldMarkBlockState)
+                return InteractionResult.FAIL;
+
+            // Remove old mark. It would be replaced with new one.
+            level.removeBlock(newMarkPosition, false);
+        }
+
+        if (ChalkMark.drawMark(markBlockState, newMarkPosition, level)) {
+            ItemStack chalkItemStack = chalkStack.getFirst();
+
+            chalkItemStack.setDamageValue(chalkItemStack.getDamageValue() + 1);
+            if (chalkItemStack.getDamageValue() >= chalkItemStack.getMaxDamage()){
+                chalkItemStack = ItemStack.EMPTY;
+                Vec3 playerPos = player.position();
+                level.playSound(player, playerPos.x, playerPos.y, playerPos.z, SoundEvents.GRAVEL_BREAK,
+                        SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+            }
+
+            ChalkBox.setSlot(chalkBoxStack, chalkStack.getSecond(), chalkItemStack);
+
+            if (isGlowing) {
+                ChalkBox.useGlow(chalkBoxStack);
+            }
+        }
+
         return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
     }
 
@@ -58,34 +128,15 @@ public class ChalkBoxItem extends Item {
         if (!usedStack.is(this) || !(player instanceof ServerPlayer))
             return InteractionResultHolder.pass(usedStack);
 
-        if (player.isSecondaryUseActive()){
-
-            List<ItemStack> contents = ChalkBox.getContents(usedStack);
-            if (contents.size() == 0){
-                NonNullList<ItemStack> items = NonNullList.withSize(ChalkBox.SLOTS, ItemStack.EMPTY);
-                items.set(3, new ItemStack(ModItems.LIGHT_BLUE_CHALK.get()));
-                ChalkBox.setContents(usedStack, items);
-            }
-            else {
-                contents.forEach(s -> {
-                    if (!s.isEmpty())
-                        player.displayClientMessage(s.getHoverName(), true);
-                });
-            }
-        }
-        else {
-            if (!level.isClientSide){
-                NetworkHooks.openGui((ServerPlayer) player,
-                        new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
-                                new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
-                                new TranslatableComponent("chalk.container.chalk_box")), buffer -> buffer.writeItem(usedStack.copy()));
-            }
+        if (!level.isClientSide){
+            NetworkHooks.openGui((ServerPlayer) player,
+                    new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
+                            new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
+                            new TranslatableComponent("chalk.container.chalk_box")), buffer -> buffer.writeItem(usedStack.copy()));
         }
 
         return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);
     }
-
-
 
     @SuppressWarnings("ConstantConditions")
     private @Nullable DyeColor getSelectedColor(ItemStack stack){
@@ -102,4 +153,19 @@ public class ChalkBoxItem extends Item {
     private float encodeColor(DyeColor color){
         return color.getId() + 1;
     }
+
+
+
+    private Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
+        for (int slot = 0; slot < ChalkBox.CHALK_SLOTS; slot++) {
+            ItemStack itemInSlot = ChalkBox.getItemInSlot(chalkBoxStack, slot);
+            if (itemInSlot.is(ModTags.Items.CHALK)) {
+                return Pair.of(itemInSlot, slot);
+            }
+        }
+
+        return null;
+    }
+
+
 }

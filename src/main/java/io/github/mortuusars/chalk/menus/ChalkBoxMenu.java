@@ -24,7 +24,11 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         this.chalkBoxStack = chalkBoxStack;
         this.itemHandler = itemHandler;
 
-        // Order of slots is kinda important. QuickMoveStack depends on correct order.
+        final boolean glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
+
+        // Order of adding slots is kinda important. QuickMoveStack depends on correct order.
+
+        int slotsYPos = glowingEnabled ? 18 : 33;
 
         // Add chalk slots
         int index = 0;
@@ -34,12 +38,12 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
                 if (index >= ChalkBox.GLOWING_ITEM_SLOT_ID)
                     throw new IllegalStateException("Chalk slot ids should go before Glowing Item slot id and not exceed it.");
 
-                addSlot(new SlotItemHandler(itemHandler, index++, column * 18 + 53, row * 18 + 27));
+                addSlot(new SlotItemHandler(itemHandler, index++, column * 18 + 53, row * 18 + slotsYPos));
             }
         }
 
-        if (CommonConfig.CHALK_BOX_GLOWING.get()){
-            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWING_ITEM_SLOT_ID, 26, 36));
+        if (glowingEnabled){
+            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWING_ITEM_SLOT_ID, 80, 68));
         }
 
         addPlayerSlots(playerInventory);
@@ -90,13 +94,13 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
                 int index = (column + row * 9) + 9;
-                addSlot(new Slot(playerInventory, index, column * 18 + 8, 84 + row * 18));
+                addSlot(new Slot(playerInventory, index, column * 18 + 8, 98 + row * 18));
             }
         }
 
         //Hotbar
         for (int column = 0; column < 9; column++)
-            addSlot(new Slot(playerInventory, column, column * 18 + 8, 142));
+            addSlot(new Slot(playerInventory, column, column * 18 + 8, 156));
 
     }
 
@@ -105,8 +109,8 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         super.removed(player);
 
         // Update ChalkBoxStack with current items:
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            ChalkBox.setSlot(chalkBoxStack, i, itemHandler.getStackInSlot(i));
-        }
+//        for (int i = 0; i < itemHandler.getSlots(); i++) {
+//            ChalkBox.setSlot(chalkBoxStack, i, itemHandler.getStackInSlot(i));
+//        }
     }
 }

@@ -34,6 +34,30 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
 
     @Override
     protected void onContentsChanged(int slot) {
-//        ChalkBox.setSlot(chalkBoxStack, slot, getStackInSlot(slot));
+
+        int prevGlowingUses = ChalkBox.getGlowingUses(chalkBoxStack);
+
+        ChalkBox.setSlot(chalkBoxStack, slot, getStackInSlot(slot));
+
+        if (slot == ChalkBox.GLOWING_ITEM_SLOT_ID && ChalkBox.getGlowingUses(chalkBoxStack) > prevGlowingUses) {
+            ItemStack glowingStack = getStackInSlot(slot);
+            glowingStack.shrink(1);
+            setStackInSlot(slot, glowingStack);
+        }
+//            ItemStack glowingStack = getStackInSlot(slot);
+//            if ( !glowingStack.isEmpty() ) {
+//                ChalkBox.updateGlowingUses(chalkBoxStack);
+//                glowingStack.shrink(1);
+//                setStackInSlot(slot, glowingStack);
+//            }
+//        }
+
+
+//        if (slot == ChalkBox.GLOWING_ITEM_SLOT_ID)
+//            ChalkBox.updateGlowingUses(chalkBoxStack);
+    }
+
+    private void consumeGlowingItem() {
+
     }
 }

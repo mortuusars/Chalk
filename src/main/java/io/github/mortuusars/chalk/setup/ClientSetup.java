@@ -8,12 +8,11 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 public class ClientSetup {
 
-    public static final ResourceLocation CHALK_BOX_FILL_PROPERTY = new ResourceLocation(Chalk.MOD_ID, "fill");
+    public static final ResourceLocation CHALK_BOX_SELECTED_PROPERTY = new ResourceLocation(Chalk.MOD_ID, "selected");
 
     private final IEventBus modEventBus;
 
@@ -36,7 +35,7 @@ public class ClientSetup {
 
     private static void registerChalkBoxPropertyForItemOverrides(){
         ChalkBoxItem chalkBoxItem = ModItems.CHALK_BOX.get();
-        ItemProperties.register(chalkBoxItem, CHALK_BOX_FILL_PROPERTY,
+        ItemProperties.register(chalkBoxItem, CHALK_BOX_SELECTED_PROPERTY,
                 (stack, level, entity, damage) -> chalkBoxItem.getSelectedChalkColor(stack));
     }
 }

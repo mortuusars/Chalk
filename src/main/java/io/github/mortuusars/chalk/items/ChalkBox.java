@@ -8,6 +8,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +30,17 @@ public class ChalkBox {
             ListTag listtag = compoundtag.getList(ITEMS_TAG_KEY, ListTag.TAG_COMPOUND);
             return listtag.stream().map(CompoundTag.class::cast).map(ItemStack::of).toList();
         }
+    }
+
+    /**
+     * Gets the ItemStack in the ChalkBox by slotID.
+     * @param slotID throws when slotID is out of range.
+     */
+    public static ItemStack getItemInSlot(ItemStack chalkBoxStack, int slotID) {
+        if (slotID >= SLOTS)
+            throw new IllegalArgumentException("slotID is out if range: 0-" + (SLOTS -1) + ". Value: " + slotID);
+
+        return ItemStack.of(getItemsListTag(chalkBoxStack).getCompound(slotID));
     }
 
     public static void setContents(ItemStack stack, List<ItemStack> items){
@@ -71,13 +83,34 @@ public class ChalkBox {
 
         if (slot == GLOWING_ITEM_SLOT_ID)
             updateGlowingUses(chalkBoxStack);
+        else
+            updateSelectedChalk(chalkBoxStack);
+    }
+
+    private static @Nullable ItemStack updateSelectedChalk(ItemStack chalkBoxStack) {
+        List<ItemStack> contents = getContents(chalkBoxStack);
+        for (int index = 0; index < contents.size(); index++) {
+            ItemStack stack = contents.get(index);
+            if (stack.is(ModTags.Items.CHALK))
+                return stack;
+        }
+
+        return null;
     }
 
     public static int getGlowingUses(ItemStack chalkBoxStack){
         return chalkBoxStack.getOrCreateTag().getInt(GLOWING_USES_TAG_KEY);
     }
 
-    private static void updateGlowingUses(ItemStack chalkBoxStack){
+    public static void useGlow(ItemStack chalkBoxStack) {
+        int glowingUses = getGlowingUses(chalkBoxStack) - 1;
+        chalkBoxStack.getOrCreateTag().putInt(GLOWING_USES_TAG_KEY, glowingUses);
+
+        if (glowingUses <= 0)
+            updateGlowingUses(chalkBoxStack);
+    }
+
+    public static void updateGlowingUses(ItemStack chalkBoxStack){
         if (getGlowingUses(chalkBoxStack) > 0)
             return;
 
