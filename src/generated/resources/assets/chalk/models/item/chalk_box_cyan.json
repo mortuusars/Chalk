@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "chalk:item/chalk_box",
+    "layer1": "chalk:item/chalk_box_cyan_chalk"
+  }
+}
