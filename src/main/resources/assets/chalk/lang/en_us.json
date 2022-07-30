@@ -19,5 +19,6 @@
   "item.chalk.white_chalk": "White Chalk",
 
   "item.chalk.chalk_box": "Chalk Box",
+  "item.chalk.chalk_box.tooltip.drawing_with": "Drawing with: ",
   "container.chalk.chalk_box": "Chalk Box"
 }

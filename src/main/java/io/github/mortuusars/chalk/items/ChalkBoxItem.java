@@ -6,9 +6,12 @@ import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
+import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.setup.ModTags;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +40,15 @@ public class ChalkBoxItem extends Item {
 
     public ChalkBoxItem(Properties properties) {
         super(properties.setNoRepair());
+    }
+
+    @Override
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        Pair<ItemStack, Integer> firstChalkStack = getFirstChalkStack(pStack);
+        if (firstChalkStack != null) {
+            pTooltipComponents.add(new TranslatableComponent("item.chalk.chalk_box.tooltip.drawing_with").withStyle(ChatFormatting.GRAY)
+                    .append(((BaseComponent) firstChalkStack.getFirst().getHoverName()).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.WHITE)));
+        }
     }
 
     @Override
@@ -115,7 +127,7 @@ public class ChalkBoxItem extends Item {
         return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);
     }
 
-    private Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
+    private @Nullable Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
         for (int slot = 0; slot < ChalkBox.CHALK_SLOTS; slot++) {
             ItemStack itemInSlot = ChalkBox.getItemInSlot(chalkBoxStack, slot);
             if (itemInSlot.is(ModTags.Items.CHALK)) {

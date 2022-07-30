@@ -19,5 +19,6 @@
   "item.chalk.white_chalk": "Біла Крейда",
 
   "item.chalk.chalk_box": "Коробка для Крейди",
+  "item.chalk.chalk_box.tooltip.drawing_with": "Малюємо з: ",
   "container.chalk.chalk_box": "Коробка для Крейди"
 }
