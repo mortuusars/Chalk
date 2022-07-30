@@ -1,9 +1,7 @@
 package io.github.mortuusars.chalk.menus;
 
 import io.github.mortuusars.chalk.items.ChalkBox;
-import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.setup.ModTags;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ChalkBoxItemStackHandler extends ItemStackHandler {
-    private ItemStack chalkBoxStack;
+    private final ItemStack chalkBoxStack;
 
     public ChalkBoxItemStackHandler(ItemStack chalkBoxStack) {
         super(ChalkBox.SLOTS);
@@ -34,7 +32,6 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
 
     @Override
     protected void onContentsChanged(int slot) {
-
         int prevGlowingUses = ChalkBox.getGlowingUses(chalkBoxStack);
 
         ChalkBox.setSlot(chalkBoxStack, slot, getStackInSlot(slot));
@@ -44,20 +41,5 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
             glowingStack.shrink(1);
             setStackInSlot(slot, glowingStack);
         }
-//            ItemStack glowingStack = getStackInSlot(slot);
-//            if ( !glowingStack.isEmpty() ) {
-//                ChalkBox.updateGlowingUses(chalkBoxStack);
-//                glowingStack.shrink(1);
-//                setStackInSlot(slot, glowingStack);
-//            }
-//        }
-
-
-//        if (slot == ChalkBox.GLOWING_ITEM_SLOT_ID)
-//            ChalkBox.updateGlowingUses(chalkBoxStack);
-    }
-
-    private void consumeGlowingItem() {
-
     }
 }

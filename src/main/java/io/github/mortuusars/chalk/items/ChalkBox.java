@@ -77,12 +77,9 @@ public class ChalkBox {
     }
 
     private static void onSlotUpdated(ItemStack chalkBoxStack, int slot, ItemStack itemStack) {
-        Chalk.LOGGER.info("Updated slot " + slot + " with " + itemStack);
-
+//        Chalk.LOGGER.info("Updated slot " + slot + " with " + itemStack);
         if (slot == GLOWING_ITEM_SLOT_ID)
             updateGlowingUses(chalkBoxStack);
-//        else
-//            updateSelectedChalk(chalkBoxStack);
     }
 
     private static @Nullable ItemStack updateSelectedChalk(ItemStack chalkBoxStack) {

@@ -16,7 +16,6 @@ public class CommonConfig {
     public static final ForgeConfigSpec.IntValue CHALK_BOX_GLOWING_USES;
 
     public static final ForgeConfigSpec.BooleanValue GENERATE_IN_CHESTS;
-    public static final ForgeConfigSpec.BooleanValue GENERATE_CHALK_BOX_IN_CHESTS;
 
     static {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -34,12 +33,8 @@ public class CommonConfig {
         CHALK_BOX_GLOWING_USES = builder.comment("How many glowing marks one glowing item will give.\nDefault: 8")
                 .defineInRange("ChalkBoxGlowingItemUses", 8, 1, 9999);
 
-        GENERATE_IN_CHESTS = builder.comment("If enabled, Chalks will generate in Dungeons, Abandoned Mineshafts, Planes and Savanna villages, Cartographer houses\nDefault: true")
+        GENERATE_IN_CHESTS = builder.comment("If enabled, Chalks (and Chalk Boxes) will generate in Dungeons, Abandoned Mineshafts, Planes and Savanna villages, Cartographer houses\nDefault: true")
                                     .define("ShouldGenerateInChests", true);
-
-        //TODO: Chalk box in chest loot
-        GENERATE_CHALK_BOX_IN_CHESTS = builder.comment("If enabled, Chalk Boxes will generate in Dungeons, Abandoned Mineshafts, Planes and Savanna villages, Cartographer houses\nDefault: true")
-                .define("ShouldGenerateChalkBoxInChests", true);
 
         SPEC = builder.build();
     }

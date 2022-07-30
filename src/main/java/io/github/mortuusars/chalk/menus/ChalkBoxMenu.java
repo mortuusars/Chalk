@@ -17,12 +17,10 @@ import org.jetbrains.annotations.Nullable;
 public class ChalkBoxMenu extends AbstractContainerMenu {
 
     private final ItemStack chalkBoxStack;
-    private final IItemHandler itemHandler;
 
     public ChalkBoxMenu(final int pContainerId, final Inventory playerInventory, ItemStack chalkBoxStack, @Nullable IItemHandler itemHandler) {
         super(ModMenus.CHALK_BOX.get(), pContainerId);
         this.chalkBoxStack = chalkBoxStack;
-        this.itemHandler = itemHandler;
 
         final boolean glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
 
@@ -102,15 +100,5 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         for (int column = 0; column < 9; column++)
             addSlot(new Slot(playerInventory, column, column * 18 + 8, 156));
 
-    }
-
-    @Override
-    public void removed(@NotNull Player player) {
-        super.removed(player);
-
-        // Update ChalkBoxStack with current items:
-//        for (int i = 0; i < itemHandler.getSlots(); i++) {
-//            ChalkBox.setSlot(chalkBoxStack, i, itemHandler.getStackInSlot(i));
-//        }
     }
 }
