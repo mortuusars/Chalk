@@ -41,10 +41,5 @@ public class LootTableModification {
                                 .build());
             }
         }
-
-//        if (CommonConfig.GENERATE_CHALK_BOX_IN_CHESTS.get()) {
-//            // TODO: create loot-tables with chalk box
-//            // https://www.reddit.com/r/MinecraftCommands/comments/bzlt7v/loot_table_set_nbt_data/
-//        }
     }
 }

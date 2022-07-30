@@ -1,3 +1,15 @@
+### 1.3.0 - 2022-07-31 - 1 in a MILLION
+
+- Added Chalk Box. It lets you carry more chalks with you and draw glowing marks conveniently.
+- Added Chalk Box to chest loot.
+
+
+- What items are considered to be glowing is now defined by tag "chalk:glowing". Config for glowing items is removed. 
+- Fixed glowing mark max allowed light level in a config to be 15 instead of 14.
+
+
+- Removed glowing chalks.
+
 ### 1.2.1 - 2022-04-20
 - Changed GlowItems config entry to allow no items to be defined. 
 - Updated localization files.

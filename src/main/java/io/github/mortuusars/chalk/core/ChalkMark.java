@@ -100,6 +100,4 @@ public class ChalkMark {
 
         return isMarkDrawn;
     }
-
-    // TODO: move drawing logic here
 }
