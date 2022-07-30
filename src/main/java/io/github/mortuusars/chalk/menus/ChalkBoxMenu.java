@@ -13,10 +13,16 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.CallbackI;
+
+import java.awt.*;
 
 public class ChalkBoxMenu extends AbstractContainerMenu {
 
-    private final ItemStack chalkBoxStack;
+    public final ItemStack chalkBoxStack;
+    public Point chalkBoxCoords = null;
+
+    private int chalkBoxSlotId;
 
     public ChalkBoxMenu(final int pContainerId, final Inventory playerInventory, ItemStack chalkBoxStack, @Nullable IItemHandler itemHandler) {
         super(ModMenus.CHALK_BOX.get(), pContainerId);
@@ -27,6 +33,9 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         // Order of adding slots is kinda important. QuickMoveStack depends on correct order.
 
         int slotsYPos = glowingEnabled ? 18 : 33;
+
+        // To avoid duping items - we do not add slot with the chalk box. And to be extra safe - check for slot matching in #stillValid.
+        chalkBoxSlotId = playerInventory.findSlotMatchingItem(chalkBoxStack);
 
         // Add chalk slots
         int index = 0;
@@ -84,21 +93,34 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return true;
+        return player.getInventory().findSlotMatchingItem(chalkBoxStack) == chalkBoxSlotId;
     }
 
     private void addPlayerSlots(Inventory playerInventory) {
+        int chalkBoxSlotId = playerInventory.findSlotMatchingItem(chalkBoxStack);
+
         //Player Inventory
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
                 int index = (column + row * 9) + 9;
+
+                if (index == chalkBoxSlotId) {
+                    chalkBoxCoords = new Point(column * 18 + 8, 98 + row * 18);
+                    continue;
+                }
+
                 addSlot(new Slot(playerInventory, index, column * 18 + 8, 98 + row * 18));
             }
         }
 
         //Hotbar
-        for (int column = 0; column < 9; column++)
-            addSlot(new Slot(playerInventory, column, column * 18 + 8, 156));
+        for (int index = 0; index < 9; index++) {
+            if (index == chalkBoxSlotId) {
+                chalkBoxCoords = new Point(index * 18 + 8, 156);
+                continue;
+            }
 
+            addSlot(new Slot(playerInventory, index, index * 18 + 8, 156));
+        }
     }
 }

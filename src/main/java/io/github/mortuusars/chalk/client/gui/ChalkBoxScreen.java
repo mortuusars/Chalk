@@ -35,23 +35,17 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         this.imageHeight = 180;
         this.inventoryLabelY = this.imageHeight - 94;
         super.init();
-
-        // Default slots img = 52,32      Slots = 53,33
-        // Glowing slots img = 52,17
-
-        // Glowing img = 52,57 width: 72
-
-        //GLowing slot = 80,68
-
-        // Slots blit 180
-
-        // Glow blit 217
     }
 
     @Override
     public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTick);
+
+        if (menu.chalkBoxCoords != null) {
+            itemRenderer.renderGuiItem(menu.chalkBoxStack, getGuiLeft() + menu.chalkBoxCoords.x, getGuiTop() + menu.chalkBoxCoords.y);
+        }
+
         this.renderTooltip(poseStack, mouseX, mouseY);
     }
 
