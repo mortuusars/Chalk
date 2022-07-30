@@ -24,7 +24,7 @@ public class CommonConfig {
                                   .defineInRange("ChalkUses", 64, 0, Integer.MAX_VALUE);
 
         GLOWING_CHALK_MARK_LIGHT_LEVEL = builder.comment("How many light glowing mark produces. Default: 5")
-                .defineInRange("GlowingMarkLightLevel", 5, 0, 14);
+                .defineInRange("GlowingMarkLightLevel", 5, 0, 15);
 
 
         CHALK_BOX_GLOWING = builder.comment("Controls whether glowing should be enabled in Chalk Box.\nIf disabled - you will not be able to draw glowing marks with chalk box.\nDefault: true")
