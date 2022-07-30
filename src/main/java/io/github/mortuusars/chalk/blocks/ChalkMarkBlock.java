@@ -52,8 +52,6 @@ public class ChalkMarkBlock extends Block {
     public static final BooleanProperty GLOWING = BooleanProperty.create("is_glowing");
     public static final EnumProperty<MarkSymbol> SYMBOL = EnumProperty.create("symbol", MarkSymbol.class);
 
-    public static int GlowingLightLevel = -1; // This is later updated from config.
-
     private final DyeColor _color;
 
     private static final VoxelShape DOWN_AABB = Block.box(1.5D, 15.5D, 1.5D, 14.5D, 16D, 14.5D);
@@ -213,9 +211,7 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        if (GlowingLightLevel == -1) // I need to do this terribleness to get ACTUAL value from config. In constructor it is still not loaded.
-            GlowingLightLevel = CommonConfig.GLOWING_CHALK_MARK_LIGHT_LEVEL.get();
-        return state.getValue(GLOWING) ? GlowingLightLevel : 0;
+        return state.getValue(GLOWING) ? CommonConfig.GLOWING_CHALK_MARK_LIGHT_LEVEL.get() : 0;
     }
 
     @Override
