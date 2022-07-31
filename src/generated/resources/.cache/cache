@@ -47,7 +47,7 @@ cfafb2ddbc0420f17190a06f7b0741f971dc0bb8 assets/chalk/models/item/purple_chalk.j
 62e516fe5916d4b21cfbea316bca1ba00b7dd838 assets/chalk/models/item/red_chalk.json
 e687f498f0abfa050fa21f1c8ccbc8334d8af353 assets/chalk/models/item/white_chalk.json
 be578782b2559618767aff4aa88516101930db64 assets/chalk/models/item/yellow_chalk.json
-c95ce2ff9ffa817e998c4f8f15155aac8ce6a2a3 data/chalk/advancements/recipes/tools/chalk_box.json
+b1d520986de133f3c326728526246acfdd9d79bc data/chalk/advancements/recipes/tools/chalk_box.json
 32a46ce768d418fe4bff157db0f7236f32c464a1 data/chalk/advancements/recipes/tools/chalk_from_black_dye.json
 14ea3aea5b09dc977e9bdfc639d94fa5a5f50de5 data/chalk/advancements/recipes/tools/chalk_from_blue_dye.json
 afbca2c5958db18ec8e41bd74d5e221c7a3c00d6 data/chalk/advancements/recipes/tools/chalk_from_brown_dye.json
@@ -64,7 +64,7 @@ e1ec451f5ab3588f8fb10c56f3141f3c614fcfd2 data/chalk/advancements/recipes/tools/c
 c3ce2b60ce7361686aa98840bed0782fd9ed6227 data/chalk/advancements/recipes/tools/chalk_from_red_dye.json
 0db7d66cb10ca0db43c8f2d2084f5b911be3a71a data/chalk/advancements/recipes/tools/chalk_from_white_dye.json
 bbd4b6a4c4dee6d037c32032fdb9f549599c111a data/chalk/advancements/recipes/tools/chalk_from_yellow_dye.json
-c1e1c5413df6dcc1d37bec26f80d33e09bfa65a9 data/chalk/recipes/chalk_box.json
+2b1caf9789e705f6bc171663c26e6b5aef932670 data/chalk/recipes/chalk_box.json
 c51267ec2ed728a1c922cfb71dd0c600bbdb006c data/chalk/recipes/chalk_from_black_dye.json
 8389a44a940da560f3b979803e7dbf6b9c15c8d3 data/chalk/recipes/chalk_from_blue_dye.json
 3a63858bd18b10c77c27e5c92a3a9be15d3c9089 data/chalk/recipes/chalk_from_brown_dye.json

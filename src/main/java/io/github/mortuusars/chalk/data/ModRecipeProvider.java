@@ -37,10 +37,12 @@ public class ModRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(ModItems.CHALK_BOX.get())
                 .unlockedBy("has_chalk", has(ModTags.Items.CHALK))
                 .unlockedBy("has_paper", has(Items.PAPER))
+                .unlockedBy("has_slimeball", has(Tags.Items.SLIMEBALLS))
                 .pattern("P P")
-                .pattern("P P")
+                .pattern("PSP")
                 .pattern("PPP")
                 .define('P', Items.PAPER)
+                .define('S', Tags.Items.SLIMEBALLS)
                 .save(recipeBuilder);
     }
 }

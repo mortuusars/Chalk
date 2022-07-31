@@ -28,6 +28,16 @@
         ]
       }
     },
+    "has_slimeball": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:slimeballs"
+          }
+        ]
+      }
+    },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
@@ -39,6 +49,7 @@
     [
       "has_chalk",
       "has_paper",
+      "has_slimeball",
       "has_the_recipe"
     ]
   ]
