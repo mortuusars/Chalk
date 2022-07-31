@@ -1,19 +1,16 @@
 package io.github.mortuusars.chalk.items;
 
 import com.mojang.datafixers.util.Pair;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
-import io.github.mortuusars.chalk.setup.ModItems;
 import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -43,11 +40,11 @@ public class ChalkBoxItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        Pair<ItemStack, Integer> firstChalkStack = getFirstChalkStack(pStack);
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level pLevel, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
+        Pair<ItemStack, Integer> firstChalkStack = getFirstChalkStack(stack);
         if (firstChalkStack != null) {
-            pTooltipComponents.add(new TranslatableComponent("item.chalk.chalk_box.tooltip.drawing_with").withStyle(ChatFormatting.GRAY)
-                    .append(((BaseComponent) firstChalkStack.getFirst().getHoverName()).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.WHITE)));
+            tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.drawing_with").withStyle(ChatFormatting.GRAY)
+                    .append( ((MutableComponent) firstChalkStack.getFirst().getHoverName()).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.WHITE)));
         }
     }
 
@@ -111,17 +108,17 @@ public class ChalkBoxItem extends Item {
 
     // Called when not looking at a block
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand usedHand) {
         ItemStack usedStack = player.getItemInHand(usedHand);
 
         if (!usedStack.is(this) || !(player instanceof ServerPlayer))
             return InteractionResultHolder.pass(usedStack);
 
         if (!level.isClientSide){
-            NetworkHooks.openGui((ServerPlayer) player,
+            NetworkHooks.openScreen((ServerPlayer) player,
                     new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
                             new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
-                            new TranslatableComponent("container.chalk.chalk_box")), buffer -> buffer.writeItem(usedStack.copy()));
+                            Component.translatable("container.chalk.chalk_box")), buffer -> buffer.writeItem(usedStack.copy()));
         }
 
         return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);

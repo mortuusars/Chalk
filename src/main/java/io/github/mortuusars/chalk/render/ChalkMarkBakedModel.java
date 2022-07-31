@@ -1,31 +1,31 @@
 package io.github.mortuusars.chalk.render;
 
+import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.SimpleModelState;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-
-import static net.minecraftforge.client.model.SimpleModelState.IDENTITY;
 
 /**
  * Baked model is used to programmatically create proper Chalk Mark block model.
@@ -37,12 +37,12 @@ public class ChalkMarkBakedModel implements BakedModel {
         CENTER, ARROW, CROSS
     }
 
-//    public static Map<>
-
     public static ModelProperty<Integer> ORIENTATION = new ModelProperty<>();
     public static ModelProperty<Direction> FACING = new ModelProperty<>();
     public static ModelProperty<Boolean> GLOWING = new ModelProperty<>();
     public static ModelProperty<MarkSymbol> SYMBOL = new ModelProperty<>();
+
+    private static ModelState MODEL_STATE = new SimpleModelState(Transformation.identity(), false);
 
     private static final FaceBakery _faceBakery = new FaceBakery();
     private final BakedModel _baseModel;
@@ -51,62 +51,60 @@ public class ChalkMarkBakedModel implements BakedModel {
         _baseModel = baseModel;
     }
 
-    public static ModelDataMap getEmptyModelData(){
-        ModelDataMap.Builder builder = new ModelDataMap.Builder();
-        builder.withInitial(ORIENTATION, 4);
-        builder.withInitial(FACING, Direction.UP);
-        builder.withInitial(GLOWING, false);
-        builder.withInitial(SYMBOL, MarkSymbol.NONE);
-        ModelDataMap modelDataMap = builder.build();
-        return modelDataMap;
+    public static ModelData getEmptyModelData(){
+        return ModelData.builder()
+            .with(ORIENTATION, 4)
+            .with(FACING, Direction.UP)
+            .with(GLOWING, false)
+            .with(SYMBOL, MarkSymbol.NONE)
+            .build();
+
+
     }
 
-    @Nonnull
     @Override
-    public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData) {
+    public @NotNull ModelData getModelData(@NotNull BlockAndTintGetter level, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull ModelData modelData) {
         int orientation = state.getValue(ChalkMarkBlock.ORIENTATION);
         Direction facing = state.getValue(ChalkMarkBlock.FACING);
         boolean glowing = state.getValue(ChalkMarkBlock.GLOWING);
         MarkSymbol symbol = state.getValue(ChalkMarkBlock.SYMBOL);
 
-        ModelDataMap modelDataMap = getEmptyModelData();
-        modelDataMap.setData(ORIENTATION, orientation);
-        modelDataMap.setData(FACING, facing);
-        modelDataMap.setData(GLOWING, glowing);
-        modelDataMap.setData(SYMBOL, symbol);
-        return modelDataMap;
+        return modelData.derive()
+                .with(ORIENTATION, orientation)
+                .with(FACING, facing)
+                .with(GLOWING, glowing)
+                .with(SYMBOL, symbol)
+                .build();
     }
 
     // Forge method
-    @Nonnull
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
-
+    public @NotNull List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @org.jetbrains.annotations.Nullable RenderType renderType) {
         if (side != null)
             return Collections.EMPTY_LIST;
 
-        if (!extraData.hasProperty(ORIENTATION)){
+        if (!data.has(ORIENTATION)){
             Chalk.LOGGER.error("IModelData did not have expected property: ORIENTATION");
-            return _baseModel.getQuads(state, side, rand, extraData);
+            return _baseModel.getQuads(state, side, rand, data, renderType);
         }
 
-        if (!extraData.hasProperty(FACING)){
+        if (!data.has(FACING)){
             Chalk.LOGGER.error("IModelData did not have expected property: FACING");
-            return _baseModel.getQuads(state, side, rand, extraData);
+            return _baseModel.getQuads(state, side, rand, data, renderType);
         }
 
-        if (!extraData.hasProperty(GLOWING)){
+        if (!data.has(GLOWING)){
             Chalk.LOGGER.error("IModelData did not have expected property: GLOWING");
-            return _baseModel.getQuads(state, side, rand, extraData);
+            return _baseModel.getQuads(state, side, rand, data, renderType);
         }
 
-        int orientation = extraData.getData(ORIENTATION);
-        Direction facing = extraData.getData(FACING);
-        boolean isGlowing = extraData.getData(GLOWING);
+        int orientation = data.get(ORIENTATION);
+        Direction facing = data.get(FACING);
+        boolean isGlowing = data.get(GLOWING);
         MarkSymbol symbol = MarkSymbol.NONE;
 
-        if (extraData.hasProperty(SYMBOL))
-            symbol = extraData.getData(SYMBOL);
+        if (data.has(SYMBOL))
+            symbol = data.get(SYMBOL);
 
         List<BakedQuad> quads = new ArrayList<BakedQuad>();
 
@@ -117,6 +115,12 @@ public class ChalkMarkBakedModel implements BakedModel {
 
         quads.add(quad);
         return quads;
+    }
+
+    // IBakedModel method
+    @Override
+    public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_, @org.jetbrains.annotations.Nullable Direction p_235040_, RandomSource p_235041_) {
+        return Collections.EMPTY_LIST;
     }
 
     private static BakedQuad convertToFullBright(BakedQuad quad) {
@@ -176,7 +180,7 @@ public class ChalkMarkBakedModel implements BakedModel {
         BlockElementRotation blockPartRotation = new BlockElementRotation(new Vector3f(0.5f,0.5f,0.5f), facing.getAxis(), (float)rotation, false);
 
         // From pos, To pos, Face, Texture, Facing, Transform, Rotation, Shading, Dummy RL
-        BakedQuad quad = _faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, IDENTITY,
+        BakedQuad quad = _faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE,
                 blockPartRotation, true, new ResourceLocation("chalk:chalk_mark_" + facing));
 
         return quad;
@@ -184,6 +188,8 @@ public class ChalkMarkBakedModel implements BakedModel {
 
     private TextureAtlasSprite getTextureForMark(MarkSymbol symbol, int orientation){
         TextureAtlas atlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
+
+        // TODO: Cache
 
         if (symbol == MarkSymbol.CROSS)
             return atlas.getSprite(new ResourceLocation("chalk:block/mark_cross"));
@@ -211,11 +217,7 @@ public class ChalkMarkBakedModel implements BakedModel {
         }
     }
 
-    // IBakedModel method
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState p_200117_1_, @Nullable Direction p_200117_2_, Random p_200117_3_) {
-        return Collections.EMPTY_LIST;
-    }
+
 
     @Override
     public boolean useAmbientOcclusion() {
