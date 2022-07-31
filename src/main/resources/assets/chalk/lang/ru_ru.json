@@ -1,0 +1,24 @@
+{
+  "block.chalk.chalk_mark_block": "Рисунок мелом",
+
+  "item.chalk.black_chalk": "Черный мелок",
+  "item.chalk.red_chalk": "Красный мелок",
+  "item.chalk.green_chalk": "Зелёный мелок",
+  "item.chalk.brown_chalk": "Коричневый мелок",
+  "item.chalk.blue_chalk": "Синий мелок",
+  "item.chalk.purple_chalk": "Фиолетовый мелок",
+  "item.chalk.cyan_chalk": "Бирюзовый мелок",
+  "item.chalk.light_gray_chalk": "Светло-серый мелок",
+  "item.chalk.gray_chalk": "Серый мелок",
+  "item.chalk.pink_chalk": "Розовый мелок",
+  "item.chalk.lime_chalk": "Лаймовый мелок",
+  "item.chalk.yellow_chalk": "Жёлтый мелок",
+  "item.chalk.light_blue_chalk": "Голубой мелок",
+  "item.chalk.magenta_chalk": "Пурпурный мелок",
+  "item.chalk.orange_chalk": "Оранжевый мелок",
+  "item.chalk.white_chalk": "Белый мелок",
+
+  "item.chalk.chalk_box": "Коробок для Мела",
+  "item.chalk.chalk_box.tooltip.drawing_with": "Рисуем с: ",
+  "container.chalk.chalk_box": "Коробок для Мела"
+}
