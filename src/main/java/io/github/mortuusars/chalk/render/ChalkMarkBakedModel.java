@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -36,6 +37,10 @@ public class ChalkMarkBakedModel implements BakedModel {
     private enum MarkType {
         CENTER, ARROW, CROSS
     }
+
+    public static final ResourceLocation CROSS = new ResourceLocation("chalk:block/mark_cross");
+    public static final ResourceLocation CENTER = new ResourceLocation("chalk:block/mark_center");
+    public static final ResourceLocation ARROW = new ResourceLocation("chalk:block/mark_arrow");
 
     public static ModelProperty<Integer> ORIENTATION = new ModelProperty<>();
     public static ModelProperty<Direction> FACING = new ModelProperty<>();
@@ -58,8 +63,6 @@ public class ChalkMarkBakedModel implements BakedModel {
             .with(GLOWING, false)
             .with(SYMBOL, MarkSymbol.NONE)
             .build();
-
-
     }
 
     @Override
@@ -108,7 +111,8 @@ public class ChalkMarkBakedModel implements BakedModel {
 
         List<BakedQuad> quads = new ArrayList<BakedQuad>();
 
-        BakedQuad quad = getQuadByFacing(facing, orientation, symbol);
+//        BakedQuad quad = getQuadByFacing(facing, orientation, symbol);
+        BakedQuad quad = getBakedQuad(facing, symbol, orientation, facing == Direction.DOWN ? 180 : 0);
 
         if (isGlowing)
             quad = convertToFullBright(quad);
@@ -142,26 +146,50 @@ public class ChalkMarkBakedModel implements BakedModel {
         );
     }
 
-    private BakedQuad getQuadByFacing(Direction facing, int orientation, MarkSymbol symbol) {
-        switch (facing) {
-            case DOWN:
-                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 15.9f, 0), new Vector3f(16, 16, 16), 180);
-            case UP:
-                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
-            case NORTH:
-                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 15.9f), new Vector3f(16, 16, 16), 0);
-            case SOUTH:
-                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 16, 0.1f), 0);
-            case WEST:
-                return getBakedQuad(facing, symbol, orientation, new Vector3f(15.9f, 0, 0), new Vector3f(16, 16, 16), 0);
-            case EAST:
-                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(0.1f, 16, 16), 0);
-            default:
-                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
-        }
+//    private BakedQuad getQuadByFacing(Direction facing, int orientation, MarkSymbol symbol) {
+//        switch (facing) {
+//            case DOWN:
+//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 15.9f, 0), new Vector3f(16, 16, 16), 180);
+//            case UP:
+//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
+//            case NORTH:
+//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 15.9f), new Vector3f(16, 16, 16), 0);
+//            case SOUTH:
+//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 16, 0.1f), 0);
+//            case WEST:
+//                return getBakedQuad(facing, symbol, orientation, new Vector3f(15.9f, 0, 0), new Vector3f(16, 16, 16), 0);
+//            case EAST:
+//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(0.1f, 16, 16), 0);
+//            default:
+//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
+//        }
+//    }
+
+    private static HashMap<Direction, Vector3f> fromCoords;
+    private static HashMap<Direction, Vector3f> toCoords;
+
+    static {
+        fromCoords = new HashMap<>();
+        fromCoords.put(Direction.DOWN, new Vector3f(0, 15.9f, 0));
+        fromCoords.put(Direction.UP, new Vector3f(0, 0, 0));
+        fromCoords.put(Direction.NORTH, new Vector3f(0, 0, 15.9f));
+        fromCoords.put(Direction.SOUTH, new Vector3f(0, 0, 0));
+        fromCoords.put(Direction.WEST, new Vector3f(15.9f, 0, 0));
+        fromCoords.put(Direction.EAST, new Vector3f(0, 0, 0));
+
+        toCoords = new HashMap<>();
+        toCoords.put(Direction.DOWN, new Vector3f(16, 16, 16));
+        toCoords.put(Direction.UP, new Vector3f(16, 0.1f, 16));
+        toCoords.put(Direction.NORTH, new Vector3f(16, 16, 16));
+        toCoords.put(Direction.SOUTH, new Vector3f(16, 16, 0.1f));
+        toCoords.put(Direction.WEST, new Vector3f(16, 16, 16));
+        toCoords.put(Direction.EAST, new Vector3f(0.1f, 16, 16));
     }
 
-    private BakedQuad getBakedQuad(Direction facing, MarkSymbol symbol, int orientation, Vector3f from, Vector3f to, int uvRotation) {
+    private BakedQuad getBakedQuad(Direction facing, MarkSymbol symbol, int orientation, int uvRotation) {
+
+        Vector3f from = facing != null ? fromCoords.get(facing) : fromCoords.get(Direction.UP);
+        Vector3f to = facing != null ? toCoords.get(facing) : fromCoords.get(Direction.UP);
 
         TextureAtlasSprite texture = getTextureForMark(symbol, orientation);
 
@@ -186,17 +214,40 @@ public class ChalkMarkBakedModel implements BakedModel {
         return quad;
     }
 
+//    private BakedQuad getBakedQuad(Direction facing, MarkSymbol symbol, int orientation, Vector3f from, Vector3f to, int uvRotation) {
+//
+//        TextureAtlasSprite texture = getTextureForMark(symbol, orientation);
+//
+//        // Direction, TintIndex, TextureName(from json), UVs
+//        // Tint index is set to 0 (-1 is off) to color the marks with ChalkMarkBlockColor
+//        BlockElementFace blockPartFace = new BlockElementFace(facing, 0, "", new BlockFaceUV(new float[]{0f, 0f, 16f, 16f}, uvRotation));
+//
+//        // Rotate the texture
+//        int rotation = symbol == MarkSymbol.CROSS ? 45 : rotationFromOrientation(orientation);
+//
+//        // Flip rotation for this facings
+//        if (facing == Direction.NORTH || facing == Direction.WEST)
+//            rotation = 360 - rotation;
+//
+//        // Origin, Axis, RotationAngle(22.5), Rescale
+//        BlockElementRotation blockPartRotation = new BlockElementRotation(new Vector3f(0.5f,0.5f,0.5f), facing.getAxis(), (float)rotation, false);
+//
+//        // From pos, To pos, Face, Texture, Facing, Transform, Rotation, Shading, Dummy RL
+//        BakedQuad quad = _faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE,
+//                blockPartRotation, true, new ResourceLocation("chalk:chalk_mark_" + facing));
+//
+//        return quad;
+//    }
+
     private TextureAtlasSprite getTextureForMark(MarkSymbol symbol, int orientation){
         TextureAtlas atlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
 
-        // TODO: Cache
-
         if (symbol == MarkSymbol.CROSS)
-            return atlas.getSprite(new ResourceLocation("chalk:block/mark_cross"));
+            return atlas.getSprite(CROSS);
         else if (orientation == 4)
-            return atlas.getSprite(new ResourceLocation("chalk:block/mark_center"));
+            return atlas.getSprite(CENTER);
         else
-            return atlas.getSprite(new ResourceLocation("chalk:block/mark_arrow"));
+            return atlas.getSprite(ARROW);
     }
 
     private int rotationFromOrientation(int orientation){
@@ -205,18 +256,17 @@ public class ChalkMarkBakedModel implements BakedModel {
             throw new IllegalArgumentException("Orientation should be 0-8. Passed: " + orientation);
 
         // Yes, hardcoded.
-        switch (orientation){
-            case 2: return 315;
-            case 5: return 270;
-            case 8: return 225;
-            case 7: return 180;
-            case 6: return 135;
-            case 3: return 90;
-            case 0: return 45;
-            default: return 0;
-        }
+        return switch (orientation) {
+            case 2 -> 315;
+            case 5 -> 270;
+            case 8 -> 225;
+            case 7 -> 180;
+            case 6 -> 135;
+            case 3 -> 90;
+            case 0 -> 45;
+            default -> 0;
+        };
     }
-
 
 
     @Override
