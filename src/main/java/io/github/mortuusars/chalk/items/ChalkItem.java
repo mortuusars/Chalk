@@ -1,20 +1,15 @@
 package io.github.mortuusars.chalk.items;
 
-import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
-import io.github.mortuusars.chalk.render.ChalkColors;
+import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.setup.ModBlocks;
+import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
-import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
-import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -27,45 +22,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Random;
 
 public class ChalkItem extends Item {
 
-    private boolean _glowing;
-    private final DyeColor _color;
+    private final DyeColor color;
 
-    public ChalkItem(DyeColor dyeColor, boolean isGlowing, Properties properties) {
+    public ChalkItem(DyeColor dyeColor, Properties properties) {
         super(properties
                 .tab(CreativeModeTab.TAB_TOOLS)
                 .stacksTo(1)
                 .defaultDurability(64)
                 .setNoRepair());
 
-//        if (isGlowing)
-
-        _color = dyeColor;
-        _glowing = isGlowing;
-    }
-
-
-//    @Override
-//    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-//
-//        pTooltipComponents.add(new StringText)
-//
-//    }
-
-
-    @Override
-    public boolean isFoil(ItemStack pStack) {
-        return _glowing;
+        color = dyeColor;
     }
 
     @Override
@@ -74,7 +47,7 @@ public class ChalkItem extends Item {
     }
 
     public DyeColor getColor() {
-        return this._color;
+        return this.color;
     }
 
     @Override
@@ -98,89 +71,34 @@ public class ChalkItem extends Item {
         if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
             return InteractionResult.FAIL;
 
-        final boolean isSecondaryUseActive = context.isSecondaryUseActive();
         final Level level = context.getLevel();
         final BlockPos clickedPos = context.getClickedPos();
-        final BlockState clickedBlockState = level.getBlockState(clickedPos);
         final Direction clickedFace = context.getClickedFace();
+        final boolean isGlowing = player.getOffhandItem().is(ModTags.Items.GLOWING);
 
-        final boolean isClickedOnAMark = level.getBlockState(clickedPos).getBlock() instanceof ChalkMarkBlock;
+        MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
 
-        BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
-        final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
-        BlockState newMarkBlockState = getNewMarkBlockState(isSecondaryUseActive, context.getClickLocation(), clickedPos, newMarkFacing);
+        if (ChalkMark.draw(symbol, color, isGlowing, clickedPos, clickedFace, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
+            if (!player.isCreative())
+                damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
 
-        if (!isDrawableThere(newMarkPosition, clickedBlockState, clickedPos, newMarkBlockState.getValue(ChalkMarkBlock.FACING), level))
-            return InteractionResult.PASS;
-
-        // Cancel drawing if marks are same.
-        // Remove old mark if different.
-        final BlockState oldMarkBlockState = level.getBlockState(newMarkPosition);
-        if (oldMarkBlockState.getBlock() instanceof ChalkMarkBlock) {
-            if (oldMarkBlockState == newMarkBlockState)
-                return InteractionResult.FAIL;
-
-            // Remove old mark. It would be replaced with new one.
-            level.removeBlock(newMarkPosition, false);
+            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
         }
 
-        drawMarkAndDamageItem(hand, itemStack, player, level, newMarkFacing, newMarkPosition, newMarkBlockState);
-        return InteractionResult.CONSUME;
+        return InteractionResult.FAIL;
     }
 
-    private BlockState getNewMarkBlockState(boolean isSecondaryUseActive, Vec3 clickLocation, BlockPos clickedPos, Direction clickedFace) {
-        final BlockState defaultBlockState = ModBlocks.getMarkBlockByColor(_color).defaultBlockState().setValue(ChalkMarkBlock.FACING, clickedFace);
-
-        if (isSecondaryUseActive)
-            return defaultBlockState.setValue(ChalkMarkBlock.SYMBOL, MarkSymbol.CROSS);
-        else {
-            final int orientation = ClickLocationUtils.getBlockRegion(clickLocation, clickedPos, clickedFace);
-            return defaultBlockState.setValue(ChalkMarkBlock.ORIENTATION, orientation);
-        }
-    }
-
-    private boolean isDrawableThere(BlockPos markPosition, BlockState drawingTarget, BlockPos targetBlockPos, Direction face, Level level){
-        if (drawingTarget.getBlock() instanceof ChalkMarkBlock)
-            return true;
-
-        final boolean isFaceFull = Block.isFaceFull(drawingTarget.getCollisionShape(level, targetBlockPos), face);
-
-        final Block blockAtDrawingPos = level.getBlockState(markPosition).getBlock();
-        return isFaceFull && (blockAtDrawingPos instanceof AirBlock || blockAtDrawingPos instanceof ChalkMarkBlock);
-    }
-
-    private void damageItemStack(InteractionHand hand, ItemStack itemStack, Player player, Level level, BlockPos markPosition) {
+    private void damageAndConsumeItems(InteractionHand hand, ItemStack itemStack, Player player, Level level, boolean isGlowing) {
         itemStack.setDamageValue(itemStack.getDamageValue() + 1);
         if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
             player.setItemInHand(hand, ItemStack.EMPTY);
-            level.playSound(null, markPosition, SoundEvents.GRAVEL_BREAK, SoundSource.BLOCKS, 0.75f, 1f);
-        }
-    }
-
-    private void drawMarkAndDamageItem(InteractionHand hand, ItemStack itemStack, Player player, Level level, Direction facing, BlockPos newMarkPosition, BlockState newMarkBlockState) {
-        boolean glowingItemInOffHand = false;
-
-        if (_glowing)
-            newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
-        else if (hand == InteractionHand.MAIN_HAND && DrawingUtils.isGlowingItem(player.getOffhandItem().getItem())){
-            newMarkBlockState = newMarkBlockState.setValue(ChalkMarkBlock.GLOWING, true);
-            glowingItemInOffHand = true;
+            Vec3 playerPos = player.position();
+            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, SoundEvents.GRAVEL_BREAK,
+                    SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
 
-        if (level.isClientSide)
-            ParticleUtils.spawnColorDustParticles(_color, level, newMarkPosition, facing);
-        else {
-            level.setBlock(newMarkPosition, newMarkBlockState, Block.UPDATE_ALL_IMMEDIATE);
-
-            if (!player.isCreative()){
-                damageItemStack(hand, itemStack, player, level, newMarkPosition);
-                if (glowingItemInOffHand)
-                    player.getOffhandItem().shrink(1);
-            }
-
-            level.playSound(null, newMarkPosition, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
-                    SoundSource.BLOCKS, 0.6f,  new Random().nextFloat() * 0.2f + 0.8f);
-        }
+        if (isGlowing)
+            player.getOffhandItem().shrink(1);
     }
 
     @Override

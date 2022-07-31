@@ -2,46 +2,79 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "rolls": 1,
+      "rolls": 2,
       "entries": [
         {
-          "type": "item",
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "chalk:chalk_box",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{Items: [{id: \"chalk:white_chalk\", Count: 1b, tag: {Damage: 23}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_gray_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:red_chalk\", Count: 1b, tag: {Damage: 17}}, {id: \"minecraft:air\", Count: 1b}]}\n"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "chalk:chalk_box",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{Items: [{id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_gray_chalk\", Count: 1b, tag: {Damage: 6}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:white_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_blue_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:glowstone_dust\", Count: 7b}], GlowUses: 2}\n"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "weight": 2,
+          "name": "minecraft:stone",
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{Items: [{id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_gray_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:green_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}]}\n"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:white_chalk"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:light_gray_chalk"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:gray_chalk"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:black_chalk"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:yellow_chalk"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:light_blue_chalk"
         },
         {
-          "type": "item",
+          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:orange_chalk"
         },
         {
-          "type": "empty",
-          "weight": 15
+          "type": "minecraft:empty",
+          "weight": 40
         }
       ]
     }

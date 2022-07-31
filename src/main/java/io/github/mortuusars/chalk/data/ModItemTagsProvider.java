@@ -7,6 +7,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
@@ -18,6 +19,10 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags() {
+
+        tag(ModTags.Items.GLOWING)
+                .add(Items.GLOW_INK_SAC)
+                .add(Items.GLOWSTONE_DUST);
 
         ModItems.CHALKS.forEach((name, item) -> {
             tag(ModTags.Items.CHALK).add(item.get());

@@ -5,6 +5,7 @@ import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModItems;
+import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
@@ -50,8 +51,6 @@ public class ChalkMarkBlock extends Block {
     public static final IntegerProperty ORIENTATION = IntegerProperty.create("orientation", 0, 8);
     public static final BooleanProperty GLOWING = BooleanProperty.create("is_glowing");
     public static final EnumProperty<MarkSymbol> SYMBOL = EnumProperty.create("symbol", MarkSymbol.class);
-
-    public static int GlowingLightLevel = -1; // This is later updated from config.
 
     private final DyeColor _color;
 
@@ -153,7 +152,7 @@ public class ChalkMarkBlock extends Block {
 
         ItemStack usedItem = player.getItemInHand(hand);
 
-        if (DrawingUtils.isGlowingItem(usedItem.getItem())) {
+        if (usedItem.is(ModTags.Items.GLOWING)) {
 
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
                 if (!player.isCreative()) {
@@ -212,9 +211,7 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        if (GlowingLightLevel == -1) // I need to do this terribleness to get ACTUAL value from config. In constructor it is still not loaded.
-            GlowingLightLevel = CommonConfig.GLOWING_CHALK_MARK_LIGHT_LEVEL.get();
-        return state.getValue(GLOWING) ? GlowingLightLevel : 0;
+        return state.getValue(GLOWING) ? CommonConfig.GLOWING_CHALK_MARK_LIGHT_LEVEL.get() : 0;
     }
 
     @Override

@@ -1,0 +1,104 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "chalk:item/chalk_box"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "chalk:selected": 1.0
+      },
+      "model": "chalk:item/chalk_box_white"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 2.0
+      },
+      "model": "chalk:item/chalk_box_orange"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 3.0
+      },
+      "model": "chalk:item/chalk_box_magenta"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 4.0
+      },
+      "model": "chalk:item/chalk_box_light_blue"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 5.0
+      },
+      "model": "chalk:item/chalk_box_yellow"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 6.0
+      },
+      "model": "chalk:item/chalk_box_lime"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 7.0
+      },
+      "model": "chalk:item/chalk_box_pink"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 8.0
+      },
+      "model": "chalk:item/chalk_box_gray"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 9.0
+      },
+      "model": "chalk:item/chalk_box_light_gray"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 10.0
+      },
+      "model": "chalk:item/chalk_box_cyan"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 11.0
+      },
+      "model": "chalk:item/chalk_box_purple"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 12.0
+      },
+      "model": "chalk:item/chalk_box_blue"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 13.0
+      },
+      "model": "chalk:item/chalk_box_brown"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 14.0
+      },
+      "model": "chalk:item/chalk_box_green"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 15.0
+      },
+      "model": "chalk:item/chalk_box_red"
+    },
+    {
+      "predicate": {
+        "chalk:selected": 16.0
+      },
+      "model": "chalk:item/chalk_box_black"
+    }
+  ]
+}

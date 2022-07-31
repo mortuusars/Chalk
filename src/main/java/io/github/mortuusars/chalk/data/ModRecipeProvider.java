@@ -7,12 +7,14 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -21,11 +23,9 @@ public class ModRecipeProvider extends RecipeProvider {
     public ModRecipeProvider(DataGenerator generator) { super(generator); }
 
     @Override
-    protected void buildCraftingRecipes(Consumer<FinishedRecipe> recipeBuilder) {
+    protected void buildCraftingRecipes(@NotNull Consumer<FinishedRecipe> recipeBuilder) {
         ModItems.CHALKS.forEach( (name, item) -> {
-
             DyeColor color = item.get().getColor();
-
             ShapelessRecipeBuilder.shapeless(item.get(), 1)
                     .unlockedBy("has_calcite", has(Items.CALCITE))
                     .group("chalk:chalk")
@@ -34,15 +34,15 @@ public class ModRecipeProvider extends RecipeProvider {
                     .save(recipeBuilder, Chalk.MOD_ID + ":chalk_from_" + color + "_dye");
         });
 
-        ModItems.GLOWING_CHALKS.forEach( (name, item) -> {
-            DyeColor color = item.get().getColor();
-            ShapelessRecipeBuilder.shapeless(item.get(), 1)
-                    .unlockedBy("has_calcite", has(Items.CALCITE))
-                    .unlockedBy("has_glowing_ink", has(Items.GLOW_INK_SAC))
-                    .group("chalk:glowing_chalk")
-                    .requires(Items.GLOW_INK_SAC)
-                    .requires(ModItems.getChalkByColor(color))
-                    .save(recipeBuilder, Chalk.MOD_ID + ":normal_to_glowing_" + color + "_chalk");
-        });
+        ShapedRecipeBuilder.shaped(ModItems.CHALK_BOX.get())
+                .unlockedBy("has_chalk", has(ModTags.Items.CHALK))
+                .unlockedBy("has_paper", has(Items.PAPER))
+                .unlockedBy("has_slimeball", has(Tags.Items.SLIMEBALLS))
+                .pattern("P P")
+                .pattern("PSP")
+                .pattern("PPP")
+                .define('P', Items.PAPER)
+                .define('S', Tags.Items.SLIMEBALLS)
+                .save(recipeBuilder);
     }
 }

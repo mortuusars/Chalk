@@ -1,4 +1,6 @@
 {
+  "block.chalk.chalk_mark_block": "Малюнок крейдою",
+
   "item.chalk.black_chalk": "Чорна Крейда",
   "item.chalk.red_chalk": "Червона Крейда",
   "item.chalk.green_chalk": "Зелена Крейда",
@@ -15,5 +17,8 @@
   "item.chalk.magenta_chalk": "Пурпурна Крейда",
   "item.chalk.orange_chalk": "Оранжева Крейда",
   "item.chalk.white_chalk": "Біла Крейда",
-  "block.chalk.chalk_mark_block": "Малюнок крейдою"
+
+  "item.chalk.chalk_box": "Коробка для Крейди",
+  "item.chalk.chalk_box.tooltip.drawing_with": "Малюємо з: ",
+  "container.chalk.chalk_box": "Коробка для Крейди"
 }
