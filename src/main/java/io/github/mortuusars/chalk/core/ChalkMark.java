@@ -64,10 +64,10 @@ public class ChalkMark {
             return true; // Marks can be replaced.
 
         BlockState stateAtMarkPos = level.getBlockState(pos);
-        if ( !stateAtMarkPos.is(Blocks.AIR) && !stateAtMarkPos.is(ModTags.Blocks.CHALK_MARK))
-            return false;
+        if ( stateAtMarkPos.isAir() || stateAtMarkPos.is(ModTags.Blocks.CHALK_MARK) )
+            return Block.isFaceFull(clickedBlockState.getCollisionShape(level, clickedBlockPos), clickedFace);
 
-        return Block.isFaceFull(clickedBlockState.getCollisionShape(level, clickedBlockPos), clickedFace);
+        return false;
     }
 
     public static BlockState createMarkBlockState(MarkSymbol symbol, DyeColor color, Direction clickedFace, Vec3 clickLocation, BlockPos clickedPos, boolean isGlowing){
