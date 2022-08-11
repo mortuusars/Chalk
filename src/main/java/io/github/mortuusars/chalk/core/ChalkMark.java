@@ -1,5 +1,6 @@
 package io.github.mortuusars.chalk.core;
 
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.items.ChalkBox;
@@ -23,12 +24,16 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
+import static io.github.mortuusars.chalk.Chalk.LOGGER;
+
 public class ChalkMark {
 
 
     public static InteractionResult draw(MarkSymbol symbol, DyeColor color, boolean isGlowing, BlockPos clickedPos, Direction clickedFace, Vec3 clickLocation, Level level) {
-        if ( !ChalkMark.canBeDrawnAt(clickedPos.relative(clickedFace), clickedPos, clickedFace, level) )
+        if ( !ChalkMark.canBeDrawnAt(clickedPos.relative(clickedFace), clickedPos, clickedFace, level) ) {
+            LOGGER.info("Chalk cannot be drawn at this position. ({}, {}, {})", clickedPos.getX(), clickedPos.getY(), clickedPos.getZ());
             return InteractionResult.FAIL;
+        }
 
         final boolean isClickedOnAMark = level.getBlockState(clickedPos).is(ModTags.Blocks.CHALK_MARK);
 
@@ -64,10 +69,10 @@ public class ChalkMark {
             return true; // Marks can be replaced.
 
         BlockState stateAtMarkPos = level.getBlockState(pos);
-        if ( !stateAtMarkPos.is(Blocks.AIR) && !stateAtMarkPos.is(ModTags.Blocks.CHALK_MARK))
-            return false;
+        if ( stateAtMarkPos.isAir() || stateAtMarkPos.is(ModTags.Blocks.CHALK_MARK) )
+            return Block.isFaceFull(clickedBlockState.getCollisionShape(level, clickedBlockPos), clickedFace);
 
-        return Block.isFaceFull(clickedBlockState.getCollisionShape(level, clickedBlockPos), clickedFace);
+        return false;
     }
 
     public static BlockState createMarkBlockState(MarkSymbol symbol, DyeColor color, Direction clickedFace, Vec3 clickLocation, BlockPos clickedPos, boolean isGlowing){

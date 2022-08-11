@@ -1,3 +1,7 @@
+### 1.3.1 - 2022-08-11
+
+- Fixed sometimes not being able to draw a mark. (Minecraft has multiple types of air. Who would have thought.)
+
 ### 1.3.0 - 2022-07-31 - 1 in a MILLION
 
 - Added Chalk Box. It lets you carry more chalks with you and draw glowing marks conveniently.
