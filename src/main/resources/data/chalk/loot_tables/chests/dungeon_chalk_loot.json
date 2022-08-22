@@ -40,7 +40,7 @@
         {
           "type": "minecraft:item",
           "weight": 2,
-          "name": "minecraft:stone",
+          "name": "chalk:chalk_box",
           "functions": [
             {
               "function": "minecraft:set_nbt",
@@ -65,7 +65,7 @@
         },
         {
           "type": "minecraft:empty",
-          "weight": 25
+          "weight": 60
         }
       ]
     }
