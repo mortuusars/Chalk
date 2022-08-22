@@ -39,17 +39,6 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "minecraft:stone",
-          "functions": [
-            {
-              "function": "minecraft:set_nbt",
-              "tag": "{Items: [{id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_gray_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:green_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}]}\n"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:white_chalk"
         },
@@ -85,7 +74,7 @@
         },
         {
           "type": "minecraft:empty",
-          "weight": 40
+          "weight": 70
         }
       ]
     }
