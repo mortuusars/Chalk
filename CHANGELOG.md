@@ -1,3 +1,8 @@
+### 1.3.2 - 2022-08-22
+
+- Reduced chalk spawn chance in chests.
+- Fixed stone spawning instead of chalk in loot tables.
+
 ### 1.3.1 - 2022-08-11
 
 - Fixed sometimes not being able to draw a mark. (Minecraft has multiple types of air. Who would have thought.)
