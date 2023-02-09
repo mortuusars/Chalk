@@ -1,6 +1,7 @@
 package io.github.mortuusars.chalk.items;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.core.ChalkMark;
@@ -35,7 +36,10 @@ import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChalkBoxItem extends Item {
 
@@ -121,14 +125,45 @@ public class ChalkBoxItem extends Item {
         if (!usedStack.is(this) || !(player instanceof ServerPlayer))
             return InteractionResultHolder.pass(usedStack);
 
-        if (!level.isClientSide){
+        if (player.isSecondaryUseActive()) {
+            changeSelectedChalk(usedStack);
+        }
+        else {
             NetworkHooks.openGui((ServerPlayer) player,
                     new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
                             new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
-                            new TranslatableComponent("container.chalk.chalk_box")), buffer -> buffer.writeItem(usedStack.copy()));
+                            usedStack.getHoverName()), buffer -> buffer.writeItem(usedStack.copy()));
         }
 
         return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);
+    }
+
+    /**
+     * Shifts stacks until first slot is changed to another chalk.
+     */
+    private static void changeSelectedChalk(ItemStack usedStack) {
+        List<ItemStack> stacks = new ArrayList<>(16);
+        int chalks = 0;
+        for (int slot = 0; slot < ChalkBox.CHALK_SLOTS; slot++) {
+            ItemStack slotStack = ChalkBox.getItemInSlot(usedStack, slot);
+            stacks.add(slotStack);
+            if (!slotStack.isEmpty())
+                chalks++;
+        }
+
+        if (chalks > 1) {
+            ItemStack firstStack = stacks.get(0);
+
+            for (int i = 0; i < 8; i++) {
+                ItemStack lastStack = stacks.get(stacks.size() - 1);
+                stacks.remove(lastStack);
+                stacks.add(0, lastStack);
+                if (!lastStack.isEmpty() && !lastStack.equals(firstStack, false))
+                    break;
+            }
+
+            ChalkBox.setContents(usedStack, stacks);
+        }
     }
 
     private @Nullable Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
