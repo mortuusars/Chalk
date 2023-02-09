@@ -24,6 +24,8 @@
 
   "chalk.subtitles.chalk_broken": "Крейда ламається",
   "chalk.subtitles.mark_drawn": "Крейда малює",
+  "chalk.subtitles.chalk_box_changed": "Коробка для Крейди шуршить",
+  "chalk.subtitles.chalk_box_opens": "Коробка для Крейди відкрилась",
   "chalk.subtitles.glow_applied": "Малюнок крейдою починає світитись",
   "chalk.subtitles.mark_removed": "Малюнок крейдою стерто"
 }

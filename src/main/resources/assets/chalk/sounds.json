@@ -1,5 +1,5 @@
 {
-  "item.chalk.chalk_broken": {
+  "item.chalk_broken": {
     "subtitle": "chalk.subtitles.chalk_broken",
     "sounds": [
       "dig/gravel1",
@@ -8,7 +8,7 @@
       "dig/gravel4"
     ]
   },
-  "item.chalk.draw": {
+  "item.chalk_draw": {
     "subtitle": "chalk.subtitles.mark_drawn",
     "sounds": [
       "ui/cartography_table/drawmap1",
@@ -16,7 +16,71 @@
       "ui/cartography_table/drawmap3"
     ]
   },
-  "item.chalk.glow_applied": {
+  "item.chalk_box_change": {
+    "subtitle": "chalk.subtitles.chalk_box_changed",
+    "sounds": [
+      "item/bundle/remove_one1",
+      {
+        "name": "item/bundle/remove_one1",
+        "pitch": 1.35
+      },
+      {
+        "name": "item/bundle/remove_one1",
+        "pitch": 1.4
+      },
+      "item/bundle/remove_one2",
+      {
+        "name": "item/bundle/remove_one2",
+        "pitch": 1.35
+      },
+      {
+        "name": "item/bundle/remove_one2",
+        "pitch": 1.4
+      },
+      "item/bundle/remove_one3",
+      {
+        "name": "item/bundle/remove_one3",
+        "pitch": 1.35
+      },
+      {
+        "name": "item/bundle/remove_one3",
+        "pitch": 1.4
+      }
+    ]
+  },
+  "item.chalk_box_open": {
+    "subtitle": "chalk.subtitles.chalk_box_opens",
+    "sounds": [
+      "item/bundle/insert1",
+      {
+        "name": "item/bundle/insert1",
+        "pitch": 1.25
+      },
+      {
+        "name": "item/bundle/insert1",
+        "pitch": 1.35
+      },
+      "item/bundle/insert2",
+      {
+        "name": "item/bundle/insert2",
+        "pitch": 1.25
+      },
+      {
+        "name": "item/bundle/insert2",
+        "pitch": 1.35
+      },
+      "item/bundle/insert3",
+      {
+        "name": "item/bundle/insert3",
+        "pitch": 1.25
+      },
+      {
+        "name": "item/bundle/insert3",
+        "pitch": 1.35
+      }
+    ]
+  },
+  "block.mark_glow_applied": {
     "subtitle": "chalk.subtitles.glow_applied",
     "sounds": [
       "mob/turtle/walk1",
@@ -26,7 +90,7 @@
       "mob/turtle/walk5"
     ]
   },
-  "block.chalk.removed": {
+  "block.mark_removed": {
     "subtitle": "chalk.subtitles.mark_removed",
     "sounds": [
       {

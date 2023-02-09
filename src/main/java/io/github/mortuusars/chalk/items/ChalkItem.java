@@ -1,17 +1,12 @@
 package io.github.mortuusars.chalk.items;
 
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.core.ChalkMark;
-import io.github.mortuusars.chalk.setup.ModBlocks;
-import io.github.mortuusars.chalk.setup.ModSounds;
+import io.github.mortuusars.chalk.setup.ModSoundEvents;
 import io.github.mortuusars.chalk.setup.ModTags;
-import io.github.mortuusars.chalk.utils.ClickLocationUtils;
-import io.github.mortuusars.chalk.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,13 +15,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AirBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Random;
 
 public class ChalkItem extends Item {
 
@@ -97,8 +87,8 @@ public class ChalkItem extends Item {
         if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
             player.setItemInHand(hand, ItemStack.EMPTY);
             Vec3 playerPos = player.position();
-            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, ModSounds.CHALK_BROKEN.get(),
-                    SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, ModSoundEvents.CHALK_BROKEN.get(),
+                    SoundSource.PLAYERS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
 
         if (isGlowing)

@@ -23,7 +23,7 @@ public class Registry {
 
         ModBlocks.register();
         ModItems.register();
-        ModSounds.register();
+        ModSoundEvents.register();
         ModMenus.register();
     }
 }
