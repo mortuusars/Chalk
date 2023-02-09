@@ -20,5 +20,10 @@
 
   "item.chalk.chalk_box": "Коробка для Крейди",
   "item.chalk.chalk_box.tooltip.drawing_with": "Малюємо з: ",
-  "container.chalk.chalk_box": "Коробка для Крейди"
+  "container.chalk.chalk_box": "Коробка для Крейди",
+
+  "chalk.subtitles.chalk_broken": "Крейда ламається",
+  "chalk.subtitles.mark_drawn": "Крейда малює",
+  "chalk.subtitles.glow_applied": "Малюнок крейдою починає світитись",
+  "chalk.subtitles.mark_removed": "Малюнок крейдою стерто"
 }

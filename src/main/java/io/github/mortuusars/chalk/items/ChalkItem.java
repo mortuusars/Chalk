@@ -5,6 +5,7 @@ import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.setup.ModBlocks;
+import io.github.mortuusars.chalk.setup.ModSounds;
 import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
@@ -96,7 +97,7 @@ public class ChalkItem extends Item {
         if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
             player.setItemInHand(hand, ItemStack.EMPTY);
             Vec3 playerPos = player.position();
-            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, SoundEvents.GRAVEL_BREAK,
+            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, ModSounds.CHALK_BROKEN.get(),
                     SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
 

@@ -5,6 +5,7 @@ import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModItems;
+import io.github.mortuusars.chalk.setup.ModSounds;
 import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
@@ -163,7 +164,7 @@ public class ChalkMarkBlock extends Block {
                         usedItem.setCount(itemsCount);
                 }
 
-                world.playSound(null, blockPos, SoundEvents.TURTLE_SHAMBLE, SoundSource.BLOCKS, 1.5f, 1f);
+                world.playSound(null, blockPos, ModSounds.MARK_GLOW_APPLIED.get(), SoundSource.BLOCKS, 1.5f, 1f);
                 ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
 
@@ -184,7 +185,7 @@ public class ChalkMarkBlock extends Block {
 
         if (world.removeBlock(pos, isMoving)) {
             if (!world.isClientSide())
-                world.playSound(null, pos, SoundEvents.WART_BLOCK_HIT, SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
+                world.playSound(null, pos, ModSounds.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
             else {
                 ParticleUtils.spawnColorDustParticles(_color, world, pos, facing);
             }

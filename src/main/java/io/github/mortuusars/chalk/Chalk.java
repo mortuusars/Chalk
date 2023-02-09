@@ -4,6 +4,7 @@ import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.loot.LootTableModification;
 import io.github.mortuusars.chalk.setup.ClientSetup;
 import io.github.mortuusars.chalk.setup.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -33,5 +34,9 @@ public class Chalk
         DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> clientSetup::registerClientOnlyEvents);
         MinecraftForge.EVENT_BUS.addListener(LootTableModification::LootTablesLoad);
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    public static ResourceLocation resource(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

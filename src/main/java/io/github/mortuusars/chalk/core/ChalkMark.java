@@ -6,6 +6,7 @@ import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.items.ChalkBox;
 import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.setup.ModBlocks;
+import io.github.mortuusars.chalk.setup.ModSounds;
 import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
@@ -94,7 +95,7 @@ public class ChalkMark {
             double pX = markPos.getX() + 0.5;
             double pY = markPos.getY() + 0.5;
             double pZ = markPos.getZ() + 0.5;
-            level.playSound(null, pX, pY, pZ, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT,
+            level.playSound(null, pX, pY, pZ, ModSounds.MARK_DRAW.get(),
                     SoundSource.BLOCKS, 0.7f,  new Random().nextFloat() * 0.2f + 0.8f);
 
             if (level.isClientSide) {
