@@ -89,12 +89,15 @@ public class ChalkBoxItem extends Item {
         if (ChalkMark.draw(symbol, chalkColor, isGlowing, clickedPos, clickedFace, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
             if ( !player.isCreative() ) {
                 ItemStack chalkItemStack = chalkStack.getFirst();
-                chalkItemStack.setDamageValue(chalkItemStack.getDamageValue() + 1);
-                if (chalkItemStack.getDamageValue() >= chalkItemStack.getMaxDamage()){
-                    chalkItemStack = ItemStack.EMPTY;
-                    Vec3 playerPos = player.position();
-                    level.playSound(player, playerPos.x, playerPos.y, playerPos.z, SoundEvents.GRAVEL_BREAK,
-                            SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+
+                if (chalkItemStack.isDamageableItem()) {
+                    chalkItemStack.setDamageValue(chalkItemStack.getDamageValue() + 1);
+                    if (chalkItemStack.getDamageValue() >= chalkItemStack.getMaxDamage()){
+                        chalkItemStack = ItemStack.EMPTY;
+                        Vec3 playerPos = player.position();
+                        level.playSound(player, playerPos.x, playerPos.y, playerPos.z, SoundEvents.GRAVEL_BREAK,
+                                SoundSource.BLOCKS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+                    }
                 }
 
                 ChalkBox.setSlot(chalkBoxStack, chalkStack.getSecond(), chalkItemStack);

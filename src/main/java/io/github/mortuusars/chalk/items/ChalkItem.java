@@ -89,6 +89,9 @@ public class ChalkItem extends Item {
     }
 
     private void damageAndConsumeItems(InteractionHand hand, ItemStack itemStack, Player player, Level level, boolean isGlowing) {
+        if (!itemStack.isDamageableItem())
+            return;
+
         itemStack.setDamageValue(itemStack.getDamageValue() + 1);
         if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
             player.setItemInHand(hand, ItemStack.EMPTY);
