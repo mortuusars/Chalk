@@ -1,12 +1,19 @@
-### 1.0.2 - 2022-08-22
+### 1.4.0 - 2023-02-10
 
-- Reduced chalk spawn chance in chests. 
+- Added Chalk Box quick change selected chalks: 
+  - Works by Shift+Clicking while not looking at a block.
+  - Shifts chalks inside the box to the left.
+- Improved compatibility with mods that modify damaging items.
+  - Fixes Forbidden&Arcanus Eternal modifier not preventing damage to the chalk.
+- Mod sounds now use unique SoundEvents: fixes subtitles and allows changing sounds in a resource pack.
+
+### 1.3.2 - 2022-08-22
+
+- Reduced chalk spawn chance in chests.
 - Fixed stone spawning instead of chalk in loot tables.
 
-### 1.0.1 - 2022-08-11
+### 1.3.1 - 2022-08-11
 
 - Fixed sometimes not being able to draw a mark. (Minecraft has multiple types of air. Who would have thought.)
 
-### 1.0.0 - 2022-07-31
-
-- Port to 1.19
+### 1.3.0 - 2022-07-31 - 1 in a MILLION

@@ -17,7 +17,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.0.2'
+version = '1.4.0'
 group = 'io.github.mortuusars'
 archivesBaseName = 'chalk-1.19'
 
