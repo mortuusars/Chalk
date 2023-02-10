@@ -125,7 +125,7 @@ public class ChalkBoxItem extends Item {
         }
         else {
             if (!level.isClientSide) {
-                NetworkHooks.openGui((ServerPlayer) player,
+                NetworkHooks.openScreen((ServerPlayer) player,
                         new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
                                 new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
                                 usedStack.getHoverName()), buffer -> buffer.writeItem(usedStack.copy()));
