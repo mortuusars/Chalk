@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -41,7 +42,7 @@ import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"deprecation", "NullableProblems", "PointlessBooleanExpression"})
+@SuppressWarnings({"deprecation", "NullableProblems"})
 public class ChalkMarkBlock extends Block {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -105,7 +106,7 @@ public class ChalkMarkBlock extends Block {
 
     private ItemStack getMatchingItemStack(Player player, Item item){
         return player.getInventory().items.stream().filter(invItem ->
-                invItem.getItem().getRegistryName() == item.getRegistryName()).findFirst().orElse(ItemStack.EMPTY);
+                invItem.getItem().builtInRegistryHolder().key().location() == item.builtInRegistryHolder().key().location()).findFirst().orElse(ItemStack.EMPTY);
     }
 
     @Override
@@ -197,9 +198,9 @@ public class ChalkMarkBlock extends Block {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState blockState, Level world, BlockPos blockPos, Random random) {
+    public void animateTick(BlockState blockState, Level world, BlockPos blockPos, RandomSource randomSource) {
         if (blockState.getValue(GLOWING)) {
-            if (random.nextInt(90) == 0) {
+            if (randomSource.nextInt(90) == 0) {
                 ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.33f), new Vector3f(0f, 0.015f, 0f), 1);
             }
