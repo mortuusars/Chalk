@@ -10,8 +10,9 @@ import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -41,11 +42,11 @@ public class ChalkBoxItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level pLevel, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
-        Pair<ItemStack, Integer> firstChalkStack = getFirstChalkStack(stack);
+    public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+        Pair<ItemStack, Integer> firstChalkStack = getFirstChalkStack(pStack);
         if (firstChalkStack != null) {
-            tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.drawing_with").withStyle(ChatFormatting.GRAY)
-                    .append( ((MutableComponent) firstChalkStack.getFirst().getHoverName()).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.WHITE)));
+            pTooltipComponents.add(new TranslatableComponent("item.chalk.chalk_box.tooltip.drawing_with").withStyle(ChatFormatting.GRAY)
+                    .append(((BaseComponent) firstChalkStack.getFirst().getHoverName()).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.WHITE)));
         }
     }
 
@@ -112,7 +113,7 @@ public class ChalkBoxItem extends Item {
 
     // Called when not looking at a block
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack usedStack = player.getItemInHand(usedHand);
 
         if (!usedStack.is(this))
