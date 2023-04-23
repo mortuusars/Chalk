@@ -22,7 +22,6 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 version = "${mod_version}"
 group = 'io.github.mortuusars'
-//archivesBaseName = 'chalk-1.18.2'
 archivesBaseName = "chalk-${mc_version}"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -147,8 +146,9 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")) // Adds JEI API as a compile dependency
+    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))  // Adds JEI API as a compile dependency
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")) // Adds the full JEI mod as a runtime dependency
 
     // Locally sourced extra mods for runtime (i.e. testing) - thanks AE2 for this idea
     for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
