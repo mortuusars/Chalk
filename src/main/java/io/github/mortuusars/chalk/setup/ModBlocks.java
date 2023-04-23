@@ -10,8 +10,9 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
 
+@SuppressWarnings("unused")
 public class ModBlocks {
-    public static final HashMap<String, RegistryObject<ChalkMarkBlock>> MARKS = new HashMap<String, RegistryObject<ChalkMarkBlock>>();
+    public static final HashMap<String, RegistryObject<ChalkMarkBlock>> MARKS = new HashMap<>();
 
     public static final RegistryObject<ChalkMarkBlock> BLACK_CHALK_MARK_BLOCK = createColoredMark("black_chalk_mark", DyeColor.BLACK, MaterialColor.COLOR_BLACK);
     public static final RegistryObject<ChalkMarkBlock> RED_CHALK_MARK_BLOCK = createColoredMark("red_chalk_mark", DyeColor.RED, MaterialColor.COLOR_RED);
@@ -42,6 +43,7 @@ public class ModBlocks {
                 () -> new ChalkMarkBlock(dyeColor, BlockBehaviour.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, materialColor)
                         .instabreak()
                         .noOcclusion()
+                        .emissiveRendering((state, level, pos) -> state.getValue(ChalkMarkBlock.GLOWING))
                         .noCollission()
                         .sound(SoundType.GRAVEL)));
         MARKS.put(registryName, registeredBlock);
