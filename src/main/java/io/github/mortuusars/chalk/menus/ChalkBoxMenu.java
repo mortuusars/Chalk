@@ -15,8 +15,6 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
-
 public class ChalkBoxMenu extends AbstractContainerMenu {
 
     public final ItemStack chalkBoxStack;

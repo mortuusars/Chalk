@@ -47,6 +47,13 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
                     getGuiTop() + menu.chalkBoxCoords.getSecond());
         }
 
+        poseStack.pushPose();
+        poseStack.translate(0, 0, 200);
+        fill(poseStack, getGuiLeft() + menu.chalkBoxCoords.getFirst() - 1, getGuiTop() + menu.chalkBoxCoords.getSecond() - 1,
+                getGuiLeft() + menu.chalkBoxCoords.getFirst() + 17, getGuiTop() + menu.chalkBoxCoords.getSecond() + 17,
+                0x20c8c8c8);
+        poseStack.popPose();
+
         this.renderTooltip(poseStack, mouseX, mouseY);
     }
 
@@ -75,5 +82,9 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
             // Chalk slots
             blit(poseStack, getGuiLeft() + 52, getGuiTop() + 32, 0, 180, 72, 36);
         }
+
+        fill(poseStack, getGuiLeft() + menu.chalkBoxCoords.getFirst() - 1, getGuiTop() + menu.chalkBoxCoords.getSecond() - 1,
+                getGuiLeft() + menu.chalkBoxCoords.getFirst() + 17, getGuiTop() + menu.chalkBoxCoords.getSecond() + 17,
+                0xAAc8c8c8);
     }
 }
