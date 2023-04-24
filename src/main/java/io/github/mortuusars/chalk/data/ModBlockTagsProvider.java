@@ -14,6 +14,6 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
     @Override
     protected void addTags() {
-        Chalk.Blocks.MARKS.forEach((color, block) -> tag(Chalk.Tags.Blocks.CHALK_MARK).add(block.get()));
+        Chalk.Blocks.MARKS.forEach((color, block) -> tag(Chalk.Tags.Blocks.CHALK_MARKS).add(block.get()));
     }
 }

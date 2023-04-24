@@ -1,0 +1,20 @@
+// 1.19.2	2023-04-24T09:30:47.7156843	Tags for minecraft:item
+46a8979d348d9aff20479e0ce33da0d680ec03c8 data/chalk/tags/items/chalks.json
+ab7a6130a1f38204a0c1ea6a70a355e6cc59109d data/chalk/tags/items/glowings.json
+46a8979d348d9aff20479e0ce33da0d680ec03c8 data/forge/tags/items/chalks.json
+c550d4c395a032ee253f6f84ac7c7ae615ad51cb data/forge/tags/items/dyes/black.json
+33d62f1c6ff67662a43143bd8fca0f8ac7b87a7e data/forge/tags/items/dyes/blue.json
+d9b15f72c3dd5257b22ccf2b3d9a2195e815a6a8 data/forge/tags/items/dyes/brown.json
+a8b57a37d53e0fa0114b00f7e50e580d2a1bfd25 data/forge/tags/items/dyes/cyan.json
+21b8cee7ff47472515a5f0ced06fa08537a9df23 data/forge/tags/items/dyes/gray.json
+0bc6c8dbc39598a7661e1c8cd608d865d48862a7 data/forge/tags/items/dyes/green.json
+7c7b42a4e2af139e9daa3f741f659ab845af51b7 data/forge/tags/items/dyes/light_blue.json
+ed7a014d59d514c1ae1e82df70b4a8519a6f42af data/forge/tags/items/dyes/light_gray.json
+98ced6643a2b14b4fbb8942739027a5cf0d477ba data/forge/tags/items/dyes/lime.json
+7febd0ab98ba9293a8c0ceb0a30f712f3a8fb6ae data/forge/tags/items/dyes/magenta.json
+86e9976203f648785aa2e7343da2dc5738ee1954 data/forge/tags/items/dyes/orange.json
+9e2f71fb3ca2b7d251e5a7726bf135662fd2582a data/forge/tags/items/dyes/pink.json
+871662140b2f0c93a40e736d106ccc32a96e6c17 data/forge/tags/items/dyes/purple.json
+275dd8f067ffd311a17a030ce25768c04d9abf15 data/forge/tags/items/dyes/red.json
+473c917c769e9f7418a470d231ac85c96c2c3598 data/forge/tags/items/dyes/white.json
+f02bc91222cd7c4eadf607e580f090fe12c4dcee data/forge/tags/items/dyes/yellow.json

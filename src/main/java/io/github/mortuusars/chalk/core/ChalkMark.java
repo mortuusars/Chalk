@@ -26,7 +26,7 @@ public class ChalkMark {
             return InteractionResult.FAIL;
         }
 
-        final boolean isClickedOnAMark = level.getBlockState(clickedPos).is(Chalk.Tags.Blocks.CHALK_MARK);
+        final boolean isClickedOnAMark = level.getBlockState(clickedPos).is(Chalk.Tags.Blocks.CHALK_MARKS);
 
         BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
         final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
@@ -57,11 +57,11 @@ public class ChalkMark {
     public static boolean canBeDrawnAt(BlockPos pos, BlockPos clickedBlockPos, Direction clickedFace, Level level){
 
         BlockState clickedBlockState = level.getBlockState(clickedBlockPos);
-        if (clickedBlockState.is(Chalk.Tags.Blocks.CHALK_MARK))
+        if (clickedBlockState.is(Chalk.Tags.Blocks.CHALK_MARKS))
             return true; // Marks can be replaced.
 
         BlockState stateAtMarkPos = level.getBlockState(pos);
-        if ( stateAtMarkPos.isAir() || stateAtMarkPos.is(Chalk.Tags.Blocks.CHALK_MARK) )
+        if ( stateAtMarkPos.isAir() || stateAtMarkPos.is(Chalk.Tags.Blocks.CHALK_MARKS) )
             return Block.isFaceFull(clickedBlockState.getCollisionShape(level, clickedBlockPos), clickedFace);
 
         return false;

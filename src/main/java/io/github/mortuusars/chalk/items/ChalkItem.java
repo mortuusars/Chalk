@@ -64,7 +64,7 @@ public class ChalkItem extends Item {
         final Level level = context.getLevel();
         final BlockPos clickedPos = context.getClickedPos();
         final Direction clickedFace = context.getClickedFace();
-        final boolean isGlowing = player.getOffhandItem().is(Chalk.Tags.Items.GLOWING);
+        final boolean isGlowing = player.getOffhandItem().is(Chalk.Tags.Items.GLOWINGS);
 
         MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
 

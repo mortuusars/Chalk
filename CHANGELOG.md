@@ -1,3 +1,9 @@
+### 1.5.0
+
+- Tags:
+  - Changed naming to be inline with vanilla: chalk:chalk -> chalk:chalks, etc.
+  - Added chalks to forge:chalks tag.
+
 ### 1.4.0 - 2023-02-10
 
 - Added Chalk Box quick change selected chalks: 

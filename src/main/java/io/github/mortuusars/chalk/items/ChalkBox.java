@@ -53,16 +53,16 @@ public class ChalkBox {
 
     public static void setSlot(ItemStack chalkBoxStack, int slot, ItemStack itemStack){
         if (slot >= 0 && slot < CHALK_SLOTS){
-            if (itemStack.is(Chalk.Tags.Items.CHALK) || itemStack.isEmpty())
+            if (itemStack.is(Chalk.Tags.Items.FORGE_CHALKS) || itemStack.isEmpty())
                 updateSlotContents(chalkBoxStack, slot, itemStack);
             else
-                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.CHALK.location() + "' or empty ItemStack allowed in chalk slots.");
+                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.FORGE_CHALKS.location() + "' or empty ItemStack allowed in chalk slots.");
         }
         else if (slot == GLOWING_ITEM_SLOT_ID) {
-            if (itemStack.is(Chalk.Tags.Items.GLOWING) || itemStack.isEmpty())
+            if (itemStack.is(Chalk.Tags.Items.GLOWINGS) || itemStack.isEmpty())
                 updateSlotContents(chalkBoxStack, slot, itemStack);
             else
-                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.GLOWING.location() + "' or empty ItemStack allowed in glowing item slot.");
+                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.GLOWINGS.location() + "' or empty ItemStack allowed in glowing item slot.");
         }
         else
             throw new IllegalArgumentException("Slot index is not in valid range - 0-" + (SLOTS - 1) + ". Value: " + slot);
@@ -83,7 +83,7 @@ public class ChalkBox {
     private static @Nullable ItemStack updateSelectedChalk(ItemStack chalkBoxStack) {
         List<ItemStack> contents = getContents(chalkBoxStack);
         for (ItemStack stack : contents) {
-            if (stack.is(Chalk.Tags.Items.CHALK))
+            if (stack.is(Chalk.Tags.Items.FORGE_CHALKS))
                 return stack;
         }
 

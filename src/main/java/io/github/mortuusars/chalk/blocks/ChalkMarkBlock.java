@@ -147,7 +147,7 @@ public class ChalkMarkBlock extends Block {
 
         ItemStack usedItem = player.getItemInHand(hand);
 
-        if (usedItem.is(Chalk.Tags.Items.GLOWING)) {
+        if (usedItem.is(Chalk.Tags.Items.GLOWINGS)) {
 
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
                 if (!player.isCreative()) {

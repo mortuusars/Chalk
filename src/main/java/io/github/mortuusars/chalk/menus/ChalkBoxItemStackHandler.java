@@ -25,9 +25,9 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         if (slot == ChalkBox.GLOWING_ITEM_SLOT_ID)
-            return stack.is(Chalk.Tags.Items.GLOWING);
+            return stack.is(Chalk.Tags.Items.GLOWINGS);
         else
-            return stack.is(Chalk.Tags.Items.CHALK);
+            return stack.is(Chalk.Tags.Items.FORGE_CHALKS);
     }
 
     @Override

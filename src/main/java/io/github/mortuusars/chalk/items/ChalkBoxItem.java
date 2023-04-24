@@ -70,7 +70,7 @@ public class ChalkBoxItem extends Item {
         if (player == null)
             return InteractionResult.PASS;
 
-        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().is(Chalk.Tags.Items.CHALK) || player.getMainHandItem().is(this)) )
+        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().is(Chalk.Tags.Items.FORGE_CHALKS) || player.getMainHandItem().is(this)) )
             return InteractionResult.FAIL; // Skip drawing from offhand if chalks in both hands.
 
         Level level = context.getLevel();
@@ -163,7 +163,7 @@ public class ChalkBoxItem extends Item {
 
                 stack = stacks.get(0);
 
-                if (stack.is(Chalk.Tags.Items.CHALK) && !stack.equals(firstStack, false)
+                if (stack.is(Chalk.Tags.Items.FORGE_CHALKS) && !stack.equals(firstStack, false)
                         && !((ChalkItem)stack.getItem()).getColor().equals(selectedColor)) {
                     break;
                 }
@@ -176,7 +176,7 @@ public class ChalkBoxItem extends Item {
     private @Nullable Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
         for (int slot = 0; slot < ChalkBox.CHALK_SLOTS; slot++) {
             ItemStack itemInSlot = ChalkBox.getItemInSlot(chalkBoxStack, slot);
-            if (itemInSlot.is(Chalk.Tags.Items.CHALK)) {
+            if (itemInSlot.is(Chalk.Tags.Items.FORGE_CHALKS)) {
                 return Pair.of(itemInSlot, slot);
             }
         }

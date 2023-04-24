@@ -17,12 +17,13 @@ public class ModItemTagsProvider extends ItemTagsProvider {
 
     @Override
     protected void addTags() {
-        tag(Chalk.Tags.Items.GLOWING)
+        tag(Chalk.Tags.Items.GLOWINGS)
                 .add(Items.GLOW_INK_SAC)
                 .add(Items.GLOWSTONE_DUST);
 
         Chalk.Items.CHALKS.forEach((color, item) -> {
-            tag(Chalk.Tags.Items.CHALK).add(item.get());
+            tag(Chalk.Tags.Items.CHALKS).add(item.get());
+            tag(Chalk.Tags.Items.FORGE_CHALKS).add(item.get());
         });
 
         for (DyeColor color : DyeColor.values()){

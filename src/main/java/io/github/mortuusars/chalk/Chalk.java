@@ -102,14 +102,13 @@ public class Chalk
 
     public static class Tags {
         public static final class Items {
-            // TODO: Add forge:chalks tag.
-            // TODO: Rename with s.
-            public static final TagKey<Item> CHALK = ItemTags.create(new ResourceLocation("chalk:chalk"));
-            public static final TagKey<Item> GLOWING = ItemTags.create(new ResourceLocation("chalk:glowing"));
+            public static final TagKey<Item> CHALKS = ItemTags.create(new ResourceLocation("chalk:chalks"));
+            public static final TagKey<Item> FORGE_CHALKS = ItemTags.create(new ResourceLocation("forge:chalks"));
+            public static final TagKey<Item> GLOWINGS = ItemTags.create(new ResourceLocation("chalk:glowings"));
         }
 
         public static final class Blocks {
-            public static final TagKey<Block> CHALK_MARK = BlockTags.create(new ResourceLocation("chalk:chalk_mark"));
+            public static final TagKey<Block> CHALK_MARKS = BlockTags.create(new ResourceLocation("chalk:chalk_marks"));
         }
     }
 

@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "P P",
-    "PSP",
-    "PPP"
-  ],
   "key": {
     "P": {
       "item": "minecraft:paper"
@@ -13,6 +8,11 @@
       "tag": "forge:slimeballs"
     }
   },
+  "pattern": [
+    "P P",
+    "PSP",
+    "PPP"
+  ],
   "result": {
     "item": "chalk:chalk_box"
   }
