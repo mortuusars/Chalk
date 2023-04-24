@@ -1,10 +1,9 @@
 package io.github.mortuusars.chalk.items;
 
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.core.ChalkMark;
-import io.github.mortuusars.chalk.setup.ModSoundEvents;
-import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -65,7 +64,7 @@ public class ChalkItem extends Item {
         final Level level = context.getLevel();
         final BlockPos clickedPos = context.getClickedPos();
         final Direction clickedFace = context.getClickedFace();
-        final boolean isGlowing = player.getOffhandItem().is(ModTags.Items.GLOWING);
+        final boolean isGlowing = player.getOffhandItem().is(Chalk.Tags.Items.GLOWING);
 
         MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
 
@@ -87,7 +86,7 @@ public class ChalkItem extends Item {
         if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
             player.setItemInHand(hand, ItemStack.EMPTY);
             Vec3 playerPos = player.position();
-            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, ModSoundEvents.CHALK_BROKEN.get(),
+            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
                     SoundSource.PLAYERS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
 

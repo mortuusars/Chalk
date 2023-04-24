@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.SimpleModelState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -33,11 +34,6 @@ import java.util.List;
  * Based on particular blockstate properties it chooses proper block rotation, texture, texture rotation (for arrow mark), glowing.
  */
 public class ChalkMarkBakedModel implements BakedModel {
-
-    private enum MarkType {
-        CENTER, ARROW, CROSS
-    }
-
     public static final ResourceLocation CROSS = new ResourceLocation("chalk:block/mark_cross");
     public static final ResourceLocation CENTER = new ResourceLocation("chalk:block/mark_center");
     public static final ResourceLocation ARROW = new ResourceLocation("chalk:block/mark_arrow");
@@ -47,7 +43,7 @@ public class ChalkMarkBakedModel implements BakedModel {
     public static ModelProperty<Boolean> GLOWING = new ModelProperty<>();
     public static ModelProperty<MarkSymbol> SYMBOL = new ModelProperty<>();
 
-    private static ModelState MODEL_STATE = new SimpleModelState(Transformation.identity(), false);
+    private static final ModelState MODEL_STATE = new SimpleModelState(Transformation.identity(), false);
 
     private static final FaceBakery _faceBakery = new FaceBakery();
     private final BakedModel _baseModel;
@@ -56,6 +52,12 @@ public class ChalkMarkBakedModel implements BakedModel {
         _baseModel = baseModel;
     }
 
+    @Override
+    public @NotNull ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data) {
+        return ChunkRenderTypeSet.of(RenderType.cutout());
+    }
+
+    @SuppressWarnings("unused")
     public static ModelData getEmptyModelData(){
         return ModelData.builder()
             .with(ORIENTATION, 4)
@@ -84,7 +86,7 @@ public class ChalkMarkBakedModel implements BakedModel {
     @Override
     public @NotNull List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @org.jetbrains.annotations.Nullable RenderType renderType) {
         if (side != null)
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
 
         if (!data.has(ORIENTATION)){
             Chalk.LOGGER.error("IModelData did not have expected property: ORIENTATION");
@@ -101,17 +103,17 @@ public class ChalkMarkBakedModel implements BakedModel {
             return _baseModel.getQuads(state, side, rand, data, renderType);
         }
 
+        //noinspection DataFlowIssue
         int orientation = data.get(ORIENTATION);
         Direction facing = data.get(FACING);
-        boolean isGlowing = data.get(GLOWING);
+        boolean isGlowing = Boolean.TRUE.equals(data.get(GLOWING));
         MarkSymbol symbol = MarkSymbol.NONE;
 
         if (data.has(SYMBOL))
             symbol = data.get(SYMBOL);
 
-        List<BakedQuad> quads = new ArrayList<BakedQuad>();
+        List<BakedQuad> quads = new ArrayList<>();
 
-//        BakedQuad quad = getQuadByFacing(facing, orientation, symbol);
         BakedQuad quad = getBakedQuad(facing, symbol, orientation, facing == Direction.DOWN ? 180 : 0);
 
         if (isGlowing)
@@ -123,8 +125,8 @@ public class ChalkMarkBakedModel implements BakedModel {
 
     // IBakedModel method
     @Override
-    public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_, @org.jetbrains.annotations.Nullable Direction p_235040_, RandomSource p_235041_) {
-        return Collections.EMPTY_LIST;
+    public @NotNull List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_, @org.jetbrains.annotations.Nullable Direction facing, RandomSource random) {
+        return Collections.emptyList();
     }
 
     private static BakedQuad convertToFullBright(BakedQuad quad) {
@@ -146,27 +148,8 @@ public class ChalkMarkBakedModel implements BakedModel {
         );
     }
 
-//    private BakedQuad getQuadByFacing(Direction facing, int orientation, MarkSymbol symbol) {
-//        switch (facing) {
-//            case DOWN:
-//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 15.9f, 0), new Vector3f(16, 16, 16), 180);
-//            case UP:
-//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
-//            case NORTH:
-//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 15.9f), new Vector3f(16, 16, 16), 0);
-//            case SOUTH:
-//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 16, 0.1f), 0);
-//            case WEST:
-//                return getBakedQuad(facing, symbol, orientation, new Vector3f(15.9f, 0, 0), new Vector3f(16, 16, 16), 0);
-//            case EAST:
-//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(0.1f, 16, 16), 0);
-//            default:
-//                return getBakedQuad(facing, symbol, orientation, new Vector3f(0, 0, 0), new Vector3f(16, 0.1f, 16), 0);
-//        }
-//    }
-
-    private static HashMap<Direction, Vector3f> fromCoords;
-    private static HashMap<Direction, Vector3f> toCoords;
+    private static final HashMap<Direction, Vector3f> fromCoords;
+    private static final HashMap<Direction, Vector3f> toCoords;
 
     static {
         fromCoords = new HashMap<>();
@@ -204,40 +187,12 @@ public class ChalkMarkBakedModel implements BakedModel {
         if (facing == Direction.NORTH || facing == Direction.WEST)
             rotation = 360 - rotation;
 
-        // Origin, Axis, RotationAngle(22.5), Rescale
+        //noinspection DataFlowIssue
         BlockElementRotation blockPartRotation = new BlockElementRotation(new Vector3f(0.5f,0.5f,0.5f), facing.getAxis(), (float)rotation, false);
 
-        // From pos, To pos, Face, Texture, Facing, Transform, Rotation, Shading, Dummy RL
-        BakedQuad quad = _faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE,
+        return _faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE,
                 blockPartRotation, true, new ResourceLocation("chalk:chalk_mark_" + facing));
-
-        return quad;
     }
-
-//    private BakedQuad getBakedQuad(Direction facing, MarkSymbol symbol, int orientation, Vector3f from, Vector3f to, int uvRotation) {
-//
-//        TextureAtlasSprite texture = getTextureForMark(symbol, orientation);
-//
-//        // Direction, TintIndex, TextureName(from json), UVs
-//        // Tint index is set to 0 (-1 is off) to color the marks with ChalkMarkBlockColor
-//        BlockElementFace blockPartFace = new BlockElementFace(facing, 0, "", new BlockFaceUV(new float[]{0f, 0f, 16f, 16f}, uvRotation));
-//
-//        // Rotate the texture
-//        int rotation = symbol == MarkSymbol.CROSS ? 45 : rotationFromOrientation(orientation);
-//
-//        // Flip rotation for this facings
-//        if (facing == Direction.NORTH || facing == Direction.WEST)
-//            rotation = 360 - rotation;
-//
-//        // Origin, Axis, RotationAngle(22.5), Rescale
-//        BlockElementRotation blockPartRotation = new BlockElementRotation(new Vector3f(0.5f,0.5f,0.5f), facing.getAxis(), (float)rotation, false);
-//
-//        // From pos, To pos, Face, Texture, Facing, Transform, Rotation, Shading, Dummy RL
-//        BakedQuad quad = _faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE,
-//                blockPartRotation, true, new ResourceLocation("chalk:chalk_mark_" + facing));
-//
-//        return quad;
-//    }
 
     private TextureAtlasSprite getTextureForMark(MarkSymbol symbol, int orientation){
         TextureAtlas atlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
@@ -290,12 +245,12 @@ public class ChalkMarkBakedModel implements BakedModel {
     }
 
     @Override
-    public TextureAtlasSprite getParticleIcon() {
+    public @NotNull TextureAtlasSprite getParticleIcon() {
         return _baseModel.getParticleIcon();
     }
 
     @Override
-    public ItemOverrides getOverrides() {
+    public @NotNull ItemOverrides getOverrides() {
         return _baseModel.getOverrides();
     }
 }

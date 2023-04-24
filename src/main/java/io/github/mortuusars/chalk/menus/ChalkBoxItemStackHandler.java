@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.menus;
 
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.items.ChalkBox;
-import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -25,9 +25,9 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         if (slot == ChalkBox.GLOWING_ITEM_SLOT_ID)
-            return stack.is(ModTags.Items.GLOWING);
+            return stack.is(Chalk.Tags.Items.GLOWING);
         else
-            return stack.is(ModTags.Items.CHALK);
+            return stack.is(Chalk.Tags.Items.CHALK);
     }
 
     @Override

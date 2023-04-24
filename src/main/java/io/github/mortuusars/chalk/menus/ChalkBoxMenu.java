@@ -1,8 +1,8 @@
 package io.github.mortuusars.chalk.menus;
 
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.items.ChalkBox;
-import io.github.mortuusars.chalk.setup.ModMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -13,7 +13,6 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.system.CallbackI;
 
 import java.awt.*;
 
@@ -22,10 +21,10 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     public final ItemStack chalkBoxStack;
     public Point chalkBoxCoords = null;
 
-    private int chalkBoxSlotId;
+    private final int chalkBoxSlotId;
 
     public ChalkBoxMenu(final int pContainerId, final Inventory playerInventory, ItemStack chalkBoxStack, @Nullable IItemHandler itemHandler) {
-        super(ModMenus.CHALK_BOX.get(), pContainerId);
+        super(Chalk.Menus.CHALK_BOX.get(), pContainerId);
         this.chalkBoxStack = chalkBoxStack;
 
         final boolean glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();

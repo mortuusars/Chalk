@@ -21,7 +21,7 @@ public class LootTableModification {
                 Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
                 event.getTable()
                         .addPool(LootPool.lootPool()
-                                .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/dungeon_chalk_loot")))
+                                .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.ID, "chests/dungeon_chalk_loot")))
                                 .build());
             } else if (tableId.equals(BuiltInLootTables.VILLAGE_CARTOGRAPHER) ||
                     tableId.equals(BuiltInLootTables.VILLAGE_MASON) ||
@@ -31,13 +31,13 @@ public class LootTableModification {
                 Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
                 event.getTable()
                         .addPool(LootPool.lootPool()
-                                .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/village_chalk_loot")))
+                                .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.ID, "chests/village_chalk_loot")))
                                 .build());
             } else if (tableId.equals(BuiltInLootTables.DESERT_PYRAMID)) {
                 Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
                 event.getTable()
                         .addPool(LootPool.lootPool()
-                                .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.MOD_ID, "chests/desert_pyramid_chalk_loot")))
+                                .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.ID, "chests/desert_pyramid_chalk_loot")))
                                 .build());
             }
         }

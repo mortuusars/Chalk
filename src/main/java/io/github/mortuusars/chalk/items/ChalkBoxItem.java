@@ -1,17 +1,17 @@
 package io.github.mortuusars.chalk.items;
 
 import com.mojang.datafixers.util.Pair;
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
 import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
-import io.github.mortuusars.chalk.setup.ModSoundEvents;
-import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -33,8 +33,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ChalkBoxItem extends Item {
+    public static final ResourceLocation SELECTED_PROPERTY = Chalk.resource("selected");
 
     public ChalkBoxItem(Properties properties) {
         super(properties.setNoRepair());
@@ -68,7 +70,7 @@ public class ChalkBoxItem extends Item {
         if (player == null)
             return InteractionResult.PASS;
 
-        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().is(ModTags.Items.CHALK) || player.getMainHandItem().is(this)) )
+        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().is(Chalk.Tags.Items.CHALK) || player.getMainHandItem().is(this)) )
             return InteractionResult.FAIL; // Skip drawing from offhand if chalks in both hands.
 
         Level level = context.getLevel();
@@ -93,7 +95,7 @@ public class ChalkBoxItem extends Item {
                     if (chalkItemStack.getDamageValue() >= chalkItemStack.getMaxDamage()){
                         chalkItemStack = ItemStack.EMPTY;
                         Vec3 playerPos = player.position();
-                        level.playSound(player, playerPos.x, playerPos.y, playerPos.z, ModSoundEvents.CHALK_BROKEN.get(),
+                        level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
                                 SoundSource.PLAYERS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
                     }
                 }
@@ -120,7 +122,7 @@ public class ChalkBoxItem extends Item {
 
         if (player.isSecondaryUseActive()) {
             changeSelectedChalk(usedStack);
-            level.playSound(player, player.position().x, player.position().y, player.position().z, ModSoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS,
+            level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS,
                     0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
         else {
@@ -130,7 +132,7 @@ public class ChalkBoxItem extends Item {
                                 new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
                                 usedStack.getHoverName()), buffer -> buffer.writeItem(usedStack.copy()));
             }
-            level.playSound(player, player.position().x, player.position().y, player.position().z, ModSoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
+            level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
                     0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
 
@@ -151,7 +153,7 @@ public class ChalkBoxItem extends Item {
         }
 
         if (chalks >= 2) {
-            DyeColor selectedColor = ((ChalkItem) getFirstChalkStack(usedStack).getFirst().getItem()).getColor();
+            DyeColor selectedColor = ((ChalkItem) Objects.requireNonNull(getFirstChalkStack(usedStack)).getFirst().getItem()).getColor();
             ItemStack firstStack = stacks.get(0);
 
             for (int i = 0; i < 8; i++) {
@@ -161,7 +163,7 @@ public class ChalkBoxItem extends Item {
 
                 stack = stacks.get(0);
 
-                if (stack.is(ModTags.Items.CHALK) && !stack.equals(firstStack, false)
+                if (stack.is(Chalk.Tags.Items.CHALK) && !stack.equals(firstStack, false)
                         && !((ChalkItem)stack.getItem()).getColor().equals(selectedColor)) {
                     break;
                 }
@@ -174,7 +176,7 @@ public class ChalkBoxItem extends Item {
     private @Nullable Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
         for (int slot = 0; slot < ChalkBox.CHALK_SLOTS; slot++) {
             ItemStack itemInSlot = ChalkBox.getItemInSlot(chalkBoxStack, slot);
-            if (itemInSlot.is(ModTags.Items.CHALK)) {
+            if (itemInSlot.is(Chalk.Tags.Items.CHALK)) {
                 return Pair.of(itemInSlot, slot);
             }
         }

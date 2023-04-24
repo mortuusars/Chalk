@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Chalk.MOD_ID, "textures/gui/chalk_box.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Chalk.ID, "textures/gui/chalk_box.png");
 
     private static final int GLOWING_BAR_WIDTH = 72;
 

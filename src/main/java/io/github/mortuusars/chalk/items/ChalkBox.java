@@ -2,7 +2,6 @@ package io.github.mortuusars.chalk.items;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
-import io.github.mortuusars.chalk.setup.ModTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
@@ -54,16 +53,16 @@ public class ChalkBox {
 
     public static void setSlot(ItemStack chalkBoxStack, int slot, ItemStack itemStack){
         if (slot >= 0 && slot < CHALK_SLOTS){
-            if (itemStack.is(ModTags.Items.CHALK) || itemStack.isEmpty())
+            if (itemStack.is(Chalk.Tags.Items.CHALK) || itemStack.isEmpty())
                 updateSlotContents(chalkBoxStack, slot, itemStack);
             else
-                throw new IllegalArgumentException("Only '" + ModTags.Items.CHALK.location() + "' or empty ItemStack allowed in chalk slots.");
+                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.CHALK.location() + "' or empty ItemStack allowed in chalk slots.");
         }
         else if (slot == GLOWING_ITEM_SLOT_ID) {
-            if (itemStack.is(ModTags.Items.GLOWING) || itemStack.isEmpty())
+            if (itemStack.is(Chalk.Tags.Items.GLOWING) || itemStack.isEmpty())
                 updateSlotContents(chalkBoxStack, slot, itemStack);
             else
-                throw new IllegalArgumentException("Only '" + ModTags.Items.GLOWING.location() + "' or empty ItemStack allowed in glowing item slot.");
+                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.GLOWING.location() + "' or empty ItemStack allowed in glowing item slot.");
         }
         else
             throw new IllegalArgumentException("Slot index is not in valid range - 0-" + (SLOTS - 1) + ". Value: " + slot);
@@ -77,7 +76,6 @@ public class ChalkBox {
     }
 
     private static void onSlotUpdated(ItemStack chalkBoxStack, int slot, ItemStack itemStack) {
-//        Chalk.LOGGER.info("Updated slot " + slot + " with " + itemStack);
         if (slot == GLOWING_ITEM_SLOT_ID)
             updateGlowingUses(chalkBoxStack);
     }
@@ -85,7 +83,7 @@ public class ChalkBox {
     private static @Nullable ItemStack updateSelectedChalk(ItemStack chalkBoxStack) {
         List<ItemStack> contents = getContents(chalkBoxStack);
         for (ItemStack stack : contents) {
-            if (stack.is(ModTags.Items.CHALK))
+            if (stack.is(Chalk.Tags.Items.CHALK))
                 return stack;
         }
 

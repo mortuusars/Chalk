@@ -4,9 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
-import io.github.mortuusars.chalk.setup.ModItems;
-import io.github.mortuusars.chalk.setup.ModSoundEvents;
-import io.github.mortuusars.chalk.setup.ModTags;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
@@ -92,16 +89,16 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState blockState) {
-        return new ItemStack(ModItems.getChalkByColor(this._color));
+        return new ItemStack(Chalk.Items.getChalk(this._color));
     }
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         if (player.isCreative())
-            return new ItemStack(ModItems.getChalkByColor(_color));
+            return new ItemStack(Chalk.Items.getChalk(_color));
 
-        ItemStack item = getMatchingItemStack(player, ModItems.getChalkByColor(_color));
-        return item == ItemStack.EMPTY ? new ItemStack(ModItems.getChalkByColor(_color)) : item;
+        ItemStack item = getMatchingItemStack(player, Chalk.Items.getChalk(_color));
+        return item == ItemStack.EMPTY ? new ItemStack(Chalk.Items.getChalk(_color)) : item;
     }
 
     private ItemStack getMatchingItemStack(Player player, Item item){
@@ -150,7 +147,7 @@ public class ChalkMarkBlock extends Block {
 
         ItemStack usedItem = player.getItemInHand(hand);
 
-        if (usedItem.is(ModTags.Items.GLOWING)) {
+        if (usedItem.is(Chalk.Tags.Items.GLOWING)) {
 
             if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
                 if (!player.isCreative()) {
@@ -161,7 +158,7 @@ public class ChalkMarkBlock extends Block {
                         usedItem.setCount(itemsCount);
                 }
 
-                world.playSound(null, blockPos, ModSoundEvents.MARK_GLOW_APPLIED.get(), SoundSource.BLOCKS, 1.5f, 1f);
+                world.playSound(null, blockPos, Chalk.SoundEvents.MARK_GLOW_APPLIED.get(), SoundSource.BLOCKS, 1.5f, 1f);
                 ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
 
@@ -182,7 +179,7 @@ public class ChalkMarkBlock extends Block {
 
         if (world.removeBlock(pos, isMoving)) {
             if (!world.isClientSide())
-                world.playSound(null, pos, ModSoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
+                world.playSound(null, pos, Chalk.SoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
             else {
                 ParticleUtils.spawnColorDustParticles(_color, world, pos, facing);
             }
