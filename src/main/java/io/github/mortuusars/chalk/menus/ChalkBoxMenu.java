@@ -1,5 +1,6 @@
 package io.github.mortuusars.chalk.menus;
 
+import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.items.ChalkBox;
@@ -14,12 +15,12 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
+
 
 public class ChalkBoxMenu extends AbstractContainerMenu {
 
     public final ItemStack chalkBoxStack;
-    public Point chalkBoxCoords = null;
+    public Pair<Integer, Integer> chalkBoxCoords = null;
 
     private final int chalkBoxSlotId;
 
@@ -104,7 +105,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
                 int index = (column + row * 9) + 9;
 
                 if (index == chalkBoxSlotId) {
-                    chalkBoxCoords = new Point(column * 18 + 8, 98 + row * 18);
+                    chalkBoxCoords = Pair.of(column * 18 + 8, 98 + row * 18);
                     continue;
                 }
 
@@ -115,7 +116,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         //Hotbar
         for (int index = 0; index < 9; index++) {
             if (index == chalkBoxSlotId) {
-                chalkBoxCoords = new Point(index * 18 + 8, 156);
+                chalkBoxCoords = Pair.of(index * 18 + 8, 156);
                 continue;
             }
 

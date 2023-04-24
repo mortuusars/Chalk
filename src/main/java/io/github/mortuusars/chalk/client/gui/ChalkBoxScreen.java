@@ -43,7 +43,8 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         super.render(poseStack, mouseX, mouseY, partialTick);
 
         if (menu.chalkBoxCoords != null) {
-            itemRenderer.renderGuiItem(menu.chalkBoxStack, getGuiLeft() + menu.chalkBoxCoords.x, getGuiTop() + menu.chalkBoxCoords.y);
+            itemRenderer.renderGuiItem(menu.chalkBoxStack, getGuiLeft() + menu.chalkBoxCoords.getFirst(),
+                    getGuiTop() + menu.chalkBoxCoords.getSecond());
         }
 
         this.renderTooltip(poseStack, mouseX, mouseY);
