@@ -40,7 +40,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         for (int row = 0; row < 2; row++) {
             for (int column = 0; column < 4; column++) {
 
-                if (index >= ChalkBox.GLOWING_ITEM_SLOT_ID)
+                if (index >= ChalkBox.GLOWINGS_SLOT_INDEX)
                     throw new IllegalStateException("Chalk slot ids should go before Glowing Item slot id and not exceed it.");
 
                 addSlot(new SlotItemHandler(itemHandler, index++, column * 18 + 53, row * 18 + slotsYPos));
@@ -48,7 +48,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         }
 
         if (glowingEnabled){
-            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWING_ITEM_SLOT_ID, 80, 68));
+            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68));
         }
 
         addPlayerSlots(playerInventory);
@@ -62,7 +62,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     }
 
     public int getGlowingUses(){
-        return ChalkBox.getGlowingUses(chalkBoxStack);
+        return ChalkBox.getGlow(chalkBoxStack);
     }
 
     @Override

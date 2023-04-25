@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.menus;
 
-import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.items.ChalkBox;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
@@ -18,28 +17,27 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
         List<ItemStack> contents = ChalkBox.getContents(chalkBoxStack);
 
         for (int index = 0; index < contents.size(); index++) {
-            stacks.set(index, contents.get(index));
+            this.stacks.set(index, contents.get(index));
         }
     }
 
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
-        if (slot == ChalkBox.GLOWING_ITEM_SLOT_ID)
-            return stack.is(Chalk.Tags.Items.GLOWINGS);
-        else
-            return stack.is(Chalk.Tags.Items.FORGE_CHALKS);
+        return ChalkBox.isItemValid(slot, stack);
     }
 
     @Override
     protected void onContentsChanged(int slot) {
-        int prevGlowingUses = ChalkBox.getGlowingUses(chalkBoxStack);
+        int prevGlowingUses = ChalkBox.getGlow(chalkBoxStack);
 
         ChalkBox.setSlot(chalkBoxStack, slot, getStackInSlot(slot));
 
-        if (slot == ChalkBox.GLOWING_ITEM_SLOT_ID && ChalkBox.getGlowingUses(chalkBoxStack) > prevGlowingUses) {
-            ItemStack glowingStack = getStackInSlot(slot);
-            glowingStack.shrink(1);
-            setStackInSlot(slot, glowingStack);
+        if (slot == ChalkBox.GLOWINGS_SLOT_INDEX && ChalkBox.getGlow(chalkBoxStack) > prevGlowingUses) {
+            // Refresh glow stack:
+            this.stacks.set(slot, ChalkBox.getItemInSlot(chalkBoxStack, slot));
+//            ItemStack glowingStack = getStackInSlot(slot);
+//            glowingStack.shrink(1);
+//            setStackInSlot(slot, glowingStack);
         }
     }
 }

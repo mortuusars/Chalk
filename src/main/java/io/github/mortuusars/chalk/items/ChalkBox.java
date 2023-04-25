@@ -1,120 +1,117 @@
 package io.github.mortuusars.chalk.items;
 
+import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 public class ChalkBox {
 
     public static final int SLOTS = 9;
     public static final int CHALK_SLOTS = 8;
-    public static final int GLOWING_ITEM_SLOT_ID = 8;
+    public static final int GLOWINGS_SLOT_INDEX = 8;
 
-    public static final String GLOWING_USES_TAG_KEY = "GlowUses";
+    public static final String GLOW_TAG_KEY = "GlowUses";
     public static final String ITEMS_TAG_KEY = "Items";
 
     public static List<ItemStack> getContents(ItemStack stack) {
-        CompoundTag compoundtag = stack.getTag();
-        if (compoundtag == null)
-            return Collections.emptyList();
-        else {
-            ListTag listtag = compoundtag.getList(ITEMS_TAG_KEY, ListTag.TAG_COMPOUND);
-            return listtag.stream().map(CompoundTag.class::cast).map(ItemStack::of).toList();
-        }
+        validateChalkBoxStack(stack);
+        return getItemsListTag(stack)
+                .stream()
+                .map(CompoundTag.class::cast)
+                .map(ItemStack::of)
+                .toList();
+    }
+
+    public static boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        if (slot < 0 || slot >= SLOTS)
+            return false;
+        if (slot == ChalkBox.GLOWINGS_SLOT_INDEX)
+            return stack.is(Chalk.Tags.Items.GLOWINGS);
+        else
+            return stack.is(Chalk.Tags.Items.ALLOWED_IN_CHALK_BOX);
     }
 
     /**
-     * Gets the ItemStack in the ChalkBox by slotID.
-     * @param slotID throws when slotID is out of range.
+     * Gets the ItemStack in the ChalkBox by slot.
+     * @param slot throws when slot is out of range.
      */
-    public static ItemStack getItemInSlot(ItemStack chalkBoxStack, int slotID) {
-        if (slotID >= SLOTS)
-            throw new IllegalArgumentException("slotID is out if range: 0-" + (SLOTS -1) + ". Value: " + slotID);
-
-        return ItemStack.of(getItemsListTag(chalkBoxStack).getCompound(slotID));
+    public static ItemStack getItemInSlot(ItemStack chalkBoxStack, int slot) {
+        validateChalkBoxStack(chalkBoxStack);
+        validateSlotIndex(slot);
+        return ItemStack.of(getItemsListTag(chalkBoxStack).getCompound(slot));
     }
 
-    public static void setContents(ItemStack stack, List<ItemStack> items){
-        if (items.size() > SLOTS)
-            throw new IllegalArgumentException("Items count cannot be larger than amount of slots available.");
-
-        for (int index = 0; index < Math.min(CHALK_SLOTS, items.size()); index++)
-            setSlot(stack, index, items.get(index));
-
-        if (items.size() > GLOWING_ITEM_SLOT_ID)
-            setSlot(stack, GLOWING_ITEM_SLOT_ID, items.get(GLOWING_ITEM_SLOT_ID));
+    public static void setContents(ItemStack chalkBoxStack, List<ItemStack> items){
+        Preconditions.checkArgument(items.size() <= SLOTS, "List of items cannot be larger than amount of slots available.");
+        for (int index = 0; index < Math.min(SLOTS, items.size()); index++) {
+            ItemStack itemStack = items.get(index);
+            Preconditions.checkArgument(itemStack != null, "Stack cannot be null.");
+            setSlot(chalkBoxStack, index, itemStack);
+        }
     }
 
-    public static void setSlot(ItemStack chalkBoxStack, int slot, ItemStack itemStack){
-        if (slot >= 0 && slot < CHALK_SLOTS){
-            if (itemStack.is(Chalk.Tags.Items.FORGE_CHALKS) || itemStack.isEmpty())
-                updateSlotContents(chalkBoxStack, slot, itemStack);
-            else
-                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.FORGE_CHALKS.location() + "' or empty ItemStack allowed in chalk slots.");
+    public static void setSlot(ItemStack chalkBoxStack, int slot, ItemStack itemStack) {
+        validateSlotIndex(slot);
+        if (itemStack.isEmpty() || isItemValid(slot, itemStack))
+            updateSlotContents(chalkBoxStack, slot, itemStack);
+    }
+
+    public static int getGlow(ItemStack chalkBoxStack) {
+        validateChalkBoxStack(chalkBoxStack);
+        return chalkBoxStack.getOrCreateTag().getInt(GLOW_TAG_KEY);
+    }
+
+    public static void consumeGlow(ItemStack chalkBoxStack) {
+        validateChalkBoxStack(chalkBoxStack);
+        setGlow(chalkBoxStack, Math.max(getGlow(chalkBoxStack) - 1, 0));
+        updateGlow(chalkBoxStack);
+    }
+
+    public static void setGlow(ItemStack chalkBoxStack, int glow) {
+        validateChalkBoxStack(chalkBoxStack);
+        chalkBoxStack.getOrCreateTag().putInt(GLOW_TAG_KEY, glow);
+    }
+
+    private static void updateGlow(ItemStack chalkBoxStack){
+        if (getGlow(chalkBoxStack) > 0)
+            return;
+
+        ItemStack glowingItemStack = getItemInSlot(chalkBoxStack, GLOWINGS_SLOT_INDEX);
+        if (!glowingItemStack.isEmpty()){
+            setGlow(chalkBoxStack, CommonConfig.CHALK_BOX_GLOWING_USES.get());
+            glowingItemStack.shrink(1);
+            setSlot(chalkBoxStack, GLOWINGS_SLOT_INDEX, glowingItemStack);
         }
-        else if (slot == GLOWING_ITEM_SLOT_ID) {
-            if (itemStack.is(Chalk.Tags.Items.GLOWINGS) || itemStack.isEmpty())
-                updateSlotContents(chalkBoxStack, slot, itemStack);
-            else
-                throw new IllegalArgumentException("Only '" + Chalk.Tags.Items.GLOWINGS.location() + "' or empty ItemStack allowed in glowing item slot.");
-        }
-        else
-            throw new IllegalArgumentException("Slot index is not in valid range - 0-" + (SLOTS - 1) + ". Value: " + slot);
+    }
+
+    private static void validateChalkBoxStack(@NotNull ItemStack stack) {
+        Preconditions.checkArgument(!stack.isEmpty() && stack.is(Chalk.Items.CHALK_BOX.get()));
+    }
+
+    private static void validateSlotIndex(int slot) {
+        Preconditions.checkArgument( slot >= 0 && slot < SLOTS, "[%s] slot is out if range: 0-%s".formatted(slot, SLOTS - 1));
     }
 
     private static void updateSlotContents(ItemStack chalkBoxStack, int slot, ItemStack itemStack){
         ListTag itemsListTag = getItemsListTag(chalkBoxStack);
         itemsListTag.set(slot, itemStack.serializeNBT());
 
-        onSlotUpdated(chalkBoxStack, slot, itemStack);
+        onItemInSlotChanged(chalkBoxStack, slot, itemStack);
     }
 
-    private static void onSlotUpdated(ItemStack chalkBoxStack, int slot, ItemStack itemStack) {
-        if (slot == GLOWING_ITEM_SLOT_ID)
-            updateGlowingUses(chalkBoxStack);
-    }
-
-    private static @Nullable ItemStack updateSelectedChalk(ItemStack chalkBoxStack) {
-        List<ItemStack> contents = getContents(chalkBoxStack);
-        for (ItemStack stack : contents) {
-            if (stack.is(Chalk.Tags.Items.FORGE_CHALKS))
-                return stack;
-        }
-
-        return null;
-    }
-
-    public static int getGlowingUses(ItemStack chalkBoxStack){
-        return chalkBoxStack.getOrCreateTag().getInt(GLOWING_USES_TAG_KEY);
-    }
-
-    public static void useGlow(ItemStack chalkBoxStack) {
-        int glowingUses = getGlowingUses(chalkBoxStack) - 1;
-        chalkBoxStack.getOrCreateTag().putInt(GLOWING_USES_TAG_KEY, glowingUses);
-
-        if (glowingUses <= 0)
-            updateGlowingUses(chalkBoxStack);
-    }
-
-    private static void updateGlowingUses(ItemStack chalkBoxStack){
-        if (getGlowingUses(chalkBoxStack) > 0)
-            return;
-
-        ItemStack glowingItemStack = getContents(chalkBoxStack).get(GLOWING_ITEM_SLOT_ID);
-        if (!glowingItemStack.isEmpty()){
-            chalkBoxStack.getOrCreateTag().putInt(GLOWING_USES_TAG_KEY, CommonConfig.CHALK_BOX_GLOWING_USES.get());
-            glowingItemStack.shrink(1);
-            setSlot(chalkBoxStack, GLOWING_ITEM_SLOT_ID, glowingItemStack);
-        }
+    private static void onItemInSlotChanged(ItemStack chalkBoxStack, int slot, ItemStack itemStack) {
+        if (slot == GLOWINGS_SLOT_INDEX)
+            updateGlow(chalkBoxStack);
     }
 
     private static ListTag getItemsListTag(ItemStack chalkBoxStack){
+        validateChalkBoxStack(chalkBoxStack);
         CompoundTag compoundTag = chalkBoxStack.getOrCreateTag();
         if (!compoundTag.contains(ITEMS_TAG_KEY)){
             ListTag itemTags = new ListTag();

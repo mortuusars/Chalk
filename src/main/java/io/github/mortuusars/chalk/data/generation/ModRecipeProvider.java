@@ -28,7 +28,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(recipeBuilder, Chalk.ID + ":chalk_from_" + color + "_dye"));
 
         ShapedRecipeBuilder.shaped(Chalk.Items.CHALK_BOX.get())
-                .unlockedBy("has_chalk", has(Chalk.Tags.Items.FORGE_CHALKS))
+                .unlockedBy("has_chalk", has(Chalk.Tags.Items.CHALKS))
                 .unlockedBy("has_paper", has(Items.PAPER))
                 .unlockedBy("has_slimeball", has(Tags.Items.SLIMEBALLS))
                 .pattern("P P")

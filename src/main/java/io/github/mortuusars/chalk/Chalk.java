@@ -104,6 +104,7 @@ public class Chalk
         public static final class Items {
             public static final TagKey<Item> CHALKS = ItemTags.create(new ResourceLocation("chalk:chalks"));
             public static final TagKey<Item> FORGE_CHALKS = ItemTags.create(new ResourceLocation("forge:chalks"));
+            public static final TagKey<Item> ALLOWED_IN_CHALK_BOX = ItemTags.create(new ResourceLocation("chalk:allowed_in_chalk_box"));
             public static final TagKey<Item> GLOWINGS = ItemTags.create(new ResourceLocation("chalk:glowings"));
         }
 

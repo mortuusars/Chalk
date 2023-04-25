@@ -3,7 +3,6 @@ package io.github.mortuusars.chalk.items;
 import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
-import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
 import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.data.Lang;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
@@ -11,7 +10,6 @@ import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
 import io.github.mortuusars.chalk.render.ChalkColors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -83,6 +81,18 @@ public class ChalkBoxItem extends Item {
             return true;
         }
 
+        if (stack.getItem() == this && otherStack.getItem() instanceof ChalkItem && action == ClickAction.SECONDARY) {
+            for (int i = 0; i < ChalkBox.CHALK_SLOTS; i++) {
+                if (ChalkBox.getItemInSlot(stack, i).isEmpty()) {
+                    ChalkBox.setSlot(stack, i, otherStack);
+                    player.playSound(Chalk.SoundEvents.CHALK_BOX_CHANGE.get(),
+                            0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+                    otherStack.setCount(0);
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -105,7 +115,7 @@ public class ChalkBoxItem extends Item {
         if (player == null)
             return InteractionResult.PASS;
 
-        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().is(Chalk.Tags.Items.FORGE_CHALKS) || player.getMainHandItem().is(this)) )
+        if (context.getHand() == InteractionHand.OFF_HAND && (player.getMainHandItem().getItem() instanceof ChalkItem || player.getMainHandItem().is(this)) )
             return InteractionResult.FAIL; // Skip drawing from offhand if chalks in both hands.
 
         Level level = context.getLevel();
@@ -119,7 +129,7 @@ public class ChalkBoxItem extends Item {
 
         MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
         DyeColor chalkColor = ((ChalkItem) chalkStack.getFirst().getItem()).getColor();
-        final boolean isGlowing = ChalkBox.getGlowingUses(chalkBoxStack) > 0;
+        final boolean isGlowing = ChalkBox.getGlow(chalkBoxStack) > 0;
 
         if (ChalkMark.draw(symbol, chalkColor, isGlowing, clickedPos, clickedFace, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
             if ( !player.isCreative() ) {
@@ -138,7 +148,7 @@ public class ChalkBoxItem extends Item {
                 ChalkBox.setSlot(chalkBoxStack, chalkStack.getSecond(), chalkItemStack);
 
                 if (isGlowing)
-                    ChalkBox.useGlow(chalkBoxStack);
+                    ChalkBox.consumeGlow(chalkBoxStack);
             }
 
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
@@ -202,8 +212,8 @@ public class ChalkBoxItem extends Item {
 
                 stack = stacks.get(0);
 
-                if (stack.is(Chalk.Tags.Items.FORGE_CHALKS) && !stack.equals(firstStack, false)
-                        && !((ChalkItem)stack.getItem()).getColor().equals(selectedColor)) {
+                if (stack.getItem() instanceof ChalkItem chalkItem && !stack.equals(firstStack, false)
+                        && !chalkItem.getColor().equals(selectedColor)) {
                     break;
                 }
             }
@@ -215,7 +225,7 @@ public class ChalkBoxItem extends Item {
     private @Nullable Pair<ItemStack, Integer> getFirstChalkStack(ItemStack chalkBoxStack) {
         for (int slot = 0; slot < ChalkBox.CHALK_SLOTS; slot++) {
             ItemStack itemInSlot = ChalkBox.getItemInSlot(chalkBoxStack, slot);
-            if (itemInSlot.is(Chalk.Tags.Items.FORGE_CHALKS)) {
+            if (itemInSlot.getItem() instanceof ChalkItem) {
                 return Pair.of(itemInSlot, slot);
             }
         }
