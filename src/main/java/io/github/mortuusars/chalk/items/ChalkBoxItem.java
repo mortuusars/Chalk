@@ -3,14 +3,20 @@ package io.github.mortuusars.chalk.items;
 import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.MarkSymbol;
+import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
 import io.github.mortuusars.chalk.core.ChalkMark;
+import io.github.mortuusars.chalk.data.Lang;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
+import io.github.mortuusars.chalk.render.ChalkColors;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -18,7 +24,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,10 +54,36 @@ public class ChalkBoxItem extends Item {
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level pLevel, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
         Pair<ItemStack, Integer> firstChalkStack = getFirstChalkStack(stack);
+
         if (firstChalkStack != null) {
-            tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.drawing_with").withStyle(ChatFormatting.GRAY)
-                    .append( ((MutableComponent) firstChalkStack.getFirst().getHoverName()).withStyle(ChatFormatting.ITALIC).withStyle(ChatFormatting.WHITE)));
+            Style style = firstChalkStack.getFirst().getItem() instanceof ChalkItem chalkItem ?
+                    Style.EMPTY.withColor(ChalkColors.fromDyeColor(chalkItem.getColor()))
+                    : Style.EMPTY.withColor(ChatFormatting.WHITE);
+
+            tooltipComponents.add(Lang.CHALK_BOX_DRAWING_WITH_TOOLTIP.translate()
+                    .withStyle(ChatFormatting.GRAY)
+                    .append(((MutableComponent) firstChalkStack.getFirst().getHoverName())
+                            .withStyle(style)));
         }
+
+        if (Minecraft.getInstance().player != null && !Minecraft.getInstance().player.isCreative()) {
+            tooltipComponents.add(Lang.CHALK_BOX_OPEN_TOOLTIP.translate()
+                            .withStyle(ChatFormatting.ITALIC)
+                            .withStyle(Style.EMPTY.withColor(0x888888)));
+        }
+    }
+
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, @NotNull ItemStack otherStack, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, @NotNull SlotAccess slotAccess) {
+        if (!player.isCreative() && stack.getItem() == this
+                && otherStack.isEmpty() && action == ClickAction.SECONDARY) {
+            openGUI(player, stack);
+            player.playSound(Chalk.SoundEvents.CHALK_BOX_OPEN.get(),
+                    0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -126,17 +161,21 @@ public class ChalkBoxItem extends Item {
                     0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
         else {
-            if (!level.isClientSide) {
-                NetworkHooks.openScreen((ServerPlayer) player,
-                        new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
-                                new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
-                                usedStack.getHoverName()), buffer -> buffer.writeItem(usedStack.copy()));
-            }
+            openGUI(player, usedStack);
             level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
                     0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
 
         return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);
+    }
+
+    private void openGUI(Player player, ItemStack usedStack) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            NetworkHooks.openScreen(serverPlayer,
+                    new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
+                            new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
+                            usedStack.getHoverName()), buffer -> buffer.writeItem(usedStack.copy()));
+        }
     }
 
     /**

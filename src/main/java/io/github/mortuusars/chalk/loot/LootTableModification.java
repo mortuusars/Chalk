@@ -18,7 +18,7 @@ public class LootTableModification {
 
             if (tableId.equals(BuiltInLootTables.ABANDONED_MINESHAFT) ||
                     tableId.equals(BuiltInLootTables.SIMPLE_DUNGEON)) {
-                Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
+//                Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
                 event.getTable()
                         .addPool(LootPool.lootPool()
                                 .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.ID, "chests/dungeon_chalk_loot")))
@@ -28,13 +28,13 @@ public class LootTableModification {
                     tableId.equals(BuiltInLootTables.VILLAGE_PLAINS_HOUSE) ||
                     tableId.equals(BuiltInLootTables.VILLAGE_SAVANNA_HOUSE) ||
                     tableId.equals(BuiltInLootTables.SPAWN_BONUS_CHEST)) {
-                Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
+//                Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
                 event.getTable()
                         .addPool(LootPool.lootPool()
                                 .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.ID, "chests/village_chalk_loot")))
                                 .build());
             } else if (tableId.equals(BuiltInLootTables.DESERT_PYRAMID)) {
-                Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
+//                Chalk.LOGGER.debug("Adding Chalks to loot_table: " + event.getName().toString() + "...");
                 event.getTable()
                         .addPool(LootPool.lootPool()
                                 .add(LootTableReference.lootTableReference(new ResourceLocation(Chalk.ID, "chests/desert_pyramid_chalk_loot")))

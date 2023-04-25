@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -27,6 +28,8 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
 
         glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
         maxGlowingUses = CommonConfig.CHALK_BOX_GLOWING_USES.get();
+
+        this.minecraft = Minecraft.getInstance();
     }
 
     @Override

@@ -20,6 +20,7 @@
 
   "item.chalk.chalk_box": "Chalk Box",
   "item.chalk.chalk_box.tooltip.drawing_with": "Drawing with: ",
+  "item.chalk.chalk_box.tooltip.open": "Right Click to open",
   "container.chalk.chalk_box": "Chalk Box",
 
   "chalk.subtitles.chalk_broken": "Chalk breaks",

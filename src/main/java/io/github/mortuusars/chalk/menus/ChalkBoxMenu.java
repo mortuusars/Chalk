@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 public class ChalkBoxMenu extends AbstractContainerMenu {
 
     public final ItemStack chalkBoxStack;
-    public Pair<Integer, Integer> chalkBoxCoords = null;
+    public Pair<Integer, Integer> chalkBoxCoords = Pair.of(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     private final int chalkBoxSlotId;
 
@@ -104,6 +104,22 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
 
                 if (index == chalkBoxSlotId) {
                     chalkBoxCoords = Pair.of(column * 18 + 8, 98 + row * 18);
+                    addSlot(new Slot(playerInventory, index, column * 18 + 8, 98 + row * 18) {
+                        @Override
+                        public boolean mayPlace(ItemStack pStack) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean mayPickup(Player pPlayer) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean isActive() {
+                            return false;
+                        }
+                    });
                     continue;
                 }
 
@@ -115,6 +131,22 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         for (int index = 0; index < 9; index++) {
             if (index == chalkBoxSlotId) {
                 chalkBoxCoords = Pair.of(index * 18 + 8, 156);
+                addSlot(new Slot(playerInventory, index, index * 18 + 8, 156) {
+                    @Override
+                    public boolean mayPlace(ItemStack pStack) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean mayPickup(Player pPlayer) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isActive() {
+                        return false;
+                    }
+                });
                 continue;
             }
 

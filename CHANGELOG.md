@@ -1,5 +1,7 @@
 ### 1.5.0
 
+- Chalk Box can now be opened by Right-Clicking it in inventory.
+
 - Tags:
   - Changed naming to be inline with vanilla: chalk:chalk -> chalk:chalks, etc.
   - Added chalks to forge:chalks tag.

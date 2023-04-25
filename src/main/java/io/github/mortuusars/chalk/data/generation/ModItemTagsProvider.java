@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.data;
+package io.github.mortuusars.chalk.data.generation;
 
 import io.github.mortuusars.chalk.Chalk;
 import net.minecraft.data.DataGenerator;

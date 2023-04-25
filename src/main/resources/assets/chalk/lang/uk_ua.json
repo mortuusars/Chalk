@@ -20,6 +20,7 @@
 
   "item.chalk.chalk_box": "Коробка для Крейди",
   "item.chalk.chalk_box.tooltip.drawing_with": "Малюємо з: ",
+  "item.chalk.chalk_box.tooltip.open": "ПКМ щоб відкрити",
   "container.chalk.chalk_box": "Коробка для Крейди",
 
   "chalk.subtitles.chalk_broken": "Крейда ламається",
