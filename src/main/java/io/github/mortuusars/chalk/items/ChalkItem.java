@@ -21,6 +21,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -78,20 +79,20 @@ public class ChalkItem extends Item {
             pos = pos.relative(facing.getOpposite());
         }
 
-        MarkDrawingContext drawingContext = MarkDrawingContext.create(player, pos, facing, context.getClickLocation());
+        MarkDrawingContext drawingContext = new MarkDrawingContext(level, player,
+                new BlockHitResult(context.getClickLocation(), facing, pos, false));
 
-        if (!drawingContext.canBeDrawn)
+        if (!drawingContext.canDraw())
             return InteractionResult.FAIL;
 
         if (!player.isSecondaryUseActive()) {
-            MarkSymbol symbol = drawingContext.orientation == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW;
-            Mark mark = new Mark(facing, color, symbol, drawingContext.orientation, isGlowing);
+            MarkSymbol symbol = drawingContext.getInitialOrientation() == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW;
+            Mark mark = drawingContext.createMark(color, symbol, isGlowing);
 
-            BlockState oldMarkState = level.getBlockState(pos.relative(facing));
-            if (oldMarkState.getBlock() instanceof ChalkMarkBlock && !mark.shouldReplaceExistingMark(oldMarkState))
+            if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
                 return InteractionResult.FAIL;
 
-            if (ChalkMark.drawMark(mark.createBlockState(), pos.relative(facing), level)) {
+            if (drawingContext.draw(mark)) {
                 if (!player.isCreative())
                     damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
 
@@ -100,25 +101,29 @@ public class ChalkItem extends Item {
 
             return InteractionResult.FAIL;
         }
+        else {
+            MarkSymbol symbol = MarkSymbol.CROSS;
+            Mark mark = drawingContext.createMark(color, symbol, isGlowing);
 
-//        MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.CENTER;
-//
-//        if (context.isSecondaryUseActive()) {
-//            if (level.isClientSide) {
-//                SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(context);
-//                Minecraft.getInstance().setScreen(symbolSelectScreen);
-//            }
-//            return InteractionResult.CONSUME;
-//        }
-//
-//        if (ChalkMark.tryDraw(symbol, color, isGlowing, pos, facing, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
-//            if (!player.isCreative())
-//                damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
-//
-//            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
-//        }
+            if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
+                return InteractionResult.FAIL;
 
-        return InteractionResult.FAIL;
+            if (drawingContext.draw(mark)) {
+                if (!player.isCreative())
+                    damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
+
+                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+            }
+
+                //            if (level.isClientSide) {
+                //                SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(context);
+                //                Minecraft.getInstance().setScreen(symbolSelectScreen);
+                //            }
+                //            return InteractionResult.CONSUME;
+                //        }
+
+            return InteractionResult.FAIL;
+        }
     }
 
     private void damageAndConsumeItems(InteractionHand hand, ItemStack itemStack, Player player, Level level, boolean isGlowing) {

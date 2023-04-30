@@ -32,7 +32,7 @@ public class ChalkMark {
         BlockState markBlockState = Chalk.Blocks.getMarkBlock(color).defaultBlockState()
                 .setValue(ChalkMarkBlock.FACING, newMarkFacing)
                 .setValue(ChalkMarkBlock.SYMBOL, symbol)
-                .setValue(ChalkMarkBlock.ORIENTATION, SymbolOrientation.fromClickLocation(clickLocation, clickedFace))
+                .setValue(ChalkMarkBlock.ORIENTATION, SymbolOrientation.fromClickLocationAll(clickLocation, clickedFace))
                 .setValue(ChalkMarkBlock.GLOWING, isGlowing);
 
         // Cancel drawing if marks are same.

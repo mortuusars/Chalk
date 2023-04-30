@@ -68,8 +68,8 @@ public class Chalk
                         () -> new ChalkMarkBlock(color, BlockBehaviour.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, color.getMaterialColor())
                                 .instabreak()
                                 .noOcclusion()
-                                .emissiveRendering((state, level, pos) -> state.getValue(ChalkMarkBlock.GLOWING))
                                 .noCollission()
+                                .emissiveRendering((state, level, pos) -> state.getValue(ChalkMarkBlock.GLOWING))
                                 .sound(SoundType.GRAVEL))));
             }
         }

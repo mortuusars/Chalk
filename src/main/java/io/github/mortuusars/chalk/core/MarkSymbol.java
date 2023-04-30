@@ -7,8 +7,8 @@ import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
 public enum MarkSymbol implements StringRepresentable {
-    ARROW("arrow", RotationBehavior.FULL, SymbolOrientation.NORTH),
     CENTER("center", RotationBehavior.FIXED, SymbolOrientation.NORTH),
+    ARROW("arrow", RotationBehavior.FULL, SymbolOrientation.NORTH),
     CROSS("cross", RotationBehavior.FIXED, SymbolOrientation.NORTHEAST),
     CHECKMARK("check", RotationBehavior.UP_DOWN_HORIZONTAL, SymbolOrientation.NORTH),
     SKULL("skull", RotationBehavior.UP_DOWN_HORIZONTAL, SymbolOrientation.NORTH),
@@ -20,7 +20,7 @@ public enum MarkSymbol implements StringRepresentable {
     private final RotationBehavior rotationBehavior;
     private final SymbolOrientation defaultRotation;
 
-    private MarkSymbol(String name, RotationBehavior rotationBehavior, SymbolOrientation defaultRotation) {
+    MarkSymbol(String name, RotationBehavior rotationBehavior, SymbolOrientation defaultRotation) {
         this.name = name;
         this.textureLocation = Chalk.resource("block/mark/" + name);
         this.rotationBehavior = rotationBehavior;

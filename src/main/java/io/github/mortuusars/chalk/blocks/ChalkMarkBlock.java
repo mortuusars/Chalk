@@ -45,10 +45,10 @@ import java.util.stream.Collectors;
 public class ChalkMarkBlock extends Block {
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final EnumProperty<MarkSymbol> SYMBOL = EnumProperty.create("symbol", MarkSymbol.class);
-    public static final EnumProperty<SymbolOrientation> ORIENTATION = EnumProperty.create("symbol_rotation", SymbolOrientation.class);
+    public static final EnumProperty<SymbolOrientation> ORIENTATION = EnumProperty.create("orientation", SymbolOrientation.class);
     public static final BooleanProperty GLOWING = BooleanProperty.create("glowing");
 
-    private final DyeColor _color;
+    private final DyeColor color;
 
     private static final VoxelShape DOWN_AABB = Block.box(1.5D, 15.5D, 1.5D, 14.5D, 16D, 14.5D);
     private static final VoxelShape UP_AABB = Block.box(1.5D, 0D, 1.5D, 14.5D, 0.5D, 14.5D);
@@ -66,7 +66,7 @@ public class ChalkMarkBlock extends Block {
                 .setValue(SYMBOL, MarkSymbol.CENTER)
                 .setValue(ORIENTATION, SymbolOrientation.NORTH)
                 .setValue(GLOWING, false));
-        _color = dyeColor;
+        color = dyeColor;
         shapesCache = ImmutableMap.copyOf(this.getStateDefinition().getPossibleStates().stream().collect(Collectors.toMap(Function.identity(), ChalkMarkBlock::calculateShapes)));
     }
 
@@ -88,16 +88,16 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState blockState) {
-        return new ItemStack(Chalk.Items.getChalk(this._color));
+        return new ItemStack(Chalk.Items.getChalk(this.color));
     }
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
         if (player.isCreative())
-            return new ItemStack(Chalk.Items.getChalk(_color));
+            return new ItemStack(Chalk.Items.getChalk(color));
 
-        ItemStack item = getMatchingItemStack(player, Chalk.Items.getChalk(_color));
-        return item == ItemStack.EMPTY ? new ItemStack(Chalk.Items.getChalk(_color)) : item;
+        ItemStack item = getMatchingItemStack(player, Chalk.Items.getChalk(color));
+        return item == ItemStack.EMPTY ? new ItemStack(Chalk.Items.getChalk(color)) : item;
     }
 
     private ItemStack getMatchingItemStack(Player player, Item item){
@@ -111,7 +111,7 @@ public class ChalkMarkBlock extends Block {
     }
 
     public DyeColor getColor() {
-        return _color;
+        return color;
     }
 
     @Override
@@ -180,7 +180,7 @@ public class ChalkMarkBlock extends Block {
             if (!world.isClientSide())
                 world.playSound(null, pos, Chalk.SoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
             else {
-                ParticleUtils.spawnColorDustParticles(_color, world, pos, facing);
+                ParticleUtils.spawnColorDustParticles(color, world, pos, facing);
             }
             return true;
         }

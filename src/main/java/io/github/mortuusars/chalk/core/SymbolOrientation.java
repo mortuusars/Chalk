@@ -1,6 +1,7 @@
 package io.github.mortuusars.chalk.core;
 
-import com.mojang.datafixers.util.Pair;
+import com.google.common.base.Preconditions;
+import io.github.mortuusars.chalk.core.component.Point2d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -33,11 +34,22 @@ public enum SymbolOrientation implements StringRepresentable {
         return this.name().toLowerCase();
     }
 
-    public static SymbolOrientation fromClickLocation(Vec3 clickLocation, Direction face) {
-        Pair<Double, Double> coords = getClickedBlockSpaceCoords(clickLocation, face);
+    public static SymbolOrientation fromRotation(int degrees) {
+        for (SymbolOrientation orientation : values()) {
+            if (orientation == CENTER) continue;
 
-        final int x = Math.min(2, (int) (coords.getFirst() / 0.333));
-        final int y = Math.min(2, (int) (coords.getSecond() / 0.333));
+            if (orientation.getRotation() == degrees)
+                return orientation;
+        }
+
+        return CENTER;
+    }
+
+    public static SymbolOrientation fromClickLocationAll(Vec3 clickLocation, Direction face) {
+        Point2d coords = getClickedBlockSpaceCoords(clickLocation, face);
+
+        final int x = Math.min(2, (int) (coords.x() / 0.333));
+        final int y = Math.min(2, (int) (coords.y() / 0.333));
 
         final SymbolOrientation[][] rotations = new SymbolOrientation[][]{
                 new SymbolOrientation[]{NORTHWEST, NORTH, NORTHEAST},
@@ -49,20 +61,37 @@ public enum SymbolOrientation implements StringRepresentable {
     }
 
     /**
-     * Returns a point representing where in a block was clicked. 0.0 to 1.0.
+     * Gets the cardinal (NORTH, EAST, SOUTH, WEST) direction from the click location.
      */
-    private static Pair<Double, Double> getClickedBlockSpaceCoords(Vec3 location, Direction face) {
+    public static SymbolOrientation fromClickLocationCardinal(Vec3 clickLocation, Direction face) {
+        Point2d coords = getClickedBlockSpaceCoords(clickLocation, face);
+
+        final double x = 0.5d - coords.x();
+        final double y = 0.5d - coords.y();
+
+        final double radians = Math.atan2(y, x);
+        double degrees = radians * (180 / Math.PI);
+        degrees = (degrees + 270) % 360; // Adjust so the 0 is NORTH.
+
+        int region = (int)((degrees + 45) % 360) / 90;
+        return fromRotation(region * 90);
+    }
+
+    /**
+     * Returns a point representing where on a block face was clicked. 0.0 to 1.0.
+     */
+    private static Point2d getClickedBlockSpaceCoords(Vec3 location, Direction face) {
         BlockPos pos = new BlockPos(location.x, location.y, location.z);
         final double x = location.x - pos.getX();
         final double y = location.y - pos.getY();
         final double z = location.z - pos.getZ();
 
         return switch (face) {
-            case NORTH -> Pair.of(1 - x, 1 - y);
-            case SOUTH -> Pair.of(x, 1 - y);
-            case WEST -> Pair.of(z, 1 - y);
-            case EAST -> Pair.of(1 - z, 1 - y);
-            default -> Pair.of(x, z);
+            case NORTH -> new Point2d(1d - x, 1d - y);
+            case SOUTH -> new Point2d(x, 1d - y);
+            case WEST -> new Point2d(z, 1d - y);
+            case EAST -> new Point2d(1d - z, 1d - y);
+            default -> new Point2d(x, z);
         };
     }
 }
