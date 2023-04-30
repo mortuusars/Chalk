@@ -1,20 +1,17 @@
 package io.github.mortuusars.chalk.event;
 
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.render.ChalkMarkBakedModel;
 import io.github.mortuusars.chalk.render.ChalkMarkBlockColor;
-import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.ModelEvent;
@@ -24,8 +21,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid = Chalk.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientModEvents {
@@ -69,9 +64,9 @@ public class ClientModEvents {
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         // Register textures for use in IBakedModel
         if (event.getAtlas().location() == TextureAtlas.LOCATION_BLOCKS) {
-            event.addSprite(new ResourceLocation("chalk:block/mark_arrow"));
-            event.addSprite(new ResourceLocation("chalk:block/mark_center"));
-            event.addSprite(new ResourceLocation("chalk:block/mark_cross"));
+            for (MarkSymbol symbol : MarkSymbol.values()) {
+                event.addSprite(symbol.getTextureLocation());
+            }
         }
     }
 }

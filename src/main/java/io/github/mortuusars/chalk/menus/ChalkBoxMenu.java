@@ -4,10 +4,13 @@ import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.items.ChalkBox;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -48,7 +51,15 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         }
 
         if (glowingEnabled){
-            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68));
+            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68) {
+                @Override
+                public void set(@NotNull ItemStack stack) {
+                    //TODO: Glow sound.
+//                    if (this.getItem().isEmpty() && ChalkBox.getGlow(chalkBoxStack) <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS))
+//                        Minecraft.getInstance().player.playSound(SoundEvents.AMETHYST_CLUSTER_STEP);
+                    super.set(stack);
+                }
+            });
         }
 
         addPlayerSlots(playerInventory);

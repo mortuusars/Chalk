@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.core.MarkSymbol;
+import io.github.mortuusars.chalk.core.SymbolOrientation;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
@@ -41,11 +43,10 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings({"deprecation", "NullableProblems"})
 public class ChalkMarkBlock extends Block {
-
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
-    public static final IntegerProperty ORIENTATION = IntegerProperty.create("orientation", 0, 8);
-    public static final BooleanProperty GLOWING = BooleanProperty.create("is_glowing");
     public static final EnumProperty<MarkSymbol> SYMBOL = EnumProperty.create("symbol", MarkSymbol.class);
+    public static final EnumProperty<SymbolOrientation> ORIENTATION = EnumProperty.create("symbol_rotation", SymbolOrientation.class);
+    public static final BooleanProperty GLOWING = BooleanProperty.create("glowing");
 
     private final DyeColor _color;
 
@@ -62,12 +63,10 @@ public class ChalkMarkBlock extends Block {
         super(properties);
         this.registerDefaultState(this.getStateDefinition().any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(ORIENTATION, 4)
-                .setValue(GLOWING, false)
-                .setValue(SYMBOL, MarkSymbol.NONE));
-
+                .setValue(SYMBOL, MarkSymbol.CENTER)
+                .setValue(ORIENTATION, SymbolOrientation.NORTH)
+                .setValue(GLOWING, false));
         _color = dyeColor;
-
         shapesCache = ImmutableMap.copyOf(this.getStateDefinition().getPossibleStates().stream().collect(Collectors.toMap(Function.identity(), ChalkMarkBlock::calculateShapes)));
     }
 

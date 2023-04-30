@@ -1,6 +1,6 @@
 {
   "textures": {
-    "particle": "chalk:/block/mark_center",
-    "tex": "chalk:/block/mark_center"
+    "particle": "chalk:block/mark/cross",
+    "tex": "chalk:block/mark/cross"
   }
 }

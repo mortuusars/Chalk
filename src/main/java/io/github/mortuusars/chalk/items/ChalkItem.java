@@ -1,9 +1,15 @@
 package io.github.mortuusars.chalk.items;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.MarkSymbol;
+import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.core.Mark;
+import io.github.mortuusars.chalk.core.MarkSymbol;
+import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.core.ChalkMark;
+import io.github.mortuusars.chalk.core.SymbolOrientation;
+import io.github.mortuusars.chalk.utils.MarkDrawingContext;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
@@ -14,6 +20,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +60,7 @@ public class ChalkItem extends Item {
         final InteractionHand hand = context.getHand();
         final ItemStack itemStack = context.getItemInHand();
         final Player player = context.getPlayer();
+        final Level level = context.getLevel();
 
         if (player == null || !(itemStack.getItem() instanceof ChalkItem))
             return InteractionResult.FAIL;
@@ -61,19 +69,54 @@ public class ChalkItem extends Item {
         if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
             return InteractionResult.FAIL;
 
-        final Level level = context.getLevel();
-        final BlockPos clickedPos = context.getClickedPos();
-        final Direction clickedFace = context.getClickedFace();
-        final boolean isGlowing = player.getOffhandItem().is(Chalk.Tags.Items.GLOWINGS);
+        BlockPos pos = context.getClickedPos();
+        Direction facing = context.getClickedFace();
+        boolean isGlowing = player.getOffhandItem().is(Chalk.Tags.Items.GLOWINGS);
 
-        MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
-
-        if (ChalkMark.draw(symbol, color, isGlowing, clickedPos, clickedFace, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
-            if (!player.isCreative())
-                damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
-
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        if (level.getBlockState(pos).getBlock() instanceof ChalkMarkBlock) {
+            facing = level.getBlockState(pos).getValue(ChalkMarkBlock.FACING);
+            pos = pos.relative(facing.getOpposite());
         }
+
+        MarkDrawingContext drawingContext = MarkDrawingContext.create(player, pos, facing, context.getClickLocation());
+
+        if (!drawingContext.canBeDrawn)
+            return InteractionResult.FAIL;
+
+        if (!player.isSecondaryUseActive()) {
+            MarkSymbol symbol = drawingContext.orientation == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW;
+            Mark mark = new Mark(facing, color, symbol, drawingContext.orientation, isGlowing);
+
+            BlockState oldMarkState = level.getBlockState(pos.relative(facing));
+            if (oldMarkState.getBlock() instanceof ChalkMarkBlock && !mark.shouldReplaceExistingMark(oldMarkState))
+                return InteractionResult.FAIL;
+
+            if (ChalkMark.drawMark(mark.createBlockState(), pos.relative(facing), level)) {
+                if (!player.isCreative())
+                    damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
+
+                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+            }
+
+            return InteractionResult.FAIL;
+        }
+
+//        MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.CENTER;
+//
+//        if (context.isSecondaryUseActive()) {
+//            if (level.isClientSide) {
+//                SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(context);
+//                Minecraft.getInstance().setScreen(symbolSelectScreen);
+//            }
+//            return InteractionResult.CONSUME;
+//        }
+//
+//        if (ChalkMark.tryDraw(symbol, color, isGlowing, pos, facing, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
+//            if (!player.isCreative())
+//                damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
+//
+//            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+//        }
 
         return InteractionResult.FAIL;
     }

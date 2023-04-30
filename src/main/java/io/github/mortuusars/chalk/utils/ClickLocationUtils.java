@@ -1,11 +1,9 @@
 package io.github.mortuusars.chalk.utils;
 
-import com.mojang.math.Vector3d;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
-
-import java.awt.geom.Point2D;
 
 public class ClickLocationUtils {
 
@@ -19,11 +17,10 @@ public class ClickLocationUtils {
      * |6 7 8|<p>
      */
     public static int getBlockRegion(Vec3 clickLocation, BlockPos pos, Direction facing){
+        Pair<Double, Double> point = getClickedBlockSpaceCoords(clickLocation, pos, facing);
 
-        Point2D.Double point = getClickedBlockSpaceCoords(clickLocation, pos, facing);
-
-        final int xRegion = Math.min(2, (int) (point.x / 0.333));
-        final int yRegion = Math.min(2, (int) (point.y / 0.333));
+        final int xRegion = Math.min(2, (int) (point.getFirst() / 0.333));
+        final int yRegion = Math.min(2, (int) (point.getSecond() / 0.333));
 
         final int[][] blockRegions = new int[][]{
                 new int[]{0, 1, 2},
@@ -37,18 +34,17 @@ public class ClickLocationUtils {
     /**
      * Returns a point representing where in a block was clicked. 0.0 to 1.0.
      */
-    public static Point2D.Double getClickedBlockSpaceCoords(Vec3 clickLocation, BlockPos pos, Direction facing){
-
+    public static Pair<Double, Double> getClickedBlockSpaceCoords(Vec3 clickLocation, BlockPos pos, Direction facing) {
         final double x = clickLocation.x - pos.getX();
         final double y = clickLocation.y - pos.getY();
         final double z = clickLocation.z - pos.getZ();
 
         return switch (facing) {
-            case NORTH -> new Point2D.Double(1 - x, 1 - y);
-            case SOUTH -> new Point2D.Double(x, 1 - y);
-            case WEST -> new Point2D.Double(z, 1 - y);
-            case EAST -> new Point2D.Double(1 - z, 1 - y);
-            default -> new Point2D.Double(x, z);
+            case NORTH -> Pair.of(1 - x, 1 - y);
+            case SOUTH -> Pair.of(x, 1 - y);
+            case WEST -> Pair.of(z, 1 - y);
+            case EAST -> Pair.of(1 - z, 1 - y);
+            default -> Pair.of(x, z);
         };
     }
 }

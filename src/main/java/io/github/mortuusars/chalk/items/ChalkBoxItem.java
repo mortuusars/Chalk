@@ -2,7 +2,7 @@ package io.github.mortuusars.chalk.items;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.MarkSymbol;
+import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.ChalkMark;
 import io.github.mortuusars.chalk.data.Lang;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
@@ -127,11 +127,11 @@ public class ChalkBoxItem extends Item {
         if ( chalkStack == null || !ChalkMark.canBeDrawnAt(clickedPos.relative(clickedFace), clickedPos, clickedFace, level) )
             return InteractionResult.FAIL;
 
-        MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.NONE;
+        MarkSymbol symbol = context.isSecondaryUseActive() ? MarkSymbol.CROSS : MarkSymbol.CENTER;
         DyeColor chalkColor = ((ChalkItem) chalkStack.getFirst().getItem()).getColor();
         final boolean isGlowing = ChalkBox.getGlow(chalkBoxStack) > 0;
 
-        if (ChalkMark.draw(symbol, chalkColor, isGlowing, clickedPos, clickedFace, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
+        if (ChalkMark.tryDraw(symbol, chalkColor, isGlowing, clickedPos, clickedFace, context.getClickLocation(), level) == InteractionResult.SUCCESS) {
             if ( !player.isCreative() ) {
                 ItemStack chalkItemStack = chalkStack.getFirst();
 

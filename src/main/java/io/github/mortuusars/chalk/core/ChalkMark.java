@@ -2,8 +2,6 @@ package io.github.mortuusars.chalk.core;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
-import io.github.mortuusars.chalk.blocks.MarkSymbol;
-import io.github.mortuusars.chalk.utils.ClickLocationUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,21 +15,25 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
-import static io.github.mortuusars.chalk.Chalk.LOGGER;
-
 public class ChalkMark {
-    public static InteractionResult draw(MarkSymbol symbol, DyeColor color, boolean isGlowing, BlockPos clickedPos, Direction clickedFace, Vec3 clickLocation, Level level) {
+    public static InteractionResult tryDraw(MarkSymbol symbol, DyeColor color, boolean isGlowing, BlockPos clickedPos, Direction clickedFace, Vec3 clickLocation, Level level) {
         if ( !ChalkMark.canBeDrawnAt(clickedPos.relative(clickedFace), clickedPos, clickedFace, level) ) {
-            LOGGER.info("Chalk cannot be drawn at this position. ({}, {}, {})", clickedPos.getX(), clickedPos.getY(), clickedPos.getZ());
+//            LOGGER.info("Chalk cannot be drawn at this position. ({}, {}, {})", clickedPos.getX(), clickedPos.getY(), clickedPos.getZ());
             return InteractionResult.FAIL;
         }
 
-        final boolean isClickedOnAMark = level.getBlockState(clickedPos).is(Chalk.Tags.Blocks.CHALK_MARKS);
+        final boolean isClickedOnAMark = level.getBlockState(clickedPos).getBlock() instanceof ChalkMarkBlock;
 
         BlockPos newMarkPosition = isClickedOnAMark ? clickedPos : clickedPos.relative(clickedFace);
         final Direction newMarkFacing = isClickedOnAMark ? level.getBlockState(newMarkPosition).getValue(ChalkMarkBlock.FACING) : clickedFace;
 
-        BlockState markBlockState = ChalkMark.createMarkBlockState(symbol, color, newMarkFacing, clickLocation, clickedPos, isGlowing);
+//        BlockState markBlockState = ChalkMark.createMarkBlockState(symbol, color, newMarkFacing, clickLocation, clickedPos, isGlowing);
+
+        BlockState markBlockState = Chalk.Blocks.getMarkBlock(color).defaultBlockState()
+                .setValue(ChalkMarkBlock.FACING, newMarkFacing)
+                .setValue(ChalkMarkBlock.SYMBOL, symbol)
+                .setValue(ChalkMarkBlock.ORIENTATION, SymbolOrientation.fromClickLocation(clickLocation, clickedFace))
+                .setValue(ChalkMarkBlock.GLOWING, isGlowing);
 
         // Cancel drawing if marks are same.
         // Remove old mark if different.
@@ -55,28 +57,25 @@ public class ChalkMark {
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean canBeDrawnAt(BlockPos pos, BlockPos clickedBlockPos, Direction clickedFace, Level level){
-
         BlockState clickedBlockState = level.getBlockState(clickedBlockPos);
-        if (clickedBlockState.is(Chalk.Tags.Blocks.CHALK_MARKS))
+        if (clickedBlockState.getBlock() instanceof ChalkMarkBlock)
             return true; // Marks can be replaced.
 
         BlockState stateAtMarkPos = level.getBlockState(pos);
-        if ( stateAtMarkPos.isAir() || stateAtMarkPos.is(Chalk.Tags.Blocks.CHALK_MARKS) )
+        if (stateAtMarkPos.isAir() || stateAtMarkPos.getBlock() instanceof ChalkMarkBlock)
             return Block.isFaceFull(clickedBlockState.getCollisionShape(level, clickedBlockPos), clickedFace);
 
         return false;
     }
 
-    public static BlockState createMarkBlockState(MarkSymbol symbol, DyeColor color, Direction clickedFace, Vec3 clickLocation, BlockPos clickedPos, boolean isGlowing){
-        BlockState newBlockState = Chalk.Blocks.getMarkBlock(color).defaultBlockState()
-                .setValue(ChalkMarkBlock.FACING, clickedFace)
-                .setValue(ChalkMarkBlock.SYMBOL, symbol)
-                .setValue(ChalkMarkBlock.GLOWING, isGlowing);
+    public static boolean canBeDrawnOn(BlockPos pos, Direction face, Level level) {
+        BlockState blockStateAtPos = level.getBlockState(pos);
+        return canMarkReplace(level.getBlockState(pos.relative(face))) &&
+                Block.isFaceFull(blockStateAtPos.getCollisionShape(level, pos), face);
+    }
 
-        if (symbol == MarkSymbol.NONE)
-            newBlockState = newBlockState.setValue(ChalkMarkBlock.ORIENTATION, ClickLocationUtils.getBlockRegion(clickLocation, clickedPos, clickedFace));
-
-        return newBlockState;
+    public static boolean canMarkReplace(BlockState state) {
+        return state.isAir() || state.getBlock() instanceof ChalkMarkBlock;
     }
 
     @SuppressWarnings("UnusedReturnValue")
