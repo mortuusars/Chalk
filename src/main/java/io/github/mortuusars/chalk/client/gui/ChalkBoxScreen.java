@@ -41,6 +41,11 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
     }
 
     @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+    }
+
+    @Override
     public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
         this.renderBackground(poseStack);
         super.render(poseStack, mouseX, mouseY, partialTick);

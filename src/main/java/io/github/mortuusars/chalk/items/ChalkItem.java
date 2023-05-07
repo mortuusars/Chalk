@@ -72,7 +72,6 @@ public class ChalkItem extends Item {
 
         BlockPos pos = context.getClickedPos();
         Direction facing = context.getClickedFace();
-        boolean isGlowing = player.getOffhandItem().is(Chalk.Tags.Items.GLOWINGS);
 
         if (level.getBlockState(pos).getBlock() instanceof ChalkMarkBlock) {
             facing = level.getBlockState(pos).getValue(ChalkMarkBlock.FACING);
@@ -85,61 +84,38 @@ public class ChalkItem extends Item {
         if (!drawingContext.canDraw())
             return InteractionResult.FAIL;
 
-        if (!player.isSecondaryUseActive()) {
-            MarkSymbol symbol = drawingContext.getInitialOrientation() == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW;
-            Mark mark = drawingContext.createMark(color, symbol, isGlowing);
-
-            if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
-                return InteractionResult.FAIL;
-
-            if (drawingContext.draw(mark)) {
-                if (!player.isCreative())
-                    damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
-
-                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        // Select symbol
+        if (player.isSecondaryUseActive()) {
+            if (level.isClientSide) {
+                SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(drawingContext, hand);
+                Minecraft.getInstance().setScreen(symbolSelectScreen);
             }
 
-            return InteractionResult.FAIL;
+            return InteractionResult.CONSUME;
         }
-        else {
-            MarkSymbol symbol = MarkSymbol.CROSS;
-            Mark mark = drawingContext.createMark(color, symbol, isGlowing);
 
-            if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
-                return InteractionResult.FAIL;
+        // Draw arrow or dot
+        MarkSymbol symbol = drawingContext.getInitialOrientation() == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW;
+        Mark mark = drawingContext.createMark(color, symbol, false);
 
-            if (drawingContext.draw(mark)) {
-                if (!player.isCreative())
-                    damageAndConsumeItems(hand, itemStack, player, level, isGlowing);
+        if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
+            return InteractionResult.FAIL;
 
-                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        if (drawingContext.draw(mark)) {
+            if (!player.isCreative() && itemStack.isDamageableItem()) {
+                itemStack.setDamageValue(itemStack.getDamageValue() + 1);
+                if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
+                    player.setItemInHand(hand, ItemStack.EMPTY);
+                    Vec3 playerPos = player.position();
+                    player.level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
+                            SoundSource.PLAYERS, 0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+                }
             }
 
-                //            if (level.isClientSide) {
-                //                SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(context);
-                //                Minecraft.getInstance().setScreen(symbolSelectScreen);
-                //            }
-                //            return InteractionResult.CONSUME;
-                //        }
-
-            return InteractionResult.FAIL;
-        }
-    }
-
-    private void damageAndConsumeItems(InteractionHand hand, ItemStack itemStack, Player player, Level level, boolean isGlowing) {
-        if (!itemStack.isDamageableItem())
-            return;
-
-        itemStack.setDamageValue(itemStack.getDamageValue() + 1);
-        if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
-            player.setItemInHand(hand, ItemStack.EMPTY);
-            Vec3 playerPos = player.position();
-            level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
-                    SoundSource.PLAYERS, 0.9f, 0.9f + level.random.nextFloat() * 0.2f);
+            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
         }
 
-        if (isGlowing)
-            player.getOffhandItem().shrink(1);
+        return InteractionResult.FAIL;
     }
 
     @Override

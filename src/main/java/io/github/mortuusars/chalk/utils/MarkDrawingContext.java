@@ -45,23 +45,27 @@ public class MarkDrawingContext {
         return canDraw;
     }
 
+    public BlockPos getMarkBlockPos() {
+        return hitResult.getBlockPos().relative(hitResult.getDirection());
+    }
+
     public SymbolOrientation getInitialOrientation() {
         return initialOrientation;
     }
 
     public Mark createMark(DyeColor color, MarkSymbol symbol, boolean glowing) {
         Direction face = hitResult.getDirection();
-        MarkSymbol.RotationBehavior rotBehavior = symbol.getRotationBehavior();
+        MarkSymbol.OrientationBehavior rotBehavior = symbol.getOrientationBehavior();
 
         SymbolOrientation orientation;
 
-        if (rotBehavior == MarkSymbol.RotationBehavior.FULL)
+        if (rotBehavior == MarkSymbol.OrientationBehavior.FULL)
             orientation = initialOrientation;
-        else if (rotBehavior == MarkSymbol.RotationBehavior.HORIZONTAL
-                || (rotBehavior == MarkSymbol.RotationBehavior.UP_DOWN_HORIZONTAL && (face == Direction.UP || face == Direction.DOWN)))
+        else if (rotBehavior == MarkSymbol.OrientationBehavior.CARDINAL
+                || (rotBehavior == MarkSymbol.OrientationBehavior.UP_DOWN_CARDINAL && (face == Direction.UP || face == Direction.DOWN)))
             orientation = SymbolOrientation.fromClickLocationCardinal(hitResult.getLocation(), face);
         else
-            orientation = symbol.getDefaultRotation();
+            orientation = symbol.getDefaultOrientation();
 
         return new Mark(face, color, symbol, orientation, glowing);
     }
@@ -88,7 +92,7 @@ public class MarkDrawingContext {
     }
 
     public boolean draw(Mark mark) {
-        BlockPos markPos = hitResult.getBlockPos().relative(mark.facing());
+        BlockPos markPos = getMarkBlockPos();
         boolean isMarkDrawn = level.setBlock(markPos, mark.createBlockState(), Block.UPDATE_ALL_IMMEDIATE);
 
         if (isMarkDrawn){

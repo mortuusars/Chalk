@@ -75,11 +75,13 @@ public class ChalkBoxItem extends Item {
     public boolean overrideOtherStackedOnMe(ItemStack stack, @NotNull ItemStack otherStack, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, @NotNull SlotAccess slotAccess) {
         if (!player.isCreative() && stack.getItem() == this
                 && otherStack.isEmpty() && action == ClickAction.SECONDARY) {
+//            player.closeContainer();
             openGUI(player, stack);
             player.playSound(Chalk.SoundEvents.CHALK_BOX_OPEN.get(),
                     0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
             return true;
         }
+
 
         if (stack.getItem() == this && otherStack.getItem() instanceof ChalkItem && action == ClickAction.SECONDARY) {
             for (int i = 0; i < ChalkBox.CHALK_SLOTS; i++) {

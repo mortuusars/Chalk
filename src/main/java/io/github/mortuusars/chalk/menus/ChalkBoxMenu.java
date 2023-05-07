@@ -13,6 +13,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -63,6 +64,15 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         }
 
         addPlayerSlots(playerInventory);
+    }
+
+    @Override
+    public void removed(Player pPlayer) {
+        super.removed(pPlayer);
+
+        // I still have no clue why updates are stopping when ChalkBox is opened by right click in inv.
+        // But this fixes inventory not syncing after closing.
+        pPlayer.inventoryMenu.resumeRemoteUpdates();
     }
 
     public static ChalkBoxMenu fromBuffer(int containerID, Inventory playerInventory, FriendlyByteBuf dataBuffer) {

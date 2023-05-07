@@ -3,31 +3,34 @@ package io.github.mortuusars.chalk.core;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.state.BlockState;
 
 public record Mark(Direction facing, DyeColor color, MarkSymbol symbol, SymbolOrientation orientation, boolean glowing) {
-//    public boolean shouldReplaceExistingMark(BlockState oldMarkState) {
-//        if (!(oldMarkState.getBlock() instanceof ChalkMarkBlock markBlock))
-//            throw new IllegalStateException("'oldMarkState' should be ChalkMarkBlock.");
-//
-//        if (color != markBlock.getColor())
-//            return true;
-//        if (facing != oldMarkState.getValue(ChalkMarkBlock.FACING))
-//            return true;
-//        else if (symbol != oldMarkState.getValue(ChalkMarkBlock.SYMBOL))
-//            return true;
-//        else if (orientation != oldMarkState.getValue(ChalkMarkBlock.ORIENTATION))
-//            return true;
-//        else
-//            return (glowing && !oldMarkState.getValue(ChalkMarkBlock.GLOWING));
-//    }
-
     public BlockState createBlockState() {
         return Chalk.Blocks.getMarkBlock(color).defaultBlockState()
                 .setValue(ChalkMarkBlock.FACING, facing())
                 .setValue(ChalkMarkBlock.SYMBOL, symbol())
                 .setValue(ChalkMarkBlock.ORIENTATION, orientation())
                 .setValue(ChalkMarkBlock.GLOWING, glowing());
+    }
+
+    public static Mark fromBuffer(FriendlyByteBuf buffer) {
+        return new Mark(
+                buffer.readEnum(Direction.class),
+                buffer.readEnum(DyeColor.class),
+                buffer.readEnum(MarkSymbol.class),
+                buffer.readEnum(SymbolOrientation.class),
+                buffer.readBoolean()
+        );
+    }
+
+    public void toBuffer(FriendlyByteBuf buffer) {
+        buffer.writeEnum(facing);
+        buffer.writeEnum(color);
+        buffer.writeEnum(symbol);
+        buffer.writeEnum(orientation);
+        buffer.writeBoolean(glowing);
     }
 }
