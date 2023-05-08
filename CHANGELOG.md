@@ -2,7 +2,6 @@
 - Chalk Box
   - Chalk Box can now be opened by Right-Clicking it in inventory.
   - You can now insert chalks in Chalk Box by right-clicking it with item (same as bundles).
-  - Items that can be placed in the Chalk Box are now controlled by a tag 'chalk:allowed_in_chalk_box'. You still can only draw with chalks though.
 
 - Tags:
   - Changed naming to be inline with vanilla: chalk:chalk -> chalk:chalks, etc.

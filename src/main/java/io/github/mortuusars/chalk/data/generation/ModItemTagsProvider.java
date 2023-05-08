@@ -26,9 +26,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
             tag(Chalk.Tags.Items.FORGE_CHALKS).add(item.get());
         });
 
-        tag(Chalk.Tags.Items.ALLOWED_IN_CHALK_BOX)
-                .addTag(Chalk.Tags.Items.CHALKS);
-
         for (DyeColor color : DyeColor.values()){
             tag(color.getTag()).add(Chalk.Items.getChalk(color));
         }

@@ -7,7 +7,6 @@ import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.loot.LootTableModification;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -19,7 +18,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -28,7 +26,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -63,25 +60,10 @@ public class Chalk
         MinecraftForge.EVENT_BUS.addListener(Chalk::onRightClickBlock);
 
     }
+
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getHand() == InteractionHand.OFF_HAND)
-            return;
-
-
-
-        Player player = event.getEntity();
-        Inventory inventory = player.getInventory();
-
-        player.inventoryMenu.resumeRemoteUpdates();
-
-//        if (player instanceof ServerPlayer serverPlayer) {
-//            serverPlayer.connection.send();
-//        }
-//
-//        ItemStack item = inventory.getItem(0);
-//        inventory.setItem(0, item);
+        // Testing
     }
-
 
     public static ResourceLocation resource(String path) {
         return new ResourceLocation(ID, path);
@@ -133,8 +115,6 @@ public class Chalk
         public static final class Items {
             public static final TagKey<Item> CHALKS = ItemTags.create(new ResourceLocation("chalk:chalks"));
             public static final TagKey<Item> FORGE_CHALKS = ItemTags.create(new ResourceLocation("forge:chalks"));
-            //TODO: is it really needed?
-            public static final TagKey<Item> ALLOWED_IN_CHALK_BOX = ItemTags.create(new ResourceLocation("chalk:allowed_in_chalk_box"));
             public static final TagKey<Item> GLOWINGS = ItemTags.create(new ResourceLocation("chalk:glowings"));
         }
 
