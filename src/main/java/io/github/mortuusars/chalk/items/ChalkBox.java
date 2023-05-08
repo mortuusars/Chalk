@@ -34,7 +34,7 @@ public class ChalkBox {
         if (slot == ChalkBox.GLOWINGS_SLOT_INDEX)
             return stack.is(Chalk.Tags.Items.GLOWINGS);
         else
-            return stack.is(Chalk.Tags.Items.ALLOWED_IN_CHALK_BOX);
+            return stack.getItem() instanceof ChalkItem;
     }
 
     /**

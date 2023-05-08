@@ -4,8 +4,9 @@
   - You can now insert chalks in Chalk Box by right-clicking it with item (same as bundles).
 
 - Tags:
-  - Changed naming to be inline with vanilla: chalk:chalk -> chalk:chalks, etc.
-  - Added chalks to forge:chalks tag.
+  - Added `chalk:chalk_cannot_draw_on` block tag which controls what blocks isn't suitable for drawing marks on.
+  - Changed naming to be inline with vanilla: `chalk:chalk` -> `chalk:chalks`, etc.
+  - Added chalks to `forge:chalks` tag.
 
 ### 1.4.0 - 2023-02-10
 

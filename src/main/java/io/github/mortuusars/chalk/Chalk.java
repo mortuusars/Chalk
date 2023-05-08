@@ -120,6 +120,7 @@ public class Chalk
 
         public static final class Blocks {
             public static final TagKey<Block> CHALK_MARKS = BlockTags.create(new ResourceLocation("chalk:chalk_marks"));
+            public static final TagKey<Block> CHALK_CANNOT_DRAW_ON = BlockTags.create(new ResourceLocation("chalk:chalk_cannot_draw_on"));
         }
     }
 
