@@ -17,7 +17,7 @@ public class ItemModelGenerator extends ItemModelProvider {
     @Override
     protected void registerModels() {
         Chalk.Items.CHALKS.forEach((color, item) ->
-            singleTexture(item.getId().getPath(), mcLoc("item/generated"), "layer0", modLoc("item/" + item.getId().getPath())));
+            singleTexture(item.getId().getPath(), modLoc("item/chalk"), "layer0", modLoc("item/" + item.getId().getPath())));
 
         ItemModelBuilder chalkBoxModelBuilder = getBuilder("chalk_box")
                 .parent(getExistingFile(mcLoc("item/generated")))

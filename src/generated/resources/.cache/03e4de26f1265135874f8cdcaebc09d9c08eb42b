@@ -1,7 +1,7 @@
-// 1.19.2	2023-05-08T04:12:31.7183964	Tags for minecraft:item
-2f39b205cbcd92d7a8e0f2d8c49dca230bb370b2 data/chalk/tags/items/chalks.json
+// 1.19.2	2023-05-08T05:03:36.7140945	Tags for minecraft:item
+84f3717fca1d7b8c8ba6886ac2ac8e448683cf6b data/chalk/tags/items/chalks.json
 ab7a6130a1f38204a0c1ea6a70a355e6cc59109d data/chalk/tags/items/glowings.json
-2f39b205cbcd92d7a8e0f2d8c49dca230bb370b2 data/forge/tags/items/chalks.json
+84f3717fca1d7b8c8ba6886ac2ac8e448683cf6b data/forge/tags/items/chalks.json
 c550d4c395a032ee253f6f84ac7c7ae615ad51cb data/forge/tags/items/dyes/black.json
 33d62f1c6ff67662a43143bd8fca0f8ac7b87a7e data/forge/tags/items/dyes/blue.json
 d9b15f72c3dd5257b22ccf2b3d9a2195e815a6a8 data/forge/tags/items/dyes/brown.json

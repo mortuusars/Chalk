@@ -1,7 +1,7 @@
-// 1.19.2	2023-04-24T09:29:43.2769324	Item Models: chalk
-bfb2d18956e22ff09ab8f77b5f0ad49fb04203d1 assets/chalk/models/item/black_chalk.json
-99e21965e90d0528a6922e9cd8514ee59a1d87a0 assets/chalk/models/item/blue_chalk.json
-255a8c5ffb45d29dc9adb48dbe8a658aeadbc27d assets/chalk/models/item/brown_chalk.json
+// 1.19.2	2023-05-08T05:03:36.7090903	Item Models: chalk
+4002cd1d5d9e520d260a2d07e6852cee7a1a6312 assets/chalk/models/item/black_chalk.json
+c4fae7b86a2f22945af0a709b79cace412e17d03 assets/chalk/models/item/blue_chalk.json
+19c1d220f49605c288508249e5e773efe138f002 assets/chalk/models/item/brown_chalk.json
 c2fbebf7615b57f34c622efa4fd8817118804302 assets/chalk/models/item/chalk_box.json
 885173116b823fa1c008763ce1bec51b645da173 assets/chalk/models/item/chalk_box_black.json
 78688e2923d7d1a6adf7940d31f0e3555b311d9a assets/chalk/models/item/chalk_box_blue.json
@@ -19,16 +19,16 @@ d237601ab92196d40809a7cc9e95230b1cdbfceb assets/chalk/models/item/chalk_box_pink
 29321d7f997f79de87c60a36c19b1916c4b992f8 assets/chalk/models/item/chalk_box_red.json
 ec6da6b8c690a1e4b77db1837eb6e58e68597158 assets/chalk/models/item/chalk_box_white.json
 7058c9434e14cad302f25cfacb926357c5085c37 assets/chalk/models/item/chalk_box_yellow.json
-8a2b10fc379d93567323b985300eaac3462ea0f9 assets/chalk/models/item/cyan_chalk.json
-5b3d64a4a9706519e7869f12d0a807b4d144d047 assets/chalk/models/item/gray_chalk.json
-4476f934b53c01a604d7c5fd25ab8db9d7458bf4 assets/chalk/models/item/green_chalk.json
-4e5baac6b61c185bae0a5e8a65bc834a8fccddb5 assets/chalk/models/item/light_blue_chalk.json
-0ef74b26675a4d9011c11fc6f5a9be4bfeb7a61d assets/chalk/models/item/light_gray_chalk.json
-4ccfc9b1e35cd3a19f46d835ab007275e5660ec5 assets/chalk/models/item/lime_chalk.json
-96c898ce9a04f8cbb0859b9ffd76a528270e6e48 assets/chalk/models/item/magenta_chalk.json
-37ebf9025dc75f0b01d4e02b9f9f7983882f3cc2 assets/chalk/models/item/orange_chalk.json
-e81bf5d124fb48e0ee4ba00242b67d431b89e60a assets/chalk/models/item/pink_chalk.json
-473bb4b7f4a854377da3442ef0da67f31ca94558 assets/chalk/models/item/purple_chalk.json
-cb722720b0b6aa348fd092df9ff98ee5bed335f7 assets/chalk/models/item/red_chalk.json
-da85ddd80a118b7de4fafcba40cfb041e8754dab assets/chalk/models/item/white_chalk.json
-3da375da79d496b1faea19a93ea531e11fb2dcdd assets/chalk/models/item/yellow_chalk.json
+1b31ce9963e2f5993d7ba59b2b712790e7ccf799 assets/chalk/models/item/cyan_chalk.json
+8d69bab357a79a85d4a3c6ed0d4d1c2b619f1887 assets/chalk/models/item/gray_chalk.json
+2b9804590401c2cb7ab49bfa9ac7386669a84cda assets/chalk/models/item/green_chalk.json
+b6785c516e667e4f72b275168ea7b5192b5d7c55 assets/chalk/models/item/light_blue_chalk.json
+a09f9531cddb64345ff957c57297fc0f6697e65f assets/chalk/models/item/light_gray_chalk.json
+3be3f1a3017ed9efbde1c3eff234574c21578856 assets/chalk/models/item/lime_chalk.json
+9862652173058ad9a86f3e288ba00ce2fa044ec8 assets/chalk/models/item/magenta_chalk.json
+87f2990f4300ff28381b5ba82668d8e512b8f4d7 assets/chalk/models/item/orange_chalk.json
+56e6508e6a5b5853a9c0593b5c3b02aa8ce7a7e9 assets/chalk/models/item/pink_chalk.json
+575bea5301997e1b1c6bbf6213a7577ffcfa86c1 assets/chalk/models/item/purple_chalk.json
+cb1c277c5401efd2a8951340e06f7a80383d086d assets/chalk/models/item/red_chalk.json
+573dd886b42c5bc5c9446c4372e500b01eebf85b assets/chalk/models/item/white_chalk.json
+13387b3e8bd70b0b8f7f6c14e4c60ce0a53f18e9 assets/chalk/models/item/yellow_chalk.json
