@@ -6,11 +6,14 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.SymbolOrientation;
+import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -22,10 +25,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -87,12 +95,12 @@ public class ChalkMarkBlock extends Block {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter world, BlockPos pos, BlockState blockState) {
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState blockState) {
         return new ItemStack(Chalk.Items.getChalk(this.color));
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
         if (player.isCreative())
             return new ItemStack(Chalk.Items.getChalk(color));
 
@@ -139,49 +147,53 @@ public class ChalkMarkBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+        ItemStack usedStack = player.getItemInHand(hand);
 
-        if (blockState.getValue(GLOWING))
-            return InteractionResult.PASS;
+        if (!blockState.getValue(GLOWING) && usedStack.is(Chalk.Tags.Items.GLOWINGS)) {
+            if (level.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
+                if (!player.isCreative())
+                    usedStack.shrink(1);
 
-        ItemStack usedItem = player.getItemInHand(hand);
-
-        if (usedItem.is(Chalk.Tags.Items.GLOWINGS)) {
-
-            if (world.setBlock(blockPos, blockState.setValue(GLOWING, true), Block.UPDATE_ALL_IMMEDIATE)) {
-                if (!player.isCreative()) {
-                    int itemsCount = usedItem.getCount();
-                    if (itemsCount-- <= 0)
-                        player.setItemInHand(hand, ItemStack.EMPTY);
-                    else
-                        usedItem.setCount(itemsCount);
-                }
-
-                world.playSound(null, blockPos, Chalk.SoundEvents.MARK_GLOW_APPLIED.get(), SoundSource.BLOCKS, 1.5f, 1f);
-                ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
+                level.playSound(null, blockPos, Chalk.SoundEvents.MARK_GLOW_APPLIED.get(), SoundSource.BLOCKS, 1.5f, 1f);
+                ParticleUtils.spawnParticle(level, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
 
                 return InteractionResult.SUCCESS;
             }
+            else
+                return InteractionResult.FAIL;
         }
 
         return InteractionResult.PASS;
     }
 
     @Override
-    public boolean onDestroyedByPlayer(BlockState state, Level world, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-        return removeMark(world, pos, false);
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+        return removeMarkWithEffects(level, pos);
     }
 
-    private boolean removeMark(Level world, BlockPos pos, boolean isMoving) {
-        Direction facing = world.getBlockState(pos).getValue(FACING); // Get facing before removing the block.
+    private boolean removeMarkWithEffects(Level level, BlockPos pos) {
+        Direction facing = level.getBlockState(pos).getValue(FACING); // Get facing before removing the block.
 
-        if (world.removeBlock(pos, isMoving)) {
-            if (!world.isClientSide())
-                world.playSound(null, pos, Chalk.SoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
-            else {
-                ParticleUtils.spawnColorDustParticles(color, world, pos, facing);
+        if (level.removeBlock(pos, false)) {
+            level.playSound(null, pos, Chalk.SoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
+
+            if (level instanceof ServerLevel serverLevel) {
+                int colorValue = ChalkColors.fromDyeColor(color);
+                float R = (colorValue & 0x00FF0000) >> 16;
+                float G = (colorValue & 0x0000FF00) >> 8;
+                float B = (colorValue & 0x000000FF);
+
+                Vector3f centerOffset = PositionUtils.blockCenterOffsetToFace(pos, facing, 0.25f);
+                serverLevel.sendParticles(new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
+                        centerOffset.x(), centerOffset.y(), centerOffset.z(),
+                        1, 0.1, 0.1, 0.1, 0.02);
             }
+            else {
+                ParticleUtils.spawnColorDustParticles(color, level, pos, facing);
+            }
+
             return true;
         }
         return false;
@@ -194,32 +206,45 @@ public class ChalkMarkBlock extends Block {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState blockState, Level world, BlockPos blockPos, RandomSource randomSource) {
+    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
         if (blockState.getValue(GLOWING)) {
             if (randomSource.nextInt(90) == 0) {
-                ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
+                ParticleUtils.spawnParticle(level, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.33f), new Vector3f(0f, 0.015f, 0f), 1);
             }
         }
     }
 
     @Override
-    public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
+    public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return state.getValue(GLOWING) ? CommonConfig.GLOWING_CHALK_MARK_LIGHT_LEVEL.get() : 0;
     }
 
     @Override
-    public void attack(BlockState blockState, Level world, BlockPos pos, Player player) {
-        removeMark(world, pos, false);
+    public void attack(BlockState blockState, Level level, BlockPos pos, Player player) {
+        removeMarkWithEffects(level, pos);
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        BlockPos relative = pos.relative(state.getValue(FACING).getOpposite());
-
-        if (relative.equals(fromPos)) {
-            removeMark(world, pos, isMoving);
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+        if (!state.canSurvive(level, pos)) {
+            removeMarkWithEffects(level, pos);
+            return;
         }
+
+        BlockPos surfacePos = pos.relative(state.getValue(FACING).getOpposite());
+        if (surfacePos.equals(fromPos) && level.getBlockState(surfacePos).getBlock() instanceof GrassBlock) {
+            level.removeBlock(pos, false);
+            level.playSound(null, pos, Chalk.SoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
+        }
+    }
+
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+        Direction facing = state.getValue(FACING);
+        BlockPos surfacePos = pos.relative(facing.getOpposite());
+        BlockState surfaceBlockState = level.getBlockState(surfacePos);
+        return surfaceBlockState.isFaceSturdy(level, surfacePos, facing);
     }
 
     @Override

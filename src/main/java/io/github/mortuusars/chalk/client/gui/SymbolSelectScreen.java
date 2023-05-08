@@ -31,6 +31,10 @@ public class SymbolSelectScreen extends Screen {
         this.drawingHand = drawingHand;
 
         this.minecraft = Minecraft.getInstance();
+
+        // Keep sneaking while choosing a mark to not jerk the player's camera:
+        if (minecraft.player != null)
+            minecraft.player.setPose(Pose.CROUCHING);
     }
 
     @Override

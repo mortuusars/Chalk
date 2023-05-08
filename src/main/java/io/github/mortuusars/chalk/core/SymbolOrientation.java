@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.core;
 
-import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.core.component.Point2d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +44,9 @@ public enum SymbolOrientation implements StringRepresentable {
         return CENTER;
     }
 
+    /**
+     * Returns the SymbolOrientation depending where on the block was clicked.
+     */
     public static SymbolOrientation fromClickLocationAll(Vec3 clickLocation, Direction face) {
         Point2d coords = getClickedBlockSpaceCoords(clickLocation, face);
 
@@ -61,7 +63,7 @@ public enum SymbolOrientation implements StringRepresentable {
     }
 
     /**
-     * Gets the cardinal (NORTH, EAST, SOUTH, WEST) direction from the click location.
+     * Gets the cardinal direction (NORTH, EAST, SOUTH, WEST) from the click location.
      */
     public static SymbolOrientation fromClickLocationCardinal(Vec3 clickLocation, Direction face) {
         Point2d coords = getClickedBlockSpaceCoords(clickLocation, face);

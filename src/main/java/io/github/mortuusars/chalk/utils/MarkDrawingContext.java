@@ -112,6 +112,7 @@ public class MarkDrawingContext {
     private static boolean canBeDrawnOn(BlockPos pos, Direction face, Level level) {
         BlockState blockStateAtPos = level.getBlockState(pos);
         BlockState markPosState = level.getBlockState(pos.relative(face));
+        // TODO: cannot be drawn on tag
         return (markPosState.isAir() || markPosState.getBlock() instanceof ChalkMarkBlock) &&
                 Block.isFaceFull(blockStateAtPos.getCollisionShape(level, pos), face);
     }

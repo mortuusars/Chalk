@@ -9,7 +9,6 @@ import io.github.mortuusars.chalk.core.SymbolOrientation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
@@ -17,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.ChunkRenderTypeSet;
@@ -82,6 +82,7 @@ public class ChalkMarkBakedModel implements BakedModel {
     }
 
     // Forge method
+    @SuppressWarnings("ConstantValue")
     @Override
     public @NotNull List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction side, @NotNull RandomSource rand, @NotNull ModelData data, @org.jetbrains.annotations.Nullable RenderType renderType) {
         if (side != null)
@@ -107,14 +108,16 @@ public class ChalkMarkBakedModel implements BakedModel {
             return baseModel.getQuads(state, side, rand, data, renderType);
         }
 
-        SymbolOrientation orientation = data.get(ORIENTATION);
         Direction facing = data.get(FACING);
-        boolean isGlowing = Boolean.TRUE.equals(data.get(GLOWING));
         MarkSymbol symbol = data.get(SYMBOL);
+        SymbolOrientation orientation = data.get(ORIENTATION);
+        boolean isGlowing = Boolean.TRUE.equals(data.get(GLOWING));
+
+        if (facing == null || symbol == null || orientation == null)
+            return baseModel.getQuads(state, side, rand, data, renderType);
 
         List<BakedQuad> quads = new ArrayList<>();
-
-        BakedQuad quad = getBakedQuad(facing, symbol, orientation, facing == Direction.DOWN ? 180 : 0);
+        BakedQuad quad = getBakedQuad(facing, symbol, orientation);
 
         if (isGlowing)
             quad = convertToFullBright(quad);
@@ -125,7 +128,7 @@ public class ChalkMarkBakedModel implements BakedModel {
 
     // IBakedModel method
     @Override
-    public @NotNull List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_, @org.jetbrains.annotations.Nullable Direction facing, RandomSource random) {
+    public @NotNull List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState p_235039_, @org.jetbrains.annotations.Nullable Direction facing, @NotNull RandomSource random) {
         return Collections.emptyList();
     }
 
@@ -148,53 +151,46 @@ public class ChalkMarkBakedModel implements BakedModel {
         );
     }
 
-    private static final HashMap<Direction, Vector3f> fromCoords;
-    private static final HashMap<Direction, Vector3f> toCoords;
+    private static final HashMap<Direction, Vector3f> FROM_COORDS;
+    private static final HashMap<Direction, Vector3f> TO_COORDS;
 
     static {
-        fromCoords = new HashMap<>();
-        fromCoords.put(Direction.DOWN, new Vector3f(0, 15.9f, 0));
-        fromCoords.put(Direction.UP, new Vector3f(0, 0, 0));
-        fromCoords.put(Direction.NORTH, new Vector3f(0, 0, 15.9f));
-        fromCoords.put(Direction.SOUTH, new Vector3f(0, 0, 0));
-        fromCoords.put(Direction.WEST, new Vector3f(15.9f, 0, 0));
-        fromCoords.put(Direction.EAST, new Vector3f(0, 0, 0));
+        FROM_COORDS = new HashMap<>();
+        FROM_COORDS.put(Direction.DOWN, new Vector3f(0, 15.9f, 0));
+        FROM_COORDS.put(Direction.UP, new Vector3f(0, 0, 0));
+        FROM_COORDS.put(Direction.NORTH, new Vector3f(0, 0, 15.9f));
+        FROM_COORDS.put(Direction.SOUTH, new Vector3f(0, 0, 0));
+        FROM_COORDS.put(Direction.WEST, new Vector3f(15.9f, 0, 0));
+        FROM_COORDS.put(Direction.EAST, new Vector3f(0, 0, 0));
 
-        toCoords = new HashMap<>();
-        toCoords.put(Direction.DOWN, new Vector3f(16, 16, 16));
-        toCoords.put(Direction.UP, new Vector3f(16, 0.1f, 16));
-        toCoords.put(Direction.NORTH, new Vector3f(16, 16, 16));
-        toCoords.put(Direction.SOUTH, new Vector3f(16, 16, 0.1f));
-        toCoords.put(Direction.WEST, new Vector3f(16, 16, 16));
-        toCoords.put(Direction.EAST, new Vector3f(0.1f, 16, 16));
+        TO_COORDS = new HashMap<>();
+        TO_COORDS.put(Direction.DOWN, new Vector3f(16, 16, 16));
+        TO_COORDS.put(Direction.UP, new Vector3f(16, 0.1f, 16));
+        TO_COORDS.put(Direction.NORTH, new Vector3f(16, 16, 16));
+        TO_COORDS.put(Direction.SOUTH, new Vector3f(16, 16, 0.1f));
+        TO_COORDS.put(Direction.WEST, new Vector3f(16, 16, 16));
+        TO_COORDS.put(Direction.EAST, new Vector3f(0.1f, 16, 16));
     }
 
-    private BakedQuad getBakedQuad(Direction facing, MarkSymbol symbol, SymbolOrientation symbolRotation, int uvRotation) {
-
-        Vector3f from = facing != null ? fromCoords.get(facing) : fromCoords.get(Direction.UP);
-        Vector3f to = facing != null ? toCoords.get(facing) : fromCoords.get(Direction.UP);
-
-        TextureAtlas atlas = Minecraft.getInstance().getModelManager().getAtlas(TextureAtlas.LOCATION_BLOCKS);
-        TextureAtlasSprite texture = atlas.getSprite(symbol.getTextureLocation());
+    private BakedQuad getBakedQuad(@NotNull Direction facing, MarkSymbol symbol, SymbolOrientation symbolRotation) {
+        TextureAtlasSprite texture = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+                .apply(symbol.getTextureLocation());
 
         // Tint index is set to 0 (-1 is off) to color the marks with ChalkMarkBlockColor
         BlockElementFace blockPartFace = new BlockElementFace(facing, 0, "",
-                new BlockFaceUV(new float[]{0f, 0f, 16f, 16f}, uvRotation));
+                new BlockFaceUV(new float[]{0f, 0f, 16f, 16f}, facing == Direction.DOWN ? 180 : 0));
 
         // Rotate the texture
         int rotation = symbolRotation.getRotation();
 
-        // Flip orientation for this facings
-//        if (facing == Direction.SOUTH || facing == Direction.EAST || facing == Direction.UP || facing == Direction.DOWN)
-
         if (facing.getAxisDirection() == Direction.AxisDirection.POSITIVE || facing.getAxis() == Direction.Axis.Y)
             rotation = 360 - rotation;
-//        rotation = (rotation + 15) % 360;
-
 
         BlockElementRotation blockPartRotation = new BlockElementRotation(ROTATION_ORIGIN,
-                facing != null ? facing.getAxis() : Direction.Axis.Y, rotation, false);
+                facing.getAxis(), rotation, false);
 
+        Vector3f from = FROM_COORDS.get(facing);
+        Vector3f to = TO_COORDS.get(facing);
         return faceBakery.bakeQuad(from, to, blockPartFace, texture, facing, MODEL_STATE, blockPartRotation, true, MODEL_NAME);
     }
 

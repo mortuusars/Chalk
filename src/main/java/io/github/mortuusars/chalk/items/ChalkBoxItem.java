@@ -53,6 +53,7 @@ public class ChalkBoxItem extends Item {
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level pLevel, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced) {
         Pair<ItemStack, Integer> firstChalkStack = getFirstChalkStack(stack);
 
+        // Drawing with: [chalk]
         if (firstChalkStack != null) {
             Style style = firstChalkStack.getFirst().getItem() instanceof ChalkItem chalkItem ?
                     Style.EMPTY.withColor(ChalkColors.fromDyeColor(chalkItem.getColor()))
@@ -64,6 +65,7 @@ public class ChalkBoxItem extends Item {
                             .withStyle(style)));
         }
 
+        // <Right Click to open>
         if (Minecraft.getInstance().player != null && !Minecraft.getInstance().player.isCreative()) {
             tooltipComponents.add(Lang.CHALK_BOX_OPEN_TOOLTIP.translate()
                             .withStyle(ChatFormatting.ITALIC)
@@ -73,16 +75,15 @@ public class ChalkBoxItem extends Item {
 
     @Override
     public boolean overrideOtherStackedOnMe(ItemStack stack, @NotNull ItemStack otherStack, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, @NotNull SlotAccess slotAccess) {
-        if (!player.isCreative() && stack.getItem() == this
-                && otherStack.isEmpty() && action == ClickAction.SECONDARY) {
-//            player.closeContainer();
+        // Open
+        if (!player.isCreative() && stack.getItem() == this && otherStack.isEmpty() && action == ClickAction.SECONDARY) {
             openGUI(player, stack);
             player.playSound(Chalk.SoundEvents.CHALK_BOX_OPEN.get(),
                     0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
-            return true;
+            return true; // Handled
         }
 
-
+        // Insert chalk into box:
         if (stack.getItem() == this && otherStack.getItem() instanceof ChalkItem && action == ClickAction.SECONDARY) {
             for (int i = 0; i < ChalkBox.CHALK_SLOTS; i++) {
                 if (ChalkBox.getItemInSlot(stack, i).isEmpty()) {
@@ -90,21 +91,12 @@ public class ChalkBoxItem extends Item {
                     player.playSound(Chalk.SoundEvents.CHALK_BOX_CHANGE.get(),
                             0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
                     otherStack.setCount(0);
-                    return true;
+                    return true; // Handled
                 }
             }
         }
 
         return false;
-    }
-
-    @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        // Mark will be drawn even if block can be activated (if shift is held)
-        if (context.getPlayer() != null && context.getPlayer().isSecondaryUseActive())
-            return useOn(context);
-
-        return InteractionResult.PASS;
     }
 
     @Override

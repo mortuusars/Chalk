@@ -2,11 +2,10 @@ package io.github.mortuusars.chalk.items;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
-import io.github.mortuusars.chalk.core.Mark;
-import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
 import io.github.mortuusars.chalk.config.CommonConfig;
-import io.github.mortuusars.chalk.core.ChalkMark;
+import io.github.mortuusars.chalk.core.Mark;
+import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.SymbolOrientation;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.client.Minecraft;
@@ -16,17 +15,18 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class ChalkItem extends Item {
-
     private final DyeColor color;
 
     public ChalkItem(DyeColor dyeColor, Properties properties) {
@@ -35,7 +35,6 @@ public class ChalkItem extends Item {
                 .stacksTo(1)
                 .defaultDurability(64)
                 .setNoRepair());
-
         color = dyeColor;
     }
 
@@ -46,14 +45,6 @@ public class ChalkItem extends Item {
 
     public DyeColor getColor() {
         return this.color;
-    }
-
-    @Override
-    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        if (context.getPlayer() != null && context.getPlayer().isSecondaryUseActive())
-            return useOn(context);
-
-        return InteractionResult.PASS;
     }
 
     @Override
