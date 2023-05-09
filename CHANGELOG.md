@@ -2,6 +2,7 @@
 - Chalk Box
   - Chalk Box can now be opened by Right-Clicking it in inventory.
   - You can now insert chalks in Chalk Box by right-clicking it with item (same as bundles).
+  - Using Chalk Box on the block while it is empty will now open the GUI instead of doing nothing. 
 
 - Tags:
   - Added `chalk:chalk_cannot_draw_on` block tag which controls what blocks isn't suitable for drawing marks on.

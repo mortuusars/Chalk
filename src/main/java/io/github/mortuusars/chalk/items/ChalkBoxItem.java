@@ -111,8 +111,12 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
             return InteractionResult.FAIL; // Skip drawing from offhand if chalks in both hands.
 
         int selectedChalkIndex = getSelectedChalkIndex(chalkBox);
-        if (selectedChalkIndex == -1)
-            return InteractionResult.FAIL;
+        if (selectedChalkIndex == -1) {
+            openGUI(player, chalkBox);
+            player.level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
+                    0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+            return InteractionResult.SUCCESS;
+        }
 
         MarkDrawingContext drawingContext = createDrawingContext(context);
 
