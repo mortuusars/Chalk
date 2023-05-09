@@ -1,16 +1,11 @@
 package io.github.mortuusars.chalk.items;
 
+import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
-import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
 import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
-import io.github.mortuusars.chalk.core.MarkSymbol;
-import io.github.mortuusars.chalk.core.SymbolOrientation;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,11 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class ChalkItem extends Item {
+public class ChalkItem extends Item implements IDrawingTool {
     private final DyeColor color;
 
     public ChalkItem(DyeColor dyeColor, Properties properties) {
@@ -36,15 +30,6 @@ public class ChalkItem extends Item {
                 .defaultDurability(64)
                 .setNoRepair());
         color = dyeColor;
-    }
-
-    @Override
-    public int getMaxDamage(ItemStack stack) {
-        return CommonConfig.CHALK_DURABILITY.get();
-    }
-
-    public DyeColor getColor() {
-        return this.color;
     }
 
     @Override
@@ -61,52 +46,88 @@ public class ChalkItem extends Item {
         if (hand == InteractionHand.OFF_HAND && player.getMainHandItem().getItem() instanceof ChalkItem)
             return InteractionResult.FAIL;
 
-        BlockPos pos = context.getClickedPos();
-        Direction facing = context.getClickedFace();
+        MarkDrawingContext drawingContext = createDrawingContext(player, context.getClickedPos(), context.getClickLocation(), context.getClickedFace(), hand);
 
-        if (level.getBlockState(pos).getBlock() instanceof ChalkMarkBlock) {
-            facing = level.getBlockState(pos).getValue(ChalkMarkBlock.FACING);
-            pos = pos.relative(facing.getOpposite());
-        }
-
-        MarkDrawingContext drawingContext = new MarkDrawingContext(level, player,
-                new BlockHitResult(context.getClickLocation(), facing, pos, false));
+//        BlockPos pos = context.getClickedPos();
+//        Direction facing = context.getClickedFace();
+//
+//        if (level.getBlockState(pos).getBlock() instanceof ChalkMarkBlock) {
+//            facing = level.getBlockState(pos).getValue(ChalkMarkBlock.FACING);
+//            pos = pos.relative(facing.getOpposite());
+//        }
+//
+//        MarkDrawingContext drawingContext = new MarkDrawingContext(level, player,
+//                new BlockHitResult(context.getClickLocation(), facing, pos, false));
 
         if (!drawingContext.canDraw())
             return InteractionResult.FAIL;
 
-        // Select symbol
         if (player.isSecondaryUseActive()) {
-            if (level.isClientSide) {
-                SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(drawingContext, hand);
-                Minecraft.getInstance().setScreen(symbolSelectScreen);
-            }
-
+            drawingContext.openSymbolSelectionScreen();
             return InteractionResult.CONSUME;
         }
 
-        // Draw arrow or dot
-        MarkSymbol symbol = drawingContext.getInitialOrientation() == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW;
-        Mark mark = drawingContext.createMark(color, symbol, false);
-
-        if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
-            return InteractionResult.FAIL;
-
-        if (drawingContext.draw(mark)) {
-            if (!player.isCreative() && itemStack.isDamageableItem()) {
-                itemStack.setDamageValue(itemStack.getDamageValue() + 1);
-                if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
-                    player.setItemInHand(hand, ItemStack.EMPTY);
-                    Vec3 playerPos = player.position();
-                    player.level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
-                            SoundSource.PLAYERS, 0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
-                }
-            }
-
+        if (drawRegularMark(drawingContext, color, false))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
-        }
+
+
+//        Mark mark = drawingContext.createRegularMark(color, false);
+//
+//        if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
+//            return InteractionResult.FAIL;
+//
+//        if (drawingContext.draw(mark)) {
+//            if (!player.isCreative() && itemStack.isDamageableItem()) {
+//                itemStack.setDamageValue(itemStack.getDamageValue() + 1);
+//                if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
+//                    player.setItemInHand(hand, ItemStack.EMPTY);
+//                    Vec3 playerPos = player.position();
+//                    player.level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
+//                            SoundSource.PLAYERS, 0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+//                }
+//            }
+//
+//            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+//        }
 
         return InteractionResult.FAIL;
+    }
+
+    @Override
+    public void onMarkDrawn(MarkDrawingContext drawingContext, Mark mark) {
+        Player player = drawingContext.getPlayer();
+        if (player.isCreative())
+            return;
+
+        InteractionHand drawingHand = drawingContext.getDrawingHand();
+
+        ItemStack result = damageAndDestroy(player.getItemInHand(drawingHand), player);
+        if (result.isEmpty())
+            player.setItemInHand(drawingHand, ItemStack.EMPTY);
+    }
+
+    public static ItemStack damageAndDestroy(ItemStack chalkStack, Player player) {
+        if (!chalkStack.isDamageableItem())
+            return chalkStack;
+
+        chalkStack.setDamageValue(chalkStack.getDamageValue() + 1);
+        if (chalkStack.getDamageValue() >= chalkStack.getMaxDamage()) {
+            Vec3 playerPos = player.position();
+            player.level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
+                    SoundSource.PLAYERS, 0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+            return ItemStack.EMPTY;
+        }
+
+        return chalkStack;
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return CommonConfig.CHALK_DURABILITY.get();
+    }
+
+    public DyeColor getColor() {
+        return this.color;
     }
 
     @Override

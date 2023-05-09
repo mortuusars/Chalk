@@ -58,7 +58,6 @@ public class Chalk
         MinecraftForge.EVENT_BUS.register(this);
 
         MinecraftForge.EVENT_BUS.addListener(Chalk::onRightClickBlock);
-
     }
 
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {

@@ -2,12 +2,15 @@ package io.github.mortuusars.chalk.utils;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.SymbolOrientation;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
@@ -15,25 +18,23 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
 public class MarkDrawingContext {
-    @NotNull
-    private final Level level;
-    @Nullable
     private final Player player;
+    private final Level level;
     private final BlockHitResult hitResult;
+    private final InteractionHand drawingHand;
+    private final SymbolOrientation initialOrientation;
 
     private Boolean canDraw = null;
-    private SymbolOrientation initialOrientation;
 
-    public MarkDrawingContext(@NotNull Level level, @Nullable Player player, @NotNull BlockHitResult hitResult) {
-        this.level = level;
+    public MarkDrawingContext(Player player, @NotNull BlockHitResult hitResult, InteractionHand drawingHand) {
         this.player = player;
+        this.level = player.level;
         this.hitResult = hitResult;
-
+        this.drawingHand = drawingHand;
         this.initialOrientation = SymbolOrientation.fromClickLocationAll(hitResult.getLocation(), hitResult.getDirection());
     }
 
@@ -45,12 +46,31 @@ public class MarkDrawingContext {
         return canDraw;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
     public BlockPos getMarkBlockPos() {
         return hitResult.getBlockPos().relative(hitResult.getDirection());
     }
 
     public SymbolOrientation getInitialOrientation() {
         return initialOrientation;
+    }
+
+    public InteractionHand getDrawingHand() {
+        return drawingHand;
+    }
+
+    public void openSymbolSelectionScreen() {
+        if (level.isClientSide) {
+            SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(this, drawingHand);
+            Minecraft.getInstance().setScreen(symbolSelectScreen);
+        }
+    }
+
+    public Mark createRegularMark(DyeColor color, boolean glowing) {
+        return createMark(color, getInitialOrientation() == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW, glowing);
     }
 
     public Mark createMark(DyeColor color, MarkSymbol symbol, boolean glowing) {
