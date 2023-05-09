@@ -10,6 +10,7 @@
   - Added chalks to `forge:chalks` tag.
 
 - Changed Chalk model positions in player's hand.
+- Holding glowing items in offhand will no longer make drawn mark glow. You'll need to click again to apply glow. 
 
 ### 1.4.0 - 2023-02-10
 

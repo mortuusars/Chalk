@@ -2,6 +2,7 @@ package io.github.mortuusars.chalk.items;
 
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.data.Lang;
@@ -11,6 +12,7 @@ import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -32,6 +34,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -113,7 +117,8 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
         int selectedChalkIndex = getSelectedChalkIndex(chalkBox);
         if (selectedChalkIndex == -1) {
             openGUI(player, chalkBox);
-            player.level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
+            player.level.playSound(player, player.position().x, player.position().y, player.position().z,
+                    Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
                     0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
             return InteractionResult.SUCCESS;
         }
@@ -132,6 +137,8 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
 
         if (drawRegularMark(drawingContext, ((ChalkItem) selectedChalk.getItem()).getColor(), ChalkBox.getGlow(chalkBox) > 0))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
+        else if (drawingContext.hasExistingMark())
+            return InteractionResult.PASS;
 
         return InteractionResult.FAIL;
     }

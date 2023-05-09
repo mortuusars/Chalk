@@ -35,9 +35,6 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
         if (slot == ChalkBox.GLOWINGS_SLOT_INDEX && ChalkBox.getGlow(chalkBoxStack) > prevGlowingUses) {
             // Refresh glow stack:
             this.stacks.set(slot, ChalkBox.getItemInSlot(chalkBoxStack, slot));
-//            ItemStack glowingStack = getStackInSlot(slot);
-//            glowingStack.shrink(1);
-//            setStackInSlot(slot, glowingStack);
         }
     }
 }

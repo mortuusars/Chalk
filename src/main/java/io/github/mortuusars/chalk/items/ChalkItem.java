@@ -1,11 +1,12 @@
 package io.github.mortuusars.chalk.items;
 
-import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,7 +17,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,7 +40,6 @@ public class ChalkItem extends Item implements IDrawingTool {
         final InteractionHand hand = context.getHand();
         final ItemStack itemStack = context.getItemInHand();
         final Player player = context.getPlayer();
-        final Level level = context.getLevel();
 
         if (player == null || !(itemStack.getItem() instanceof ChalkItem))
             return InteractionResult.FAIL;
@@ -47,17 +49,6 @@ public class ChalkItem extends Item implements IDrawingTool {
             return InteractionResult.FAIL;
 
         MarkDrawingContext drawingContext = createDrawingContext(player, context.getClickedPos(), context.getClickLocation(), context.getClickedFace(), hand);
-
-//        BlockPos pos = context.getClickedPos();
-//        Direction facing = context.getClickedFace();
-//
-//        if (level.getBlockState(pos).getBlock() instanceof ChalkMarkBlock) {
-//            facing = level.getBlockState(pos).getValue(ChalkMarkBlock.FACING);
-//            pos = pos.relative(facing.getOpposite());
-//        }
-//
-//        MarkDrawingContext drawingContext = new MarkDrawingContext(level, player,
-//                new BlockHitResult(context.getClickLocation(), facing, pos, false));
 
         if (!drawingContext.canDraw())
             return InteractionResult.FAIL;
@@ -69,26 +60,8 @@ public class ChalkItem extends Item implements IDrawingTool {
 
         if (drawRegularMark(drawingContext, color, false))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
-
-
-//        Mark mark = drawingContext.createRegularMark(color, false);
-//
-//        if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
-//            return InteractionResult.FAIL;
-//
-//        if (drawingContext.draw(mark)) {
-//            if (!player.isCreative() && itemStack.isDamageableItem()) {
-//                itemStack.setDamageValue(itemStack.getDamageValue() + 1);
-//                if (itemStack.getDamageValue() >= itemStack.getMaxDamage()) {
-//                    player.setItemInHand(hand, ItemStack.EMPTY);
-//                    Vec3 playerPos = player.position();
-//                    player.level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
-//                            SoundSource.PLAYERS, 0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
-//                }
-//            }
-//
-//            return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
-//        }
+        else if (drawingContext.hasExistingMark())
+            return InteractionResult.PASS;
 
         return InteractionResult.FAIL;
     }
@@ -125,26 +98,21 @@ public class ChalkItem extends Item implements IDrawingTool {
     public int getMaxDamage(ItemStack stack) {
         return CommonConfig.CHALK_DURABILITY.get();
     }
-
     public DyeColor getColor() {
         return this.color;
     }
-
     @Override
     public boolean isRepairable(@NotNull ItemStack stack) {
         return false;
     }
-
     @Override
     public boolean isEnchantable(@NotNull ItemStack stack) {
         return false;
     }
-
     @Override
     public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
         return false;
     }
-
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return false;
