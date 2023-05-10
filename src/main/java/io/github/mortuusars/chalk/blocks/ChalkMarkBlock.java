@@ -5,14 +5,13 @@ import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.setup.ModItems;
+import io.github.mortuusars.chalk.setup.ModSoundEvents;
 import io.github.mortuusars.chalk.setup.ModTags;
-import io.github.mortuusars.chalk.utils.DrawingUtils;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import io.github.mortuusars.chalk.utils.PositionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,7 +23,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CommandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
@@ -37,7 +35,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeConfig;
 
 import java.util.Map;
 import java.util.Random;
@@ -163,7 +160,7 @@ public class ChalkMarkBlock extends Block {
                         usedItem.setCount(itemsCount);
                 }
 
-                world.playSound(null, blockPos, SoundEvents.TURTLE_SHAMBLE, SoundSource.BLOCKS, 1.5f, 1f);
+                world.playSound(null, blockPos, ModSoundEvents.MARK_GLOW_APPLIED.get(), SoundSource.BLOCKS, 1.5f, 1f);
                 ParticleUtils.spawnParticle(world, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
 
@@ -184,7 +181,7 @@ public class ChalkMarkBlock extends Block {
 
         if (world.removeBlock(pos, isMoving)) {
             if (!world.isClientSide())
-                world.playSound(null, pos, SoundEvents.WART_BLOCK_HIT, SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
+                world.playSound(null, pos, ModSoundEvents.MARK_REMOVED.get(), SoundSource.BLOCKS, 0.5f, new Random().nextFloat() * 0.2f + 0.8f);
             else {
                 ParticleUtils.spawnColorDustParticles(_color, world, pos, facing);
             }
