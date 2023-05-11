@@ -8,7 +8,7 @@ import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.network.Packets;
-import io.github.mortuusars.chalk.network.packet.DrawMarkPacket;
+import io.github.mortuusars.chalk.network.packet.ServerboundDrawMarkPacket;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
@@ -101,7 +101,7 @@ public class SymbolSelectScreen extends Screen {
         Mark mark = drawingContext.createMark(chalkItem.getColor(), symbol, false);
 
         if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
-            Packets.sendToServer(new DrawMarkPacket(mark, drawingContext.getMarkBlockPos(), drawingHand));
+            Packets.sendToServer(new ServerboundDrawMarkPacket(mark, drawingContext.getMarkBlockPos(), drawingHand));
 
             ParticleUtils.spawnColorDustParticles(mark.color(), player.level, drawingContext.getMarkBlockPos(), mark.facing());
         }

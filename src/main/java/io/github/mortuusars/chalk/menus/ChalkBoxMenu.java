@@ -4,16 +4,13 @@ import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.items.ChalkBox;
-import net.minecraft.client.Minecraft;
+import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +64,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public void removed(Player pPlayer) {
+    public void removed(@NotNull Player pPlayer) {
         super.removed(pPlayer);
 
         // I still have no clue why updates are stopping when ChalkBox is opened by right click in inv.
@@ -112,7 +109,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return player.getInventory().findSlotMatchingItem(chalkBoxStack) == chalkBoxSlotId;
+        return chalkBoxSlotId < 0 || player.getInventory().getItem(chalkBoxSlotId).getItem() instanceof ChalkBoxItem;
     }
 
     private void addPlayerSlots(Inventory playerInventory) {
@@ -127,12 +124,12 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
                     chalkBoxCoords = Pair.of(column * 18 + 8, 98 + row * 18);
                     addSlot(new Slot(playerInventory, index, column * 18 + 8, 98 + row * 18) {
                         @Override
-                        public boolean mayPlace(ItemStack pStack) {
+                        public boolean mayPlace(@NotNull ItemStack pStack) {
                             return false;
                         }
 
                         @Override
-                        public boolean mayPickup(Player pPlayer) {
+                        public boolean mayPickup(@NotNull Player pPlayer) {
                             return false;
                         }
 
@@ -154,12 +151,12 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
                 chalkBoxCoords = Pair.of(index * 18 + 8, 156);
                 addSlot(new Slot(playerInventory, index, index * 18 + 8, 156) {
                     @Override
-                    public boolean mayPlace(ItemStack pStack) {
+                    public boolean mayPlace(@NotNull ItemStack pStack) {
                         return false;
                     }
 
                     @Override
-                    public boolean mayPickup(Player pPlayer) {
+                    public boolean mayPickup(@NotNull Player pPlayer) {
                         return false;
                     }
 

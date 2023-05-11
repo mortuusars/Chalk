@@ -14,19 +14,12 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
-
     public static final ResourceLocation TEXTURE = new ResourceLocation(Chalk.ID, "textures/gui/chalk_box.png");
-
     private static final int GLOWING_BAR_WIDTH = 72;
-
-    private final boolean glowingEnabled;
-
     private final int maxGlowingUses;
 
     public ChalkBoxScreen(ChalkBoxMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-
-        glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
         maxGlowingUses = CommonConfig.CHALK_BOX_GLOWING_USES.get();
 
         this.minecraft = Minecraft.getInstance();
@@ -72,7 +65,7 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(poseStack, getGuiLeft(), getGuiTop(), 0,0, imageWidth, imageHeight);
 
-        if (glowingEnabled){
+        if (CommonConfig.CHALK_BOX_GLOWING.get()){
             // Chalk Slots
             blit(poseStack, getGuiLeft() + 52, getGuiTop() + 17, 0, 180, 72, 36);
 

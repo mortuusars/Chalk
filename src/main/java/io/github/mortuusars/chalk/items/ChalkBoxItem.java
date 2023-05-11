@@ -2,17 +2,19 @@ package io.github.mortuusars.chalk.items;
 
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.data.Lang;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
+import io.github.mortuusars.chalk.network.Packets;
+import io.github.mortuusars.chalk.network.packet.ServerboundOpenChalkBoxPacket;
 import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -24,18 +26,14 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,21 +66,37 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
         }
 
         // <Right Click to open>
-        if (Minecraft.getInstance().player != null && !Minecraft.getInstance().player.isCreative()) {
-            tooltipComponents.add(Lang.CHALK_BOX_OPEN_TOOLTIP.translate()
-                            .withStyle(ChatFormatting.ITALIC)
-                            .withStyle(Style.EMPTY.withColor(0x888888)));
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> screen) {
+
+            if (screen instanceof CreativeModeInventoryScreen creativeScreen
+                    && creativeScreen.getSelectedTab() != CreativeModeTab.TAB_INVENTORY.getId())
+                return; // Cannot open while in other tabs than inventory.
+
+            Slot slotUnderMouse = screen.getSlotUnderMouse();
+            if (slotUnderMouse != null && slotUnderMouse.container instanceof Inventory) {
+                tooltipComponents.add(Lang.CHALK_BOX_OPEN_TOOLTIP.translate()
+                                .withStyle(ChatFormatting.ITALIC)
+                                .withStyle(ChatFormatting.DARK_GRAY));
+            }
         }
     }
 
     @Override
     public boolean overrideOtherStackedOnMe(@NotNull ItemStack stack, @NotNull ItemStack otherStack, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, @NotNull SlotAccess slotAccess) {
         // Open
-        if (!player.isCreative() && stack.getItem() == this && otherStack.isEmpty() && action == ClickAction.SECONDARY) {
-            openGUI(player, stack);
-            player.playSound(Chalk.SoundEvents.CHALK_BOX_OPEN.get(),
-                    0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
-            return true; // Handled
+        if (stack.getItem() == this && otherStack.isEmpty() && action == ClickAction.SECONDARY && slot.container instanceof Inventory) {
+            if (player.level.isClientSide) {
+                if (Minecraft.getInstance().screen instanceof CreativeModeInventoryScreen creativeScreen
+                        && creativeScreen.getSelectedTab() != CreativeModeTab.TAB_INVENTORY.getId()) {
+                    // There's some problems with opening Chalk Box while in the creative tabs other than inventory.
+                    // IDK how to fix it.
+                    return false;
+                }
+                else
+                    Packets.sendToServer(new ServerboundOpenChalkBoxPacket(slot.getContainerSlot()));
+            }
+
+            return true;
         }
 
         // Insert chalk into box:
@@ -117,9 +131,6 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
         int selectedChalkIndex = getSelectedChalkIndex(chalkBox);
         if (selectedChalkIndex == -1) {
             openGUI(player, chalkBox);
-            player.level.playSound(player, player.position().x, player.position().y, player.position().z,
-                    Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
-                    0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
             return InteractionResult.SUCCESS;
         }
 
@@ -137,8 +148,6 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
 
         if (drawRegularMark(drawingContext, ((ChalkItem) selectedChalk.getItem()).getColor(), ChalkBox.getGlow(chalkBox) > 0))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
-        else if (drawingContext.hasExistingMark())
-            return InteractionResult.PASS;
 
         return InteractionResult.FAIL;
     }
@@ -177,21 +186,21 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
             level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS,
                     0.9f, 0.9f + level.random.nextFloat() * 0.2f);
         }
-        else {
+        else
             openGUI(player, usedStack);
-            level.playSound(player, player.position().x, player.position().y, player.position().z, Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
-                    0.9f, 0.9f + level.random.nextFloat() * 0.2f);
-        }
 
         return InteractionResultHolder.sidedSuccess(usedStack, level.isClientSide);
     }
 
-    private void openGUI(Player player, ItemStack usedStack) {
+    public static void openGUI(Player player, ItemStack usedStack) {
         if (player instanceof ServerPlayer serverPlayer) {
             NetworkHooks.openScreen(serverPlayer,
                     new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
                             new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
                             usedStack.getHoverName()), buffer -> buffer.writeItem(usedStack.copy()));
+            player.level.playSound(null, player.position().x, player.position().y, player.position().z,
+                    Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
+                    0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
         }
     }
 

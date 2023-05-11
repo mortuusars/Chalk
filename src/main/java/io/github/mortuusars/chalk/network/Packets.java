@@ -1,7 +1,8 @@
 package io.github.mortuusars.chalk.network;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.network.packet.DrawMarkPacket;
+import io.github.mortuusars.chalk.network.packet.ServerboundDrawMarkPacket;
+import io.github.mortuusars.chalk.network.packet.ServerboundOpenChalkBoxPacket;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
@@ -17,10 +18,16 @@ public class Packets {
             PROTOCOL_VERSION::equals);
 
     public static void register() {
-        CHANNEL.messageBuilder(DrawMarkPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
-                .encoder(DrawMarkPacket::toBuffer)
-                .decoder(DrawMarkPacket::fromBuffer)
-                .consumerMainThread(DrawMarkPacket::handle)
+        CHANNEL.messageBuilder(ServerboundDrawMarkPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ServerboundDrawMarkPacket::toBuffer)
+                .decoder(ServerboundDrawMarkPacket::fromBuffer)
+                .consumerMainThread(ServerboundDrawMarkPacket::handle)
+                .add();
+
+        CHANNEL.messageBuilder(ServerboundOpenChalkBoxPacket.class, id++, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(ServerboundOpenChalkBoxPacket::toBuffer)
+                .decoder(ServerboundOpenChalkBoxPacket::fromBuffer)
+                .consumerMainThread(ServerboundOpenChalkBoxPacket::handle)
                 .add();
     }
 

@@ -1,4 +1,5 @@
 ### 1.5.0
+
 - Chalk Box
   - Chalk Box can now be opened by Right-Clicking it in inventory.
   - You can now insert chalks in Chalk Box by right-clicking it with item (same as bundles).
