@@ -80,7 +80,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     }
 
     public int getGlowingUses(){
-        return ChalkBox.getGlow(chalkBoxStack);
+        return ChalkBox.getGlowLevel(chalkBoxStack);
     }
 
     @Override

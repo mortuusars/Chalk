@@ -2,6 +2,7 @@ package io.github.mortuusars.chalk.network.packet;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;
@@ -45,7 +46,7 @@ public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, Intera
         }
 
         ItemStack itemInHand = player.getItemInHand(drawingHand);
-        if (!(itemInHand.getItem() instanceof ChalkItem || itemInHand.getItem() instanceof ChalkBoxItem)) {
+        if (!(itemInHand.getItem() instanceof IDrawingTool drawingTool)) {
             Chalk.LOGGER.error("Item in player's hand cannot draw a mark.");
             return true;
         }
@@ -65,8 +66,7 @@ public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, Intera
             double pZ = markBlockPos.getZ() + 0.5;
             level.playSound(null, pX, pY, pZ, Chalk.SoundEvents.MARK_DRAW.get(),
                     SoundSource.BLOCKS, 0.7f,  new Random().nextFloat() * 0.2f + 0.8f);
-
-            //TODO: damage chalk.
+            drawingTool.onMarkDrawn(player, drawingHand, mark);
         }
 
         return true;

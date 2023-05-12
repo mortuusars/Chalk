@@ -39,11 +39,7 @@ public class MarkDrawingContext {
     }
 
     public boolean canDraw() {
-        if (canDraw != null)
-            return canDraw;
-
-        canDraw = canBeDrawnOn(hitResult.getBlockPos(), hitResult.getDirection(), level);
-        return canDraw;
+        return canBeDrawnOn(hitResult.getBlockPos(), hitResult.getDirection(), level);
     }
 
     public Player getPlayer() {

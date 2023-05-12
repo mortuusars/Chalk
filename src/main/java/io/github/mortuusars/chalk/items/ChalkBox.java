@@ -62,14 +62,14 @@ public class ChalkBox {
             updateSlotContents(chalkBoxStack, slot, itemStack);
     }
 
-    public static int getGlow(ItemStack chalkBoxStack) {
+    public static int getGlowLevel(ItemStack chalkBoxStack) {
         validateChalkBoxStack(chalkBoxStack);
         return chalkBoxStack.getOrCreateTag().getInt(GLOW_TAG_KEY);
     }
 
     public static void consumeGlow(ItemStack chalkBoxStack) {
         validateChalkBoxStack(chalkBoxStack);
-        setGlow(chalkBoxStack, Math.max(getGlow(chalkBoxStack) - 1, 0));
+        setGlow(chalkBoxStack, Math.max(getGlowLevel(chalkBoxStack) - 1, 0));
         updateGlow(chalkBoxStack);
     }
 
@@ -79,7 +79,7 @@ public class ChalkBox {
     }
 
     private static void updateGlow(ItemStack chalkBoxStack){
-        if (getGlow(chalkBoxStack) > 0)
+        if (getGlowLevel(chalkBoxStack) > 0)
             return;
 
         ItemStack glowingItemStack = getItemInSlot(chalkBoxStack, GLOWINGS_SLOT_INDEX);

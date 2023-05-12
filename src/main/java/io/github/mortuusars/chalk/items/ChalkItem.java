@@ -1,12 +1,10 @@
 package io.github.mortuusars.chalk.items;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.config.CommonConfig;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
-import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,11 +15,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class ChalkItem extends Item implements IDrawingTool {
     private final DyeColor color;
@@ -67,16 +64,23 @@ public class ChalkItem extends Item implements IDrawingTool {
     }
 
     @Override
-    public void onMarkDrawn(MarkDrawingContext drawingContext, Mark mark) {
-        Player player = drawingContext.getPlayer();
+    public void onMarkDrawn(Player player, InteractionHand hand, Mark mark) {
         if (player.isCreative())
             return;
 
-        InteractionHand drawingHand = drawingContext.getDrawingHand();
-
-        ItemStack result = damageAndDestroy(player.getItemInHand(drawingHand), player);
+        ItemStack result = damageAndDestroy(player.getItemInHand(hand), player);
         if (result.isEmpty())
-            player.setItemInHand(drawingHand, ItemStack.EMPTY);
+            player.setItemInHand(hand, ItemStack.EMPTY);
+    }
+
+    @Override
+    public Optional<DyeColor> getMarkColor(ItemStack stack) {
+        return Optional.of(getColor());
+    }
+
+    @Override
+    public boolean getGlowing(ItemStack stack) {
+        return false;
     }
 
     public static ItemStack damageAndDestroy(ItemStack chalkStack, Player player) {

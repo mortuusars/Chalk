@@ -40,6 +40,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ChalkBoxItem extends Item implements IDrawingTool {
     public static final ResourceLocation SELECTED_PROPERTY = Chalk.resource("selected");
@@ -146,31 +147,10 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
             return InteractionResult.CONSUME;
         }
 
-        if (drawRegularMark(drawingContext, ((ChalkItem) selectedChalk.getItem()).getColor(), ChalkBox.getGlow(chalkBox) > 0))
+        if (drawRegularMark(drawingContext, ((ChalkItem) selectedChalk.getItem()).getColor(), ChalkBox.getGlowLevel(chalkBox) > 0))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
 
         return InteractionResult.FAIL;
-    }
-
-    @Override
-    public void onMarkDrawn(MarkDrawingContext drawingContext, Mark mark) {
-        Player player = drawingContext.getPlayer();
-        if (player.isCreative())
-            return;
-
-        InteractionHand drawingHand = drawingContext.getDrawingHand();
-        ItemStack chalkBox = player.getItemInHand(drawingHand);
-
-        Preconditions.checkArgument(chalkBox.getItem() instanceof ChalkBoxItem, "ChalkBox expected in player's hand.");
-
-        int selectedChalkIndex = getSelectedChalkIndex(chalkBox);
-        ItemStack selectedChalk = ChalkBox.getItemInSlot(chalkBox, selectedChalkIndex);
-        ItemStack resultChalk = ChalkItem.damageAndDestroy(selectedChalk, player);
-
-        ChalkBox.setSlot(chalkBox, selectedChalkIndex, resultChalk);
-
-        if (mark.glowing())
-            ChalkBox.consumeGlow(chalkBox);
     }
 
     // Called when not looking at a block
@@ -263,6 +243,43 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
         }
 
         return 0f;
+    }
+
+    @Override
+    public void onMarkDrawn(Player player, InteractionHand hand, Mark mark) {
+        if (player.isCreative())
+            return;
+
+        ItemStack chalkBox = player.getItemInHand(hand);
+
+        Preconditions.checkArgument(chalkBox.getItem() instanceof ChalkBoxItem, "ChalkBox expected in player's hand.");
+
+        int selectedChalkIndex = getSelectedChalkIndex(chalkBox);
+        ItemStack selectedChalk = ChalkBox.getItemInSlot(chalkBox, selectedChalkIndex);
+        ItemStack resultChalk = ChalkItem.damageAndDestroy(selectedChalk, player);
+
+        ChalkBox.setSlot(chalkBox, selectedChalkIndex, resultChalk);
+
+        if (mark.glowing())
+            ChalkBox.consumeGlow(chalkBox);
+    }
+
+    @Override
+    public Optional<DyeColor> getMarkColor(ItemStack chalkBoxStack) {
+        Preconditions.checkArgument(chalkBoxStack.getItem() instanceof ChalkBoxItem, "ChalkBox expected in player's hand.");
+        int selectedChalkIndex = getSelectedChalkIndex(chalkBoxStack);
+
+        if (selectedChalkIndex == -1)
+            return Optional.empty();
+
+        ItemStack selectedChalk = ChalkBox.getItemInSlot(chalkBoxStack, selectedChalkIndex);
+        return selectedChalk.getItem() instanceof IDrawingTool drawingTool ? drawingTool.getMarkColor(selectedChalk) : Optional.empty();
+    }
+
+    @Override
+    public boolean getGlowing(ItemStack chalkBoxStack) {
+        Preconditions.checkArgument(chalkBoxStack.getItem() instanceof ChalkBoxItem, "ChalkBox expected in player's hand.");
+        return ChalkBox.getGlowLevel(chalkBoxStack) > 0;
     }
 
     @Override
