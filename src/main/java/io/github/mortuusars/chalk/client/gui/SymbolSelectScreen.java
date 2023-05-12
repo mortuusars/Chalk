@@ -32,6 +32,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.model.data.ModelData;
@@ -64,6 +65,14 @@ public class SymbolSelectScreen extends Screen {
 
         color = itemInHand.getItem() instanceof IDrawingTool drawingTool ?
                 drawingTool.getMarkColor(itemInHand).orElse(DyeColor.WHITE) : DyeColor.WHITE;
+
+//        if (minecraft != null && minecraft.player != null)
+//            minecraft.player.setPose(Pose.CROUCHING);
+//
+//        // Keep sneaking while choosing a mark to not jerk the player's camera:
+//        if (minecraft != null && minecraft.player != null)
+//            minecraft.player.setForcedPose(Pose.CROUCHING);
+
     }
 
     @Override
@@ -81,17 +90,22 @@ public class SymbolSelectScreen extends Screen {
             return;
         }
 
-        // Keep sneaking while choosing a mark to not jerk the player's camera:
         if (minecraft != null && minecraft.player != null)
             minecraft.player.setPose(Pose.CROUCHING);
 
-        fillGradient(poseStack, 0, 0, width, height, 0x20000000, 0x40000000);
+        // Keep sneaking while choosing a mark to not jerk the player's camera:
+        if (minecraft != null && minecraft.player != null)
+            minecraft.player.setForcedPose(Pose.CROUCHING);
+
+//        fillGradient(poseStack, 0, 0, width, height, 0x20000000, 0x40000000);
 
         super.render(poseStack, pMouseX, pMouseY, pPartialTick);
 
 
-
-
+        Direction markFacing = drawingContext.getMarkFacing();
+        BlockPos surfacePos = drawingContext.getMarkBlockPos().relative(markFacing.getOpposite());
+        BlockState surfaceState = minecraft.level.getBlockState(surfacePos);
+//        surfaceState = Blocks.LECTERN.defaultBlockState();
 
 
         int size = 48;
@@ -121,16 +135,11 @@ public class SymbolSelectScreen extends Screen {
 
 
 
-
 //            RenderSystem.setShaderTexture(0, new ResourceLocation("minecraft:textures/block/gold_block.png"));
 
 
 
             {
-                BlockPos surfacePos = drawingContext.getMarkBlockPos().relative(Direction.DOWN);
-                BlockState surfaceState = minecraft.level.getBlockState(surfacePos);
-                BakedModel surfaceModel = minecraft.getBlockRenderer().getBlockModel(surfaceState);
-
                 RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
                 RenderSystem.enableBlend();
                 RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -147,15 +156,53 @@ public class SymbolSelectScreen extends Screen {
                 RenderSystem.applyModelViewMatrix();
                 PoseStack posestack1 = new PoseStack();
 //                posestack1.translate((double)width / 2, (double)height / 2, -50);
-                posestack1.translate(x, y, -50);
+                posestack1.translate(x, y, -100);
 //            posestack1.translate(s / 2, s / 2, s / 2);
 //            posestack1.mulPose(Vector3f.YP.rotationDegrees(minecraft.level.getGameTime() % 360));
-                posestack1.mulPose(Vector3f.XP.rotationDegrees(-90));
+
+//                Axis markFacing.getAxis().
+
+                posestack1.translate(size / 2, size / 2, size / 2);
+
+                int xRot = 0;
+                int yRot = 0;
+
+                if (markFacing == Direction.UP)
+                    xRot = -90;
+                else if (markFacing == Direction.DOWN)
+                    xRot = 90;
+
+                if (markFacing == Direction.EAST)
+                    yRot = 270;
+                else if (markFacing == Direction.NORTH)
+                    yRot = 180;
+                else if (markFacing == Direction.WEST)
+                    yRot = 90;
+
+//                if (markFacing.getAxis() == Direction.Axis.Y)
+//                    yRot = minecraft.player.getDirection().getStepY() * 90;
+
+//                markFacing.toYRot()
+
+//               if (markFacing == Direction.NORTH)
+//                    posestack1.mulPose(Vector3f.XP.rotationDegrees(90));
+
+                posestack1.mulPose(Vector3f.XP.rotationDegrees(xRot - 0.1f));
+                posestack1.mulPose(Vector3f.YP.rotationDegrees(yRot - 0.1f));
+
+                posestack1.translate(-size / 2, -size / 2, -size / 2);
+
+
 //                posestack1.translate(-24, -24 ,-24);
                 posestack1.translate(0, 48, 0);
 
                 posestack1.scale(1.0F, -1.0F, 1.0F);
                 posestack1.scale(size, size, size);
+
+//                posestack1.pushPose();
+//                posestack1.translate(0.5f, 0.5f, 0.5f);
+
+
                 MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
 //            boolean flag = !surfaceModel.usesBlockLight();
 //            if (flag) {
@@ -167,7 +214,7 @@ public class SymbolSelectScreen extends Screen {
 //                    posestack1.translate(is * 1.15f - 2.3, 0, 0);
 
                     minecraft.getBlockRenderer().renderSingleBlock(surfaceState, posestack1, minecraft.renderBuffers().bufferSource(),
-                            LightTexture.pack(0, isHovering ? 15 : 10), OverlayTexture.NO_OVERLAY);
+                            /*LightTexture.pack(15, isHovering ? 15 : 15)*/LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 //                    posestack1.popPose();
 //                }
                 multibuffersource$buffersource.endBatch();
@@ -179,14 +226,33 @@ public class SymbolSelectScreen extends Screen {
                 RenderSystem.applyModelViewMatrix();
             }
 
+            float pixel = size / 16f;
+            pixel = 2;
+
+            int c = (0xFF << 24) + color;
+            c = (int) ((b * 0.97f + 0.03f)  * 255) + ((int) ((g * 0.97f + 0.03f) * 255) << 8) + ((int) ((r * 0.97f + 0.03f) * 255) << 16) + (0xFF << 24);
+//            int inverseColor = (0xFF << 24) + ((255 - (int)(r * 255)) << 16) + ((255 - (int)(g * 255)) << 8) + ((255 - (int) (r * 255)));
+
+            int col = (int) (b * 0.2f * 255) + ((int) (g * 0.2f * 255) << 8) + ((int) (r * 0.2f * 255) << 16) + (0xFF << 24);
+
+            int borderColor = isHovering ? c : 0xFF252525;
+
+            fill(poseStack, (int)(x - pixel), y, x, y + size, borderColor);
+            fill(poseStack, x, (int)(y - pixel), x + size, y, borderColor);
+
+            fill(poseStack, x + size, y, (int)(x + size + pixel), y + size, borderColor);
+            fill(poseStack, x, y + size, x + size, (int)(y + size + pixel), borderColor);
+
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderColor(r, g, b, isHovering ? 1f : 0.65f);
+            RenderSystem.setShaderColor(r, g, b, /*isHovering ? 1f : 0.65f*/1f);
             RenderSystem.enableBlend();
             MarkSymbol symbol = symbols.get(i);
             RenderSystem.setShaderTexture(0, Chalk.resource("textures/block/mark/" + symbol.getSerializedName() + ".png"));
 
             if (isHovering)
                 minecraft.player.displayClientMessage(Component.literal(symbol.getSerializedName()), true);
+
+
 
             poseStack.pushPose();
 
@@ -199,7 +265,7 @@ public class SymbolSelectScreen extends Screen {
 
             blit(poseStack, x, y, size, size, 0, 0, 16, 16, 16, 16);
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-            fillGradient(new PoseStack(), x, y, x + size, y + size, 0x00000000, 0x30000000);
+            fillGradient(new PoseStack(), x, y, x + size, y + size, 0x00000000, 0x25000000);
             poseStack.popPose();
             poseStack.popPose();
 
@@ -253,6 +319,7 @@ public class SymbolSelectScreen extends Screen {
 
         if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
             Packets.sendToServer(new ServerboundDrawMarkPacket(mark, drawingContext.getMarkBlockPos(), drawingHand));
+            player.swing(drawingHand);
 
             //TODO: particles will not be visible to others
             ParticleUtils.spawnColorDustParticles(mark.color(), player.level, drawingContext.getMarkBlockPos(), mark.facing());
@@ -276,6 +343,7 @@ public class SymbolSelectScreen extends Screen {
 
     @Override
     public void onClose() {
+        minecraft.player.setForcedPose(null);
         super.onClose();
     }
 

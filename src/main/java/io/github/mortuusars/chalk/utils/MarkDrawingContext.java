@@ -39,7 +39,7 @@ public class MarkDrawingContext {
     }
 
     public boolean canDraw() {
-        return canBeDrawnOn(hitResult.getBlockPos(), hitResult.getDirection(), level);
+        return canBeDrawnOn(hitResult.getBlockPos(), getMarkFacing(), level);
     }
 
     public Player getPlayer() {
@@ -47,7 +47,12 @@ public class MarkDrawingContext {
     }
 
     public BlockPos getMarkBlockPos() {
-        return hitResult.getBlockPos().relative(hitResult.getDirection());
+        return hitResult.getBlockPos().relative(getMarkFacing());
+    }
+
+    @NotNull
+    public Direction getMarkFacing() {
+        return hitResult.getDirection();
     }
 
     public SymbolOrientation getInitialOrientation() {
@@ -70,7 +75,7 @@ public class MarkDrawingContext {
     }
 
     public Mark createMark(DyeColor color, MarkSymbol symbol, boolean glowing) {
-        Direction face = hitResult.getDirection();
+        Direction face = getMarkFacing();
         MarkSymbol.OrientationBehavior rotBehavior = symbol.getOrientationBehavior();
 
         SymbolOrientation orientation;
@@ -87,11 +92,11 @@ public class MarkDrawingContext {
     }
 
     public boolean hasExistingMark() {
-        return level.getBlockState(hitResult.getBlockPos().relative(hitResult.getDirection())).getBlock() instanceof ChalkMarkBlock;
+        return level.getBlockState(hitResult.getBlockPos().relative(getMarkFacing())).getBlock() instanceof ChalkMarkBlock;
     }
 
     public boolean shouldMarkReplaceAnother(Mark mark) {
-        BlockState oldMarkState = level.getBlockState(hitResult.getBlockPos().relative(hitResult.getDirection()));
+        BlockState oldMarkState = level.getBlockState(hitResult.getBlockPos().relative(getMarkFacing()));
         if (!(oldMarkState.getBlock() instanceof ChalkMarkBlock markBlock))
             return true;
 

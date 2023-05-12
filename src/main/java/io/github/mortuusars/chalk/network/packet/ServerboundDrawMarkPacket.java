@@ -67,6 +67,8 @@ public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, Intera
             level.playSound(null, pX, pY, pZ, Chalk.SoundEvents.MARK_DRAW.get(),
                     SoundSource.BLOCKS, 0.7f,  new Random().nextFloat() * 0.2f + 0.8f);
             drawingTool.onMarkDrawn(player, drawingHand, mark);
+
+            player.swing(drawingHand);
         }
 
         return true;
