@@ -19,6 +19,13 @@
   "item.chalk.white_chalk": "白色のチョーク",
 
   "item.chalk.chalk_box": "チョークボックス",
-  "item.chalk.chalk_box.tooltip.drawing_with": "使用中：",
+  "item.chalk.chalk_box.tooltip.drawing_with": "装填中：",
   "container.chalk.chalk_box": "チョークボックス"
+
+  "chalk.subtitles.chalk_broken": "チョークが破壊される",
+  "chalk.subtitles.mark_drawn": "チョークで描かれる",
+  "chalk.subtitles.chalk_box_changed": "チョークボックスの中身が変わる",
+  "chalk.subtitles.chalk_box_opens": "チョークボックスが開く",
+  "chalk.subtitles.glow_applied": "チョークの印が輝かされる",
+  "chalk.subtitles.mark_removed": "チョークの印が消される"
 }
