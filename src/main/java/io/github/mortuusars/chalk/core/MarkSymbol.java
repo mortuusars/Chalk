@@ -53,6 +53,10 @@ public enum MarkSymbol implements StringRepresentable {
         return defaultOrientation;
     }
 
+    public String getTranslationKey() {
+        return "gui." + Chalk.ID + ".symbol." + name;
+    }
+
     public enum OrientationBehavior {
         FIXED,
         FULL,

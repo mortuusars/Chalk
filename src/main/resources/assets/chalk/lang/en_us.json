@@ -28,5 +28,13 @@
   "chalk.subtitles.chalk_box_changed": "Chalk Box rustles",
   "chalk.subtitles.chalk_box_opens": "Chalk Box opens",
   "chalk.subtitles.glow_applied": "Chalk mark glows up",
-  "chalk.subtitles.mark_removed": "Chalk mark erased"
+  "chalk.subtitles.mark_removed": "Chalk mark erased",
+
+  "gui.chalk.symbol.center": "Dot",
+  "gui.chalk.symbol.arrow": "Arrow",
+  "gui.chalk.symbol.house": "House",
+  "gui.chalk.symbol.check": "Checkmark",
+  "gui.chalk.symbol.cross": "Cross",
+  "gui.chalk.symbol.heart": "Heart",
+  "gui.chalk.symbol.skull": "Skull"
 }
