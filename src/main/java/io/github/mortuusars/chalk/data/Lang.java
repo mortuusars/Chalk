@@ -16,6 +16,7 @@ public enum Lang {
     SYMBOL_HEART("gui", "symbol.heart"),
     SYMBOL_SKULL("gui", "symbol.skull"),
 
+    MESSAGE_NO_SYMBOLS_UNLOCKED("gui", "no_symbols_unlocked")
     ;
 
     public final String key;

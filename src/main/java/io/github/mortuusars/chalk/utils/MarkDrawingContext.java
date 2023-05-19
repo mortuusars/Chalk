@@ -2,13 +2,19 @@ package io.github.mortuusars.chalk.utils;
 
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
-import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.SymbolOrientation;
-import net.minecraft.client.Minecraft;
+import io.github.mortuusars.chalk.core.SymbolUnlocking;
+import io.github.mortuusars.chalk.data.Lang;
+import io.github.mortuusars.chalk.network.Packets;
+import io.github.mortuusars.chalk.network.packet.ClientboundSelectSymbolPacket;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -18,17 +24,20 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Random;
 
 public class MarkDrawingContext {
+    @Nullable
+    private static MarkDrawingContext storedContext;
+
     private final Player player;
     private final Level level;
     private final BlockHitResult hitResult;
     private final InteractionHand drawingHand;
     private final SymbolOrientation initialOrientation;
-
-    private Boolean canDraw = null;
 
     public MarkDrawingContext(Player player, @NotNull BlockHitResult hitResult, InteractionHand drawingHand) {
         this.player = player;
@@ -36,6 +45,18 @@ public class MarkDrawingContext {
         this.hitResult = hitResult;
         this.drawingHand = drawingHand;
         this.initialOrientation = SymbolOrientation.fromClickLocationAll(hitResult.getLocation(), hitResult.getDirection());
+    }
+
+    public static void storeContext(MarkDrawingContext context) {
+        storedContext = context;
+    }
+
+    public static @Nullable MarkDrawingContext getStoredContext() {
+        return storedContext;
+    }
+
+    public static void clearStoredContext() {
+        storedContext = null;
     }
 
     public boolean canDraw() {
@@ -65,8 +86,17 @@ public class MarkDrawingContext {
 
     public void openSymbolSelectionScreen() {
         if (level.isClientSide) {
-            SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(this, drawingHand);
-            Minecraft.getInstance().setScreen(symbolSelectScreen);
+            storeContext(this);
+            return;
+        }
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            List<MarkSymbol> unlockedSymbols = SymbolUnlocking.getUnlockedSymbols(serverPlayer);
+
+            if (unlockedSymbols.size() > 0)
+                Packets.sendToClient(new ClientboundSelectSymbolPacket(unlockedSymbols), serverPlayer);
+            else
+                player.displayClientMessage(Lang.MESSAGE_NO_SYMBOLS_UNLOCKED.translate().withStyle(ChatFormatting.RED), true);
         }
     }
 
@@ -82,9 +112,10 @@ public class MarkDrawingContext {
 
         if (rotBehavior == MarkSymbol.OrientationBehavior.FULL)
             orientation = initialOrientation;
-        else if (rotBehavior == MarkSymbol.OrientationBehavior.CARDINAL
-                || (rotBehavior == MarkSymbol.OrientationBehavior.UP_DOWN_CARDINAL && (face == Direction.UP || face == Direction.DOWN)))
+        else if (rotBehavior == MarkSymbol.OrientationBehavior.CARDINAL)
             orientation = SymbolOrientation.fromClickLocationCardinal(hitResult.getLocation(), face);
+        else if (rotBehavior == MarkSymbol.OrientationBehavior.UP_DOWN_CARDINAL && (face == Direction.UP || face == Direction.DOWN))
+            orientation = SymbolOrientation.fromRotation(player.getDirection().getOpposite().get2DDataValue() * 90);
         else
             orientation = symbol.getDefaultOrientation();
 

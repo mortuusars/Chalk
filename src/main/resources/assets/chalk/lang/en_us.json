@@ -36,5 +36,7 @@
   "gui.chalk.symbol.check": "Checkmark",
   "gui.chalk.symbol.cross": "Cross",
   "gui.chalk.symbol.heart": "Heart",
-  "gui.chalk.symbol.skull": "Skull"
+  "gui.chalk.symbol.skull": "Skull",
+
+  "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol"
 }
