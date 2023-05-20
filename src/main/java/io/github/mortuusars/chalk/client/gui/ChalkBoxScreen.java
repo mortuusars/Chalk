@@ -3,7 +3,7 @@ package io.github.mortuusars.chalk.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -20,7 +20,7 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
 
     public ChalkBoxScreen(ChalkBoxMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        maxGlowingUses = CommonConfig.CHALK_BOX_GLOWING_USES.get();
+        maxGlowingUses = Config.CHALK_BOX_GLOWING_USES.get();
 
         this.minecraft = Minecraft.getInstance();
     }
@@ -65,7 +65,7 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(poseStack, getGuiLeft(), getGuiTop(), 0,0, imageWidth, imageHeight);
 
-        if (CommonConfig.CHALK_BOX_GLOWING.get()){
+        if (Config.CHALK_BOX_GLOWING.get()){
             // Chalk Slots
             blit(poseStack, getGuiLeft() + 52, getGuiTop() + 17, 0, 180, 72, 36);
 

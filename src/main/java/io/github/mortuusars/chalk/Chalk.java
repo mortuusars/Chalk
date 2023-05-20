@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk;
 
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.loot.LootTableModification;
@@ -11,9 +11,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
@@ -45,7 +42,7 @@ public class Chalk
     public static final Logger LOGGER = LogManager.getLogger();
 
     public Chalk() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

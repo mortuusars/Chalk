@@ -2,7 +2,7 @@ package io.github.mortuusars.chalk.items;
 
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
@@ -84,7 +84,7 @@ public class ChalkBox {
 
         ItemStack glowingItemStack = getItemInSlot(chalkBoxStack, GLOWINGS_SLOT_INDEX);
         if (!glowingItemStack.isEmpty()){
-            setGlow(chalkBoxStack, CommonConfig.CHALK_BOX_GLOWING_USES.get());
+            setGlow(chalkBoxStack, Config.CHALK_BOX_GLOWING_USES.get());
             glowingItemStack.shrink(1);
             setSlot(chalkBoxStack, GLOWINGS_SLOT_INDEX, glowingItemStack);
         }

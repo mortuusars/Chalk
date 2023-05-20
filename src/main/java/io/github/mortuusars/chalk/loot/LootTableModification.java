@@ -1,17 +1,16 @@
 package io.github.mortuusars.chalk.loot;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class LootTableModification {
     public static void LootTablesLoad(final LootTableLoadEvent event) {
-        if (!CommonConfig.GENERATE_IN_CHESTS.get())
+        if (!Config.GENERATE_IN_CHESTS.get())
             return;
 
         ResourceLocation tableId = event.getTable().getLootTableId();

@@ -1,10 +1,13 @@
 package io.github.mortuusars.chalk.core;
 
+import com.mojang.datafixers.util.Pair;
+import io.github.mortuusars.chalk.config.Config;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,14 +16,17 @@ public class SymbolUnlocking {
     public static List<MarkSymbol> getUnlockedSymbols(ServerPlayer player) {
         List<MarkSymbol> unlocked = new ArrayList<>();
 
-        unlocked.add(MarkSymbol.HOUSE);
-        unlocked.add(MarkSymbol.CHECKMARK);
-        unlocked.add(MarkSymbol.CROSS);
+        for (MarkSymbol symbol : MarkSymbol.getSpecialSymbols()) {
+            Pair<ForgeConfigSpec.BooleanValue, ForgeConfigSpec.ConfigValue<String>> symbolConfig = Config.SYMBOL_CONFIG.get(symbol);
 
-//        if (hasAdvancement(player, new ResourceLocation("minecraft:husbandry/tame_an_animal")))
-            unlocked.add(MarkSymbol.HEART);
+            if (!symbolConfig.getFirst().get())
+                continue;
 
-        unlocked.add(MarkSymbol.SKULL);
+            String advancementLocation = symbolConfig.getSecond().get();
+
+            if (advancementLocation.isEmpty() || hasAdvancement(player, new ResourceLocation(advancementLocation)))
+                unlocked.add(symbol);
+        }
 
         return unlocked;
     }

@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.items;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
@@ -100,7 +100,7 @@ public class ChalkItem extends Item implements IDrawingTool {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return CommonConfig.CHALK_DURABILITY.get();
+        return Config.CHALK_DURABILITY.get();
     }
     public DyeColor getColor() {
         return this.color;

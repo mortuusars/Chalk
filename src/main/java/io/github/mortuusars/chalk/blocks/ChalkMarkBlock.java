@@ -3,7 +3,7 @@ package io.github.mortuusars.chalk.blocks;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.SymbolOrientation;
 import io.github.mortuusars.chalk.render.ChalkColors;
@@ -217,7 +217,7 @@ public class ChalkMarkBlock extends Block {
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
-        return state.getValue(GLOWING) ? CommonConfig.GLOWING_CHALK_MARK_LIGHT_LEVEL.get() : 0;
+        return state.getValue(GLOWING) ? Config.GLOWING_CHALK_MARK_LIGHT_LEVEL.get() : 0;
     }
 
     @Override

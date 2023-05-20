@@ -38,5 +38,9 @@
   "gui.chalk.symbol.heart": "Heart",
   "gui.chalk.symbol.skull": "Skull",
 
-  "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol"
+  "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
+  "gui.chalk.unlocked_symbol_message": "You have unlocked the %s chalk symbol.",
+
+  "advancement.chalk.get_skeleton_skull": "Bound By Bone",
+  "advancement.chalk.get_skeleton_skull.description": "Obtain a Skeleton Skull"
 }

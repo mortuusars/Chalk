@@ -2,7 +2,7 @@ package io.github.mortuusars.chalk.menus;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBox;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,7 +27,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         super(Chalk.Menus.CHALK_BOX.get(), pContainerId);
         this.chalkBoxStack = chalkBoxStack;
 
-        final boolean glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
+        final boolean glowingEnabled = Config.CHALK_BOX_GLOWING.get();
 
         // Order of adding slots is kinda important. QuickMoveStack depends on correct order.
 
