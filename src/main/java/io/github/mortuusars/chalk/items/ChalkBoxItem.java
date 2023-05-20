@@ -147,7 +147,8 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
             return InteractionResult.CONSUME;
         }
 
-        if (drawRegularMark(drawingContext, ((ChalkItem) selectedChalk.getItem()).getColor(), ChalkBox.getGlowLevel(chalkBox) > 0))
+        if (drawMark(drawingContext, drawingContext.createRegularMark(((ChalkItem) selectedChalk.getItem()).getColor(),
+                ChalkBox.getGlowLevel(chalkBox) > 0)))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
 
         return InteractionResult.FAIL;

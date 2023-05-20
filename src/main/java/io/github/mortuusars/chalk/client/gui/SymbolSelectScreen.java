@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.core.IDrawingTool;
@@ -15,13 +14,11 @@ import io.github.mortuusars.chalk.network.Packets;
 import io.github.mortuusars.chalk.network.packet.ServerboundDrawMarkPacket;
 import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
-import io.github.mortuusars.chalk.utils.ParticleUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -295,9 +292,6 @@ public class SymbolSelectScreen extends Screen {
         if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
             Packets.sendToServer(new ServerboundDrawMarkPacket(mark, drawingContext.getMarkBlockPos(), drawingHand));
             player.swing(drawingHand);
-
-            //TODO: particles will not be visible to others
-            ParticleUtils.spawnColorDustParticles(mark.color(), level, drawingContext.getMarkBlockPos(), mark.facing());
             return true;
         }
 

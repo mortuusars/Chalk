@@ -4,21 +4,17 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
-import io.github.mortuusars.chalk.items.ChalkBoxItem;
-import io.github.mortuusars.chalk.items.ChalkItem;
+import io.github.mortuusars.chalk.utils.MarkDrawHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, InteractionHand drawingHand) {
@@ -59,18 +55,12 @@ public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, Intera
             return true;
         }
 
-        // DRAW
-        if (level.setBlock(markBlockPos, mark.createBlockState(), Block.UPDATE_ALL_IMMEDIATE)) {
-            double pX = markBlockPos.getX() + 0.5;
-            double pY = markBlockPos.getY() + 0.5;
-            double pZ = markBlockPos.getZ() + 0.5;
-            level.playSound(null, pX, pY, pZ, Chalk.SoundEvents.MARK_DRAW.get(),
-                    SoundSource.BLOCKS, 0.7f,  new Random().nextFloat() * 0.2f + 0.8f);
+        if (MarkDrawHelper.draw(level, markBlockPos, mark)) {
             drawingTool.onMarkDrawn(player, drawingHand, mark);
-
             player.swing(drawingHand);
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

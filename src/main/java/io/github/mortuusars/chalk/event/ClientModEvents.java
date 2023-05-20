@@ -12,8 +12,10 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -22,7 +24,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 
-@Mod.EventBusSubscriber(modid = Chalk.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Chalk.ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModEvents {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
@@ -63,7 +65,7 @@ public class ClientModEvents {
     @SubscribeEvent
     public static void onTextureStitchEvent(TextureStitchEvent.Pre event) {
         // Register textures for use in IBakedModel
-        if (event.getAtlas().location() == TextureAtlas.LOCATION_BLOCKS) {
+        if (event.getAtlas().location() == InventoryMenu.BLOCK_ATLAS) {
             for (MarkSymbol symbol : MarkSymbol.values()) {
                 event.addSprite(symbol.getTextureLocation());
             }

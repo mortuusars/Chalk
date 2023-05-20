@@ -55,7 +55,7 @@ public class ChalkItem extends Item implements IDrawingTool {
             return InteractionResult.CONSUME;
         }
 
-        if (drawRegularMark(drawingContext, color, false))
+        if (drawMark(drawingContext, drawingContext.createRegularMark(color, false)))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
         else if (drawingContext.hasExistingMark())
             return InteractionResult.PASS;

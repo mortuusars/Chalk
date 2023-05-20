@@ -9,8 +9,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
 
-import java.util.Random;
-
 public class ParticleUtils {
 
     /**

@@ -1,11 +1,8 @@
 package io.github.mortuusars.chalk.network.packet;
 
-import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
 import io.github.mortuusars.chalk.core.MarkSymbol;
-import io.github.mortuusars.chalk.utils.MarkDrawingContext;
-import net.minecraft.client.Minecraft;
+import io.github.mortuusars.chalk.network.packet.handler.ClientsideOpenSymbolSelectScreenHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.InteractionHand;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.ArrayList;
@@ -32,13 +29,6 @@ public record ClientboundSelectSymbolPacket(List<MarkSymbol> unlockedSymbols) {
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
-        MarkDrawingContext storedContext = MarkDrawingContext.getStoredContext();
-        if (storedContext == null)
-            throw new IllegalStateException("Stored MarkDrawingContext was null.");
-
-        SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(unlockedSymbols, storedContext, InteractionHand.MAIN_HAND);
-        Minecraft.getInstance().setScreen(symbolSelectScreen);
-
-        MarkDrawingContext.clearStoredContext();
+        ClientsideOpenSymbolSelectScreenHandler.handle(unlockedSymbols);
     }
 }

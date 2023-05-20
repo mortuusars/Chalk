@@ -43,9 +43,7 @@ public interface IDrawingTool {
         return new MarkDrawingContext(player, hitResult, drawingHand);
     }
 
-    default boolean drawRegularMark(MarkDrawingContext drawingContext, DyeColor color, boolean glowing) {
-        Mark mark = drawingContext.createRegularMark(color, glowing);
-
+    default boolean drawMark(MarkDrawingContext drawingContext, Mark mark) {
         if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
             return false;
 

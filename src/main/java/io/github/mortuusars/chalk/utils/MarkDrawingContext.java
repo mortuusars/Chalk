@@ -12,10 +12,7 @@ import io.github.mortuusars.chalk.network.packet.ClientboundSelectSymbolPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -27,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Random;
 
 public class MarkDrawingContext {
     @Nullable
@@ -144,21 +140,11 @@ public class MarkDrawingContext {
     }
 
     public boolean draw(Mark mark) {
-        BlockPos markPos = getMarkBlockPos();
-        boolean isMarkDrawn = level.setBlock(markPos, mark.createBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+        boolean isDrawn = MarkDrawHelper.draw(level, getMarkBlockPos(), mark);
+        if (isDrawn)
+            player.swing(drawingHand);
+        return isDrawn;
 
-        if (isMarkDrawn){
-            double pX = markPos.getX() + 0.5;
-            double pY = markPos.getY() + 0.5;
-            double pZ = markPos.getZ() + 0.5;
-            level.playSound(null, pX, pY, pZ, Chalk.SoundEvents.MARK_DRAW.get(),
-                    SoundSource.BLOCKS, 0.7f,  new Random().nextFloat() * 0.2f + 0.8f);
-
-            if (level.isClientSide)
-                ParticleUtils.spawnColorDustParticles(mark.color(), level, markPos, mark.facing());
-        }
-
-        return isMarkDrawn;
     }
 
     private static boolean canBeDrawnOn(BlockPos pos, Direction face, Level level) {
