@@ -34,8 +34,8 @@ public class ParticleUtils {
     /**
      * Spawns a particle with slight random offset to each.
      */
-    public static void spawnParticle(Level world, ParticleOptions particleType, Vector3f position, int count){
-        spawnParticle(world, particleType, position, new Vector3f(0f, 0f, 0f), count);
+    public static void spawnParticle(Level level, ParticleOptions particleType, Vector3f position, int count){
+        spawnParticle(level, particleType, position, new Vector3f(0f, 0f, 0f), count);
     }
 
     /**

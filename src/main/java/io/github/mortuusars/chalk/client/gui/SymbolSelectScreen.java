@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.core.IDrawingTool;
@@ -20,6 +21,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -72,10 +74,11 @@ public class SymbolSelectScreen extends Screen {
     private final int hoverBorderColor;
     private final Direction markFacing;
     private final BlockState surfaceState;
-//    private final boolean hasCrossSymbol;
 
     private int centerX;
     private int centerY;
+    private int buttonsWidth;
+    private int buttonsStartX;
 
     @Nullable
     private MarkSymbol hoveredSymbol;
@@ -109,11 +112,10 @@ public class SymbolSelectScreen extends Screen {
         r = (float)(markColor >> 16 & 255) / 255.0F;
         g = (float)(markColor >> 8 & 255) / 255.0F;
         b = (float)(markColor & 255) / 255.0F;
-        hoverBorderColor = (int) (b * 255) + ((int) (g * 255) << 8) + ((int) (r * 255) << 16) + (0xFF << 24);
+        hoverBorderColor = markColor + (0xFF << 24);
         markFacing = drawingContext.getMarkFacing();
         BlockPos surfacePos = drawingContext.getMarkBlockPos().relative(markFacing.getOpposite());
         surfaceState = minecraft.level != null ? minecraft.level.getBlockState(surfacePos) : Blocks.AIR.defaultBlockState();
-//        hasCrossSymbol = unlockedSymbols.contains(MarkSymbol.CROSS);
     }
 
     @Override
@@ -126,18 +128,10 @@ public class SymbolSelectScreen extends Screen {
         centerX = width / 2;
         centerY = height / 2;
 
-//        if (!mouseWasReleased) {
-//            assert minecraft != null;
-//            double centerX = minecraft.getWindow().getScreenWidth() / 2f;
-//            double centerY = minecraft.getWindow().getScreenHeight() / 2f;
-//
-//            double xRatio = width / (double)minecraft.getWindow().getScreenWidth();
-//            double yRatio = height / (double)minecraft.getWindow().getScreenHeight();
-//
-//
-//
-//            GLFW.glfwSetCursorPos(minecraft.getWindow().getWindow(), centerX, height / 2f +  / yRatio);
-//        }
+        buttonsWidth = unlockedSymbols.size() > 0 ?
+                SYMBOL_SIZE * unlockedSymbols.size() + SYMBOL_SPACING * (unlockedSymbols.size() - 1)
+                : SYMBOL_SIZE;
+        buttonsStartX = centerX - buttonsWidth / 2;
     }
 
     @Override
@@ -148,14 +142,9 @@ public class SymbolSelectScreen extends Screen {
             player.setForcedPose(Pose.CROUCHING);
 
         // BG
-        // fillGradient(poseStack, 0, 0, width, height, 0x20000000, 0x40000000);
+         fillGradient(poseStack, 0, 0, width, height, 0x15000000, 0x35000000);
 
         super.render(poseStack, mouseX, mouseY, pPartialTick);
-
-        int buttonsWidth = unlockedSymbols.size() > 0 ?
-                SYMBOL_SIZE * unlockedSymbols.size() + SYMBOL_SPACING * (unlockedSymbols.size() - 1)
-                : SYMBOL_SIZE;
-        int buttonsStartX = centerX - buttonsWidth / 2;
 
         hoveredSymbol = null;
 
@@ -200,7 +189,7 @@ public class SymbolSelectScreen extends Screen {
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
         // Shadow overlay
-        fillGradient(new PoseStack(), x, y, x + SYMBOL_SIZE, y + SYMBOL_SIZE, 0x00000000, 0x25000000);
+        fillGradient(new PoseStack(), x, y, x + SYMBOL_SIZE, y + SYMBOL_SIZE, 0x08FFFFFF, 0x20000000);
 
         poseStack.popPose();
     }
@@ -210,7 +199,7 @@ public class SymbolSelectScreen extends Screen {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1f);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.applyModelViewMatrix();
 
         PoseStack posestack1 = new PoseStack();
@@ -243,6 +232,11 @@ public class SymbolSelectScreen extends Screen {
         MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
         Lighting.setupForFlatItems();
 
+//        minecraft.getBlockRenderer().getModelRenderer().tesselateWithoutAO(minecraft.level,
+//                minecraft.getBlockRenderer().getBlockModel(surfaceState),
+//                surfaceState, drawingContext.getMarkBlockPos(), posestack1,
+//                multibuffersource$buffersource.getBuffer(RenderType.solid()), true, level.random,
+//                0, OverlayTexture.NO_OVERLAY);
         minecraft.getBlockRenderer().renderSingleBlock(surfaceState, posestack1, minecraft.renderBuffers().bufferSource(),
                 LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
@@ -275,13 +269,15 @@ public class SymbolSelectScreen extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int pButton) {
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
         if (!mouseWasReleased && level.getGameTime() - openTimestamp < 4) {
             mouseWasReleased = true;
             return true;
         }
 
-        tryDrawSymbol(hoveredSymbol);
+        if (button == 0 || !mouseWasReleased)
+            tryDrawSymbol(hoveredSymbol);
+
         this.close();
         return true;
     }
