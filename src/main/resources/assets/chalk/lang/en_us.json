@@ -27,6 +27,7 @@
   "chalk.subtitles.mark_drawn": "Chalk draws",
   "chalk.subtitles.chalk_box_changed": "Chalk Box rustles",
   "chalk.subtitles.chalk_box_opens": "Chalk Box opens",
+  "chalk.subtitles.chalk_box_closes": "Chalk Box closes",
   "chalk.subtitles.glow_applied": "Chalk mark glows up",
   "chalk.subtitles.mark_removed": "Chalk mark erased",
 

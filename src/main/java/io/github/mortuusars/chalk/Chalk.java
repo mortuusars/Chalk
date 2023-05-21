@@ -53,12 +53,6 @@ public class Chalk
 
         MinecraftForge.EVENT_BUS.addListener(LootTableModification::LootTablesLoad);
         MinecraftForge.EVENT_BUS.register(this);
-
-        MinecraftForge.EVENT_BUS.addListener(Chalk::onRightClickBlock);
-    }
-
-    public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        // Testing
     }
 
     public static ResourceLocation resource(String path) {
@@ -136,6 +130,8 @@ public class Chalk
                 () -> new SoundEvent(Chalk.resource("item.chalk_box_change")));
         public static final RegistryObject<SoundEvent> CHALK_BOX_OPEN = SOUND_EVENTS.register("item.chalk_box_open",
                 () -> new SoundEvent(Chalk.resource("item.chalk_box_open")));
+        public static final RegistryObject<SoundEvent> CHALK_BOX_CLOSE = SOUND_EVENTS.register("item.chalk_box_close",
+                () -> new SoundEvent(Chalk.resource("item.chalk_box_close")));
         public static final RegistryObject<SoundEvent> MARK_DRAW = SOUND_EVENTS.register("item.chalk_draw",
                 () -> new SoundEvent(Chalk.resource("item.chalk_draw")));
         public static final RegistryObject<SoundEvent> MARK_GLOW_APPLIED = SOUND_EVENTS.register("block.mark_glow_applied",

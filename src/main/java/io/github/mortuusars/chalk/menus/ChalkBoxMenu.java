@@ -66,6 +66,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     @Override
     public void removed(@NotNull Player pPlayer) {
         super.removed(pPlayer);
+        pPlayer.playSound(Chalk.SoundEvents.CHALK_BOX_CLOSE.get(), 0.85f, 0.9f + pPlayer.level.random.nextFloat() * 0.2f);
 
         // I still have no clue why updates are stopping when ChalkBox is opened by right click in inv.
         // But this fixes inventory not syncing after closing.
