@@ -41,6 +41,7 @@ public class ModBlocks {
         RegistryObject<ChalkMarkBlock> registeredBlock = Registry.BLOCKS.register(registryName,
                 () -> new ChalkMarkBlock(dyeColor, BlockBehaviour.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, materialColor)
                         .instabreak()
+                        .emissiveRendering((pState, pLevel, pPos) -> pState.getValue(ChalkMarkBlock.GLOWING))
                         .noOcclusion()
                         .noCollission()
                         .sound(SoundType.GRAVEL)));

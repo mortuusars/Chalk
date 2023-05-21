@@ -1,3 +1,6 @@
+### 1.4.1 - 1.18.2 - 2023-05-21 
+- Fixed emissive rendering with Rubidium.
+
 ### 1.4.0 - 2023-02-10
 
 - Added Chalk Box quick change selected chalks: 
