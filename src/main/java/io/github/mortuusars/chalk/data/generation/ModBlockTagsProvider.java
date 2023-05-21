@@ -20,6 +20,15 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
 
         tag(Chalk.Tags.Blocks.CHALK_CANNOT_DRAW_ON)
                 .addTag(BlockTags.LEAVES)
-                .add(Blocks.SLIME_BLOCK);
+                .addTag(BlockTags.SAPLINGS)
+                .addTag(BlockTags.FLOWERS)
+                .add(Blocks.SLIME_BLOCK)
+                .add(Blocks.HONEYCOMB_BLOCK)
+                .add(Blocks.SCAFFOLDING)
+                .add(Blocks.SCULK)
+                .add(Blocks.SCULK_CATALYST)
+                .add(Blocks.SCULK_SHRIEKER)
+                .add(Blocks.SCULK_SENSOR)
+        ;
     }
 }
