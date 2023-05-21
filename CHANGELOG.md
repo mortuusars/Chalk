@@ -1,17 +1,22 @@
 ### 1.5.0
+- Added new symbols: House, Checkmark, Heart, Skull 
+  - Symbol selection UI is opened by using Chalk/Chalk Box while sneaking. 
+  - Some symbols are unlocked by completing an advancement, other are unlocked by default. (_configurable_)
 
 - Chalk Box
   - Chalk Box can now be opened by Right-Clicking it in inventory.
   - You can now insert chalks in Chalk Box by right-clicking it with item (same as bundles).
-  - Using Chalk Box on the block while it is empty will now open the GUI instead of doing nothing. 
+  - Using Chalk Box on the block while it is empty will now open the GUI instead of doing nothing.
+  - Added sounds to closing and adding glow.
 
 - Tags:
   - Added `chalk:chalk_cannot_draw_on` block tag which controls what blocks isn't suitable for drawing marks on.
   - Changed naming to be inline with vanilla: `chalk:chalk` -> `chalk:chalks`, etc.
   - Added chalks to `forge:chalks` tag.
 
+- Fixed emissive rendering with Rubidium.
 - Changed Chalk model positions in player's hand.
-- Holding glowing items in offhand will no longer make drawn mark glow. You'll need to click again to apply glow. 
+- Removed ability to draw already glowing marks by holding glow item in offhand. You'll need to click again to apply glow. 
 
 ### 1.4.0 - 2023-02-10
 
