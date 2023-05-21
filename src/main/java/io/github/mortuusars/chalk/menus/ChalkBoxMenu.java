@@ -5,12 +5,15 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBox;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -19,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class ChalkBoxMenu extends AbstractContainerMenu {
 
     public final ItemStack chalkBoxStack;
+    private final Player player;
     public Pair<Integer, Integer> chalkBoxCoords = Pair.of(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     private final int chalkBoxSlotId;
@@ -26,6 +30,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     public ChalkBoxMenu(final int pContainerId, final Inventory playerInventory, ItemStack chalkBoxStack, @Nullable IItemHandler itemHandler) {
         super(Chalk.Menus.CHALK_BOX.get(), pContainerId);
         this.chalkBoxStack = chalkBoxStack;
+        this.player = playerInventory.player;
 
         final boolean glowingEnabled = Config.CHALK_BOX_GLOWING.get();
 
@@ -52,9 +57,13 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
             addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68) {
                 @Override
                 public void set(@NotNull ItemStack stack) {
-                    //TODO: Glow sound.
-//                    if (this.getItem().isEmpty() && ChalkBox.getGlow(chalkBoxStack) <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS))
-//                        Minecraft.getInstance().player.playSound(SoundEvents.AMETHYST_CLUSTER_STEP);
+                    if (player.level instanceof ClientLevel clientLevel && this.getItem().isEmpty()
+                            && ChalkBox.getGlowLevel(chalkBoxStack) <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS)) {
+                        Vec3 pos = player.position();
+                        clientLevel.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.PLAYERS, 1f, 1f);
+                        clientLevel.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOWING.get(), SoundSource.PLAYERS, 1f, 1f);
+                    }
+
                     super.set(stack);
                 }
             });

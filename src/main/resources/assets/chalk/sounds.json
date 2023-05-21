@@ -49,7 +49,7 @@
       { "name": "item/bundle/drop_contents3", "volume": 0.8, "pitch": 1.5 }
     ]
   },
-  "block.mark_glow_applied": {
+  "item.glow_applied": {
     "subtitle": "chalk.subtitles.glow_applied",
     "sounds": [
       "mob/turtle/walk1",
@@ -57,6 +57,14 @@
       "mob/turtle/walk3",
       "mob/turtle/walk4",
       "mob/turtle/walk5"
+    ]
+  },
+  "ambient.glowing": {
+    "sounds": [
+      "chalk:glowing1",
+      "chalk:glowing2",
+      "chalk:glowing3",
+      "chalk:glowing4"
     ]
   },
   "block.mark_removed": {

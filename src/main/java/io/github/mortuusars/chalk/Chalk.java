@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -134,8 +133,10 @@ public class Chalk
                 () -> new SoundEvent(Chalk.resource("item.chalk_box_close")));
         public static final RegistryObject<SoundEvent> MARK_DRAW = SOUND_EVENTS.register("item.chalk_draw",
                 () -> new SoundEvent(Chalk.resource("item.chalk_draw")));
-        public static final RegistryObject<SoundEvent> MARK_GLOW_APPLIED = SOUND_EVENTS.register("block.mark_glow_applied",
-                () -> new SoundEvent(Chalk.resource("block.mark_glow_applied")));
+        public static final RegistryObject<SoundEvent> GLOW_APPLIED = SOUND_EVENTS.register("item.glow_applied",
+                () -> new SoundEvent(Chalk.resource("item.glow_applied")));
+        public static final RegistryObject<SoundEvent> GLOWING = SOUND_EVENTS.register("ambient.glowing",
+                () -> new SoundEvent(Chalk.resource("ambient.glowing")));
         public static final RegistryObject<SoundEvent> MARK_REMOVED = SOUND_EVENTS.register("block.mark_removed",
                 () -> new SoundEvent(Chalk.resource("block.mark_removed")));
     }

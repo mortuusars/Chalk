@@ -155,7 +155,8 @@ public class ChalkMarkBlock extends Block {
                 if (!player.isCreative())
                     usedStack.shrink(1);
 
-                level.playSound(null, blockPos, Chalk.SoundEvents.MARK_GLOW_APPLIED.get(), SoundSource.BLOCKS, 1.5f, 1f);
+                level.playSound(null, blockPos, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.BLOCKS, 1f, 1f);
+                level.playSound(null, blockPos, Chalk.SoundEvents.GLOWING.get(), SoundSource.BLOCKS, 0.8f, 1f);
                 ParticleUtils.spawnParticle(level, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(blockPos, blockState.getValue(FACING),
                         0.3f), new Vector3f(0f, 0.03f, 0f), 2);
 
