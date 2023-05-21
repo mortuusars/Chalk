@@ -1,5 +1,6 @@
-### 1.4.1 - 1.18.2 - 2023-05-21 
+### 1.4.2 - 1.18.2 - 2023-05-21
 - Fixed emissive rendering with Rubidium.
+- Fixed crash introduced in 1.4.1.
 
 ### 1.4.0 - 2023-02-10
 
