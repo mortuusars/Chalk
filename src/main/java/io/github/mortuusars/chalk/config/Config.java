@@ -9,19 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Config {
-    public static final ForgeConfigSpec SPEC;
-
+    public static final ForgeConfigSpec COMMON;
     public static final ForgeConfigSpec.IntValue CHALK_DURABILITY;
     public static final ForgeConfigSpec.IntValue GLOWING_CHALK_MARK_LIGHT_LEVEL;
-
     public static final ForgeConfigSpec.BooleanValue CHALK_BOX_GLOWING;
     public static final ForgeConfigSpec.IntValue CHALK_BOX_GLOWING_USES;
-
     public static final ForgeConfigSpec.BooleanValue GENERATE_IN_CHESTS;
-
     public static final Map<MarkSymbol, Pair<ForgeConfigSpec.BooleanValue, ForgeConfigSpec.ConfigValue<String>>> SYMBOL_CONFIG;
 
+    public static final ForgeConfigSpec CLIENT;
+    public static final Map<MarkSymbol, ForgeConfigSpec.IntValue> SYMBOL_ROTATION_OFFSETS;
+
+
     static {
+        // COMMON
+
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
         CHALK_DURABILITY = builder.comment("How many marks you can draw with a single chalk. Default: 64")
@@ -65,6 +67,26 @@ public class Config {
 
         builder.pop();
 
-        SPEC = builder.build();
+        COMMON = builder.build();
+
+
+        // CLIENT:
+
+        builder = new ForgeConfigSpec.Builder();
+
+        builder.comment("Rotation offsets (in degrees) for each mark.").push("SymbolOffsets");
+
+        SYMBOL_ROTATION_OFFSETS = new HashMap<>();
+
+        for (MarkSymbol symbol : MarkSymbol.values()) {
+            String symbolName = StringUtils.capitalize(symbol.getSerializedName());
+            int defaultOffset = symbol == MarkSymbol.CROSS || symbol == MarkSymbol.CHECKMARK ? 45 : 0;
+            SYMBOL_ROTATION_OFFSETS.put(symbol, builder.defineInRange(symbolName + "RotationOffset",
+                    defaultOffset, -360, 360));
+        }
+
+        builder.pop();
+
+        CLIENT = builder.build();
     }
 }

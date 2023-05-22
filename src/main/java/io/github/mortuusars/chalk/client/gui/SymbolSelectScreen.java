@@ -7,6 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.core.MarkSymbol;
@@ -179,7 +180,7 @@ public class SymbolSelectScreen extends Screen {
         poseStack.pushPose();
 
         poseStack.translate(x + SYMBOL_SIZE / 2f, y + SYMBOL_SIZE / 2f, 0);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(symbol.getDefaultOrientation().getRotation()));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(symbol.getDefaultOrientation().getRotation() + Config.SYMBOL_ROTATION_OFFSETS.get(symbol).get()));
         poseStack.translate(-x - SYMBOL_SIZE / 2f , -y - SYMBOL_SIZE / 2f, 0);
 
         blit(poseStack, x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);

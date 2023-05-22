@@ -4,6 +4,7 @@ import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.SymbolOrientation;
 import net.minecraft.client.Minecraft;
@@ -181,7 +182,7 @@ public class ChalkMarkBakedModel implements BakedModel {
                 new BlockFaceUV(new float[]{0f, 0f, 16f, 16f}, facing == Direction.DOWN ? 180 : 0));
 
         // Rotate the texture
-        int rotation = symbolRotation.getRotation();
+        int rotation = (symbolRotation.getRotation() + Config.SYMBOL_ROTATION_OFFSETS.get(symbol).get()) % 360;
 
         if (facing.getAxisDirection() == Direction.AxisDirection.POSITIVE || facing.getAxis() == Direction.Axis.Y)
             rotation = 360 - rotation;

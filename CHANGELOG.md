@@ -14,9 +14,10 @@
   - Changed naming to be inline with vanilla: `chalk:chalk` -> `chalk:chalks`, etc.
   - Added chalks to `forge:chalks` tag.
 
-- Fixed emissive rendering with Rubidium.
+- Added config for mark rotation offset.
 - Changed Chalk model positions in player's hand.
 - Removed ability to draw already glowing marks by holding glow item in offhand. You'll need to click again to apply glow. 
+- Fixed emissive rendering with Rubidium.
 
 ### 1.4.0 - 2023-02-10
 

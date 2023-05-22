@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public enum MarkSymbol implements StringRepresentable {
     CENTER("center", false, OrientationBehavior.FIXED, SymbolOrientation.NORTH),
     ARROW("arrow", false, OrientationBehavior.FULL, SymbolOrientation.NORTH),
-    CROSS("cross", true, OrientationBehavior.FIXED, SymbolOrientation.NORTHEAST),
+    CROSS("cross", true, OrientationBehavior.FIXED, SymbolOrientation.NORTH),
     CHECKMARK("check", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),
     SKULL("skull", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),
     HOUSE("house", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),

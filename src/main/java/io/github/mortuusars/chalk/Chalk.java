@@ -41,7 +41,8 @@ public class Chalk
     public static final Logger LOGGER = LogManager.getLogger();
 
     public Chalk() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
