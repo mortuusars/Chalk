@@ -10,6 +10,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 public class CommonModEvents {
     @SubscribeEvent
     public static void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(Packets::register);
+        event.enqueueWork(() -> {
+            Packets.register();
+            Chalk.CriteriaTriggers.register();
+        });
     }
 }

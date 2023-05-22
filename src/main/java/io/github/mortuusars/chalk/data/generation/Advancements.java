@@ -2,9 +2,13 @@ package io.github.mortuusars.chalk.data.generation;
 
 import com.google.common.collect.Sets;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.advancement.ConsecutiveSleepingPositionTrigger;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
+import net.minecraft.advancements.critereon.DistancePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -50,18 +54,15 @@ public class Advancements extends AdvancementProvider {
                 .addCriterion("slept_in_bed", InventoryChangeTrigger.TriggerInstance.hasItems(Items.SKELETON_SKULL))
                 .save(consumer, Chalk.resource("adventure/get_skeleton_skull"), existingFileHelper);
 
-//        Advancement.Builder.advancement()
-//                .parent(new ResourceLocation("minecraft:adventure/root"))
-//                .display(Chalk.Items.COMPLETED_DELIVERY_AGREEMENT.get(),
-//                        Lang.ADVANCEMENT_LAST_MINUTES_TITLE.translate(),
-//                        Lang.ADVANCEMENT_LAST_MINUTES_DESCRIPTION.translate(), null, FrameType.CHALLENGE,
-//                        true, true, true)
-//                .addCriterion("almost_expired", InventoryChangeTrigger.TriggerInstance.hasItems(
-//                        ItemPredicate.Builder.item()
-//                                .of(Wares.Items.COMPLETED_DELIVERY_AGREEMENT.get())
-//                                .hasNbt(almostExpiredTag)
-//                                .build()))
-//                .save(consumer, Wares.resource("adventure/at_the_last_minutes"), existingFileHelper);
+        Advancement.Builder.advancement()
+                .parent(new ResourceLocation("minecraft:adventure/sleep_in_bed"))
+                .display(Items.YELLOW_BED,
+                        Component.translatable("advancement.chalk.sleep_three_times_in_one_place"),
+                        Component.translatable("advancement.chalk.sleep_three_times_in_one_place.description"),
+                        null, FrameType.TASK, true, true, false)
+                .addCriterion("sleep_three_times_in_one_place", new ConsecutiveSleepingPositionTrigger.TriggerInstance(EntityPredicate.Composite.ANY,
+                        MinMaxBounds.Ints.atLeast(3), DistancePredicate.absolute(MinMaxBounds.Doubles.atMost(16))))
+                .save(consumer, Chalk.resource("adventure/sleep_three_times_in_one_place"), existingFileHelper);
     }
 
     protected Consumer<Advancement> getOutput(CachedOutput cache) {

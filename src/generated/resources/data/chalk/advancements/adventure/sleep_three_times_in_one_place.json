@@ -1,0 +1,38 @@
+{
+  "parent": "minecraft:adventure/sleep_in_bed",
+  "criteria": {
+    "sleep_three_times": {
+      "conditions": {
+        "count": {
+          "min": 3
+        },
+        "distance": {
+          "absolute": {
+            "max": 10.0
+          }
+        }
+      },
+      "trigger": "chalk:consecutive_sleeping_pos"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.chalk.sleep_three_times_in_one_place.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "minecraft:yellow_bed"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.chalk.sleep_three_times_in_one_place"
+    }
+  },
+  "requirements": [
+    [
+      "sleep_three_times"
+    ]
+  ]
+}

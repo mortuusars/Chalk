@@ -1,11 +1,13 @@
 package io.github.mortuusars.chalk;
 
+import io.github.mortuusars.chalk.advancement.ConsecutiveSleepingPositionTrigger;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.loot.LootTableModification;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
@@ -119,6 +121,14 @@ public class Chalk
 
         public static final RegistryObject<MenuType<ChalkBoxMenu>> CHALK_BOX = MENUS.register("chalk_box",
                 () -> IForgeMenuType.create(ChalkBoxMenu::fromBuffer));
+    }
+
+    public static class CriteriaTriggers {
+        public static final ConsecutiveSleepingPositionTrigger CONSECUTIVE_SLEEPING = new ConsecutiveSleepingPositionTrigger();
+
+        public static void register() {
+            net.minecraft.advancements.CriteriaTriggers.register(CONSECUTIVE_SLEEPING);
+        }
     }
 
     public static class SoundEvents {
