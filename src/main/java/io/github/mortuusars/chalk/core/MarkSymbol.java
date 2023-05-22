@@ -17,7 +17,8 @@ public enum MarkSymbol implements StringRepresentable {
     CHECKMARK("check", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),
     SKULL("skull", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),
     HOUSE("house", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),
-    HEART("heart", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH);
+    HEART("heart", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),
+    PICKAXE("pickaxe", true, OrientationBehavior.UP_DOWN_CARDINAL, SymbolOrientation.NORTH),;
 
     private final String name;
     private final boolean isSpecial;

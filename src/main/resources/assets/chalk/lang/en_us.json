@@ -38,6 +38,7 @@
   "gui.chalk.symbol.cross": "Cross",
   "gui.chalk.symbol.heart": "Heart",
   "gui.chalk.symbol.skull": "Skull",
+  "gui.chalk.symbol.pickaxe": "Pickaxe",
 
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
   "gui.chalk.unlocked_symbol_message": "You have unlocked the %s chalk symbol.",

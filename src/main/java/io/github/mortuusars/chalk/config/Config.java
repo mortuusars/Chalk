@@ -47,11 +47,12 @@ public class Config {
                .push("Symbols");
 
         Map<MarkSymbol, String> symbolAdvancements = new HashMap<>();
-        symbolAdvancements.put(MarkSymbol.HOUSE, "minecraft:husbandry/plant_seed");
         symbolAdvancements.put(MarkSymbol.CHECKMARK, "");
         symbolAdvancements.put(MarkSymbol.CROSS, "");
+        symbolAdvancements.put(MarkSymbol.HOUSE, "minecraft:husbandry/plant_seed");
         symbolAdvancements.put(MarkSymbol.HEART, "minecraft:husbandry/tame_an_animal");
         symbolAdvancements.put(MarkSymbol.SKULL, "chalk:adventure/get_skeleton_skull");
+        symbolAdvancements.put(MarkSymbol.PICKAXE, "minecraft:story/iron_tools");
 
         SYMBOL_CONFIG = new HashMap<>();
 

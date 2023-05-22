@@ -44,13 +44,6 @@ import java.util.Map;
 
 @SuppressWarnings("deprecation")
 public class SymbolSelectScreen extends Screen {
-    private static final List<MarkSymbol> SYMBOLS = List.of(
-            MarkSymbol.HOUSE,
-            MarkSymbol.CHECKMARK,
-            MarkSymbol.CROSS,
-            MarkSymbol.HEART,
-            MarkSymbol.SKULL
-    );
     private static final int SYMBOL_SIZE = 48;
     private static final int SYMBOL_SPACING = 10;
     private static final float SYMBOL_BORDER_THICKNESS = 2;
@@ -84,7 +77,7 @@ public class SymbolSelectScreen extends Screen {
 
     static {
         SYMBOL_TEXTURES = new HashMap<>();
-        for (MarkSymbol symbol : SYMBOLS) {
+        for (MarkSymbol symbol : MarkSymbol.getSpecialSymbols()) {
             SYMBOL_TEXTURES.put(symbol, Chalk.resource("textures/block/mark/" + symbol.getSerializedName() + ".png"));
         }
     }
