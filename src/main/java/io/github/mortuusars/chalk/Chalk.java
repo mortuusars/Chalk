@@ -1,13 +1,13 @@
 package io.github.mortuusars.chalk;
 
-import io.github.mortuusars.chalk.advancement.ConsecutiveSleepingPositionTrigger;
+import io.github.mortuusars.chalk.advancement.ChalkDrawTrigger;
+import io.github.mortuusars.chalk.advancement.ConsecutiveSleepingTrigger;
 import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.loot.LootTableModification;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.BlockTags;
@@ -124,10 +124,12 @@ public class Chalk
     }
 
     public static class CriteriaTriggers {
-        public static final ConsecutiveSleepingPositionTrigger CONSECUTIVE_SLEEPING = new ConsecutiveSleepingPositionTrigger();
+        public static final ConsecutiveSleepingTrigger CONSECUTIVE_SLEEPING = new ConsecutiveSleepingTrigger();
+        public static final ChalkDrawTrigger CHALK_DRAW_COLORS = new ChalkDrawTrigger();
 
         public static void register() {
             net.minecraft.advancements.CriteriaTriggers.register(CONSECUTIVE_SLEEPING);
+            net.minecraft.advancements.CriteriaTriggers.register(CHALK_DRAW_COLORS);
         }
     }
 

@@ -42,7 +42,7 @@ public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, Intera
         }
 
         ItemStack itemInHand = player.getItemInHand(drawingHand);
-        if (!(itemInHand.getItem() instanceof IDrawingTool drawingTool)) {
+        if (!(itemInHand.getItem() instanceof IDrawingTool)) {
             Chalk.LOGGER.error("Item in player's hand cannot draw a mark.");
             return true;
         }
@@ -55,12 +55,6 @@ public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, Intera
             return true;
         }
 
-        if (MarkDrawHelper.draw(level, markBlockPos, mark)) {
-            drawingTool.onMarkDrawn(player, drawingHand, mark);
-            player.swing(drawingHand);
-            return true;
-        }
-
-        return false;
+        return MarkDrawHelper.draw(player, level, markBlockPos, mark, drawingHand);
     }
 }

@@ -1,0 +1,73 @@
+{
+  "parent": "chalk:adventure/draw_mark_in_maze",
+  "criteria": {
+    "draw_in_village_desert": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:village_desert"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_village_plains": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:village_plains"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_village_savanna": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:village_savanna"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_village_snowy": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:village_snowy"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_village_taiga": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:village_taiga"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.chalk.vandalism.description"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "chalk:light_gray_chalk",
+      "nbt": "{Damage:0}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.chalk.vandalism"
+    }
+  },
+  "requirements": [
+    [
+      "draw_in_village_plains",
+      "draw_in_village_desert",
+      "draw_in_village_savanna",
+      "draw_in_village_snowy",
+      "draw_in_village_taiga"
+    ]
+  ],
+  "rewards": {
+    "experience": 100
+  }
+}

@@ -18,9 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public interface IDrawingTool {
-    void onMarkDrawn(Player player, InteractionHand hand, Mark mark);
     Optional<DyeColor> getMarkColor(ItemStack stack);
     boolean getGlowing(ItemStack stack);
+    void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, Mark mark);
 
     default MarkDrawingContext createDrawingContext(UseOnContext context) {
         Preconditions.checkArgument(context.getPlayer() != null, "Player should not be null here.");
@@ -48,7 +48,7 @@ public interface IDrawingTool {
             return false;
 
         if (drawingContext.draw(mark)) {
-            onMarkDrawn(drawingContext.getPlayer(), drawingContext.getDrawingHand(), mark);
+            onMarkDrawn(drawingContext.getPlayer(), drawingContext.getDrawingHand(), drawingContext.getMarkBlockPos(), mark);
             return true;
         }
 

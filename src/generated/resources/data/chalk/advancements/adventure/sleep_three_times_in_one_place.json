@@ -1,14 +1,14 @@
 {
   "parent": "minecraft:adventure/sleep_in_bed",
   "criteria": {
-    "sleep_three_times": {
+    "sleep_three_times_in_one_place": {
       "conditions": {
         "count": {
           "min": 3
         },
         "distance": {
           "absolute": {
-            "max": 10.0
+            "max": 16.0
           }
         }
       },
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "sleep_three_times"
+      "sleep_three_times_in_one_place"
     ]
   ]
 }

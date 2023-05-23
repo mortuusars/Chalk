@@ -5,6 +5,7 @@ import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -64,7 +65,7 @@ public class ChalkItem extends Item implements IDrawingTool {
     }
 
     @Override
-    public void onMarkDrawn(Player player, InteractionHand hand, Mark mark) {
+    public void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, Mark mark) {
         if (player.isCreative())
             return;
 

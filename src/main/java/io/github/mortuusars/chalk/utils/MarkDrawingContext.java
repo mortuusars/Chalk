@@ -140,11 +140,7 @@ public class MarkDrawingContext {
     }
 
     public boolean draw(Mark mark) {
-        boolean isDrawn = MarkDrawHelper.draw(level, getMarkBlockPos(), mark);
-        if (isDrawn)
-            player.swing(drawingHand);
-        return isDrawn;
-
+        return MarkDrawHelper.draw(player, level, getMarkBlockPos(), mark, drawingHand);
     }
 
     private static boolean canBeDrawnOn(BlockPos pos, Direction face, Level level) {

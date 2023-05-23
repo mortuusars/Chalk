@@ -1,0 +1,61 @@
+{
+  "parent": "minecraft:adventure/root",
+  "criteria": {
+    "draw_in_fortress": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:fortress"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_mineshaft": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:mineshaft"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_mineshaft_mesa": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:mineshaft_mesa"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    },
+    "draw_in_stronghold": {
+      "conditions": {
+        "location": {
+          "structure": "minecraft:stronghold"
+        }
+      },
+      "trigger": "chalk:mark_drawn"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.chalk.draw_mark_in_maze.description"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "chalk:black_chalk",
+      "nbt": "{Damage:0}"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.chalk.draw_mark_in_maze"
+    }
+  },
+  "requirements": [
+    [
+      "draw_in_mineshaft",
+      "draw_in_mineshaft_mesa",
+      "draw_in_fortress",
+      "draw_in_stronghold"
+    ]
+  ]
+}

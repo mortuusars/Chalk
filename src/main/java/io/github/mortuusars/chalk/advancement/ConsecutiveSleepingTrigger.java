@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ConsecutiveSleepingPositionTrigger extends SimpleCriterionTrigger<ConsecutiveSleepingPositionTrigger.TriggerInstance> {
+public class ConsecutiveSleepingTrigger extends SimpleCriterionTrigger<ConsecutiveSleepingTrigger.TriggerInstance> {
     private static final ResourceLocation ID = Chalk.resource("consecutive_sleeping_pos");
 
     @Override
@@ -32,7 +32,7 @@ public class ConsecutiveSleepingPositionTrigger extends SimpleCriterionTrigger<C
         private final DistancePredicate distance;
 
         public TriggerInstance(EntityPredicate.Composite player, MinMaxBounds.Ints count, DistancePredicate distance) {
-            super(ConsecutiveSleepingPositionTrigger.ID, player);
+            super(ConsecutiveSleepingTrigger.ID, player);
             this.count = count;
             this.distance = distance;
         }
@@ -45,6 +45,7 @@ public class ConsecutiveSleepingPositionTrigger extends SimpleCriterionTrigger<C
             return jsonObject;
         }
 
+        @SuppressWarnings("unused")
         public boolean matches(ServerPlayer player, PlayerSleepInfo sleepInfo) {
             List<BlockPos> sleepPositions = sleepInfo.sleepPositions();
 

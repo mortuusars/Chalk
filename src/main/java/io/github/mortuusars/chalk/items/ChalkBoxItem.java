@@ -15,6 +15,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
@@ -247,9 +248,11 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
     }
 
     @Override
-    public void onMarkDrawn(Player player, InteractionHand hand, Mark mark) {
+    public void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, Mark mark) {
         if (player.isCreative())
             return;
+
+
 
         ItemStack chalkBox = player.getItemInHand(hand);
 
