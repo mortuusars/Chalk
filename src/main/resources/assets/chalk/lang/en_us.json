@@ -41,14 +41,14 @@
   "gui.chalk.symbol.pickaxe": "Pickaxe",
 
   "gui.chalk.no_symbols_unlocked": "You don't know how to draw any special symbol",
-  "gui.chalk.unlocked_symbol_message": "You have unlocked the %s chalk symbol",
+  "gui.chalk.unlocked_symbol_message": "You learned how to draw a %s with chalk",
 
   "advancement.chalk.get_skeleton_skull": "Bound By Bone",
   "advancement.chalk.get_skeleton_skull.description": "Obtain a Skeleton Skull",
   "advancement.chalk.sleep_three_times_in_one_place": "Home Is Where the Bed Is",
   "advancement.chalk.sleep_three_times_in_one_place.description": "Sleep in one place three times in a row",
   "advancement.chalk.black_chalk_on_black_block": "Alone In the Darkness",
-  "advancement.chalk.black_chalk_on_black_block.description": "Draw with the Black Chalk on the black block in the dark",
+  "advancement.chalk.black_chalk_on_black_block.description": "Draw with the Black Chalk on the black block in the blackness",
   "advancement.chalk.draw_mark_in_maze": "This Way!",
   "advancement.chalk.draw_mark_in_maze.description": "Draw with Chalk in a labyrinthine structure",
   "advancement.chalk.vandalism": "Vandalism",
