@@ -28,7 +28,7 @@ public class ItemModelGenerator extends ItemModelProvider {
 
             ItemModelBuilder chalkBoxWithChalkModel = getBuilder("chalk_box_" + color)
                     .parent(getExistingFile(mcLoc("item/generated")))
-                    .texture("layer0", "item/chalk_box_chalk_base")
+                    .texture("layer0", "item/chalk_box")
                     .texture("layer1", "item/" + "chalk_box_" + color + "_chalk");
 
             chalkBoxModelBuilder.override()

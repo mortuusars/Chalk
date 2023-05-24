@@ -14,15 +14,16 @@
   - Changed naming to be inline with vanilla: `chalk:chalk` -> `chalk:chalks`, etc.
   - Added chalks to `forge:chalks` tag.
 
-- Marks are now properly placed when generating structures.
+- Marks are now properly placed and rotated when generated as part of a structure.
 - Player's are now holding chalks pointing forward.
 - Removed ability to draw already glowing marks by holding glow item in offhand. You'll need to click again to apply glow. 
-- Glowing marks will now glow when Rubidium is installed.
-  
+- Glowing marks will now glow properly when Rubidium is installed.
+
+- Tweaked textures
 - Added several advancements.
 - Added config for mark rotation offset.
 
-### WARNING - All your arrow marks, drawn in previous versions of the mod, will be changed to a dot due to some changed to Chalk Mark blockstate. 
+### WARNING - All arrow marks, drawn in previous versions of the mod, will be changed to a dot due to some changes to Chalk Mark blockstate. 
 
 ### 1.4.0 - 2023-02-10
 
