@@ -42,7 +42,7 @@
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "chalk:black_chalk",
+      "item": "chalk:yellow_chalk",
       "nbt": "{Damage:0}"
     },
     "show_toast": true,

@@ -1,20 +1,20 @@
 {
   "values": [
-    "chalk:pink_chalk",
-    "chalk:red_chalk",
-    "chalk:yellow_chalk",
-    "chalk:white_chalk",
-    "chalk:green_chalk",
-    "chalk:light_blue_chalk",
-    "chalk:light_gray_chalk",
-    "chalk:gray_chalk",
-    "chalk:cyan_chalk",
-    "chalk:brown_chalk",
-    "chalk:lime_chalk",
-    "chalk:black_chalk",
-    "chalk:blue_chalk",
     "chalk:orange_chalk",
+    "chalk:magenta_chalk",
+    "chalk:light_gray_chalk",
+    "chalk:black_chalk",
+    "chalk:white_chalk",
+    "chalk:pink_chalk",
+    "chalk:cyan_chalk",
+    "chalk:lime_chalk",
+    "chalk:blue_chalk",
+    "chalk:brown_chalk",
+    "chalk:red_chalk",
+    "chalk:light_blue_chalk",
+    "chalk:gray_chalk",
     "chalk:purple_chalk",
-    "chalk:magenta_chalk"
+    "chalk:yellow_chalk",
+    "chalk:green_chalk"
   ]
 }
