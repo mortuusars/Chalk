@@ -22,6 +22,8 @@
 - Added several advancements.
 - Added config for mark rotation offset.
 
+### WARNING - All your arrow marks, drawn in previous versions of the mod, will be changed to a dot due to some changed to Chalk Mark blockstate. 
+
 ### 1.4.0 - 2023-02-10
 
 - Added Chalk Box quick change selected chalks: 
