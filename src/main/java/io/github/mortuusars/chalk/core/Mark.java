@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.core;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.DyeColor;

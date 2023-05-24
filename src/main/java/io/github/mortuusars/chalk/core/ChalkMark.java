@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.core;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.utils.ParticleUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

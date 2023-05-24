@@ -1,4 +1,4 @@
-package io.github.mortuusars.chalk.blocks;
+package io.github.mortuusars.chalk.block;
 
 import com.google.common.collect.ImmutableMap;
 import com.mojang.math.Vector3f;
@@ -28,6 +28,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -261,5 +263,22 @@ public class ChalkMarkBlock extends Block {
     @Override
     public boolean canBeReplaced(BlockState blockState, BlockPlaceContext blockItemUseContext) {
         return true;
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, Rotation rotation) {
+        Direction facing = state.getValue(FACING);
+        BlockState rotated = state.setValue(FACING, rotation.rotate(facing));
+
+        boolean yAxis = facing.getAxis() == Direction.Axis.Y;
+        boolean canRotateSymbol = state.getValue(SYMBOL).getOrientationBehavior() != MarkSymbol.OrientationBehavior.FIXED;
+        return yAxis && canRotateSymbol ? rotated.setValue(ORIENTATION, state.getValue(ORIENTATION)
+                .rotate(rotation))
+                : rotated;
+    }
+
+    @Override
+    public BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 }

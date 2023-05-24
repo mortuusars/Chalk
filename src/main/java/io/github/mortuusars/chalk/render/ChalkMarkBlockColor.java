@@ -1,6 +1,6 @@
 package io.github.mortuusars.chalk.render;
 
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;

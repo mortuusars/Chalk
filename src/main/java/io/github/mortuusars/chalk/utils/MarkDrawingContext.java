@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.utils;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.core.SymbolOrientation;

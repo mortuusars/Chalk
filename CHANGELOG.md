@@ -1,7 +1,7 @@
 ### 1.5.0
-- Added new symbols: House, Checkmark, Heart, Skull 
+- Added new symbols: House, Checkmark, Heart, Skull, Pickaxe
   - Symbol selection UI is opened by using Chalk/Chalk Box while sneaking. 
-  - Some symbols are unlocked by completing an advancement, other are unlocked by default. (_configurable_)
+  - Some symbols are unlocked by completing an advancement, others are unlocked by default. (_configurable_)
 
 - Chalk Box
   - Chalk Box can now be opened by Right-Clicking it in inventory.
@@ -14,10 +14,13 @@
   - Changed naming to be inline with vanilla: `chalk:chalk` -> `chalk:chalks`, etc.
   - Added chalks to `forge:chalks` tag.
 
-- Added config for mark rotation offset.
-- Changed Chalk model positions in player's hand.
+- Marks are now properly placed when generating structures.
+- Player's are now holding chalks pointing forward.
 - Removed ability to draw already glowing marks by holding glow item in offhand. You'll need to click again to apply glow. 
-- Fixed emissive rendering with Rubidium.
+- Glowing marks will now glow when Rubidium is installed.
+  
+- Added several advancements.
+- Added config for mark rotation offset.
 
 ### 1.4.0 - 2023-02-10
 

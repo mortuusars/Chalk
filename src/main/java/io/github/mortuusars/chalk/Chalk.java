@@ -2,7 +2,7 @@ package io.github.mortuusars.chalk;
 
 import io.github.mortuusars.chalk.advancement.ChalkDrawTrigger;
 import io.github.mortuusars.chalk.advancement.ConsecutiveSleepingTrigger;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;

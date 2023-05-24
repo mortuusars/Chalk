@@ -1,7 +1,7 @@
 package io.github.mortuusars.chalk.core;
 
 import com.google.common.base.Preconditions;
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

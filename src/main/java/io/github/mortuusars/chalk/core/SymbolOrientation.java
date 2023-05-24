@@ -4,6 +4,7 @@ import io.github.mortuusars.chalk.core.component.Point2d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +32,17 @@ public enum SymbolOrientation implements StringRepresentable {
     @Override
     public @NotNull String getSerializedName() {
         return this.name().toLowerCase();
+    }
+
+    public SymbolOrientation rotate(Rotation rotation) {
+        int step = switch (rotation) {
+            case CLOCKWISE_90 -> 2;
+            case CLOCKWISE_180 -> 4;
+            case COUNTERCLOCKWISE_90 -> 6;
+            default -> 0;
+        };
+
+        return values()[((this.getRotation() / 45 + step) % 8) + 1];
     }
 
     public static SymbolOrientation fromRotation(int degrees) {
