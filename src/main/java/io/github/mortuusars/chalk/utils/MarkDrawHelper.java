@@ -49,12 +49,14 @@ public class MarkDrawHelper {
 
                 serverLevel.sendParticles(new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
                         pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
-                serverLevel.sendParticles(ParticleTypes.END_ROD,
-                        pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
                 serverLevel.playSound(null, pos.x(), pos.y(), pos.z(), Chalk.SoundEvents.MARK_DRAW.get(),
                         SoundSource.BLOCKS, 0.7f,  new Random().nextFloat() * 0.2f + 0.8f);
-                if (mark.glowing())
+
+                if (mark.glowing()) {
                     serverLevel.playSound(null, markPos, Chalk.SoundEvents.GLOWING.get(), SoundSource.BLOCKS, 0.8f, 1f);
+                    serverLevel.sendParticles(ParticleTypes.END_ROD,
+                            pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
+                }
             }
 
             drawingTool.onMarkDrawn(player, drawingHand, markPos, mark);
