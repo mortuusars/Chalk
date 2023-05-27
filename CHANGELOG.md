@@ -1,3 +1,6 @@
+### 1.5.1
+- Fixed crash when drawing a symbol from offhand. 
+
 ### 1.5.0
 - Added new symbols: House, Checkmark, Heart, Skull, Pickaxe
   - Symbol selection UI is opened by using Chalk/Chalk Box while sneaking. 

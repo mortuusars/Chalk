@@ -82,11 +82,11 @@ public class SymbolSelectScreen extends Screen {
         }
     }
 
-    public SymbolSelectScreen(List<MarkSymbol> unlockedSymbols, MarkDrawingContext context, InteractionHand drawingHand) {
+    public SymbolSelectScreen(List<MarkSymbol> unlockedSymbols, MarkDrawingContext context) {
         super(Component.empty());
         this.unlockedSymbols = unlockedSymbols;
         this.drawingContext = context;
-        this.drawingHand = drawingHand;
+        this.drawingHand = context.getDrawingHand();
 
 
         this.minecraft = Minecraft.getInstance();

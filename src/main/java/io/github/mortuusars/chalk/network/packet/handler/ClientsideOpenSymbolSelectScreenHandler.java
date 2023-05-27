@@ -4,7 +4,6 @@ import io.github.mortuusars.chalk.client.gui.SymbolSelectScreen;
 import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.InteractionHand;
 
 import java.util.List;
 
@@ -14,7 +13,7 @@ public class ClientsideOpenSymbolSelectScreenHandler {
         if (storedContext == null)
             throw new IllegalStateException("Stored MarkDrawingContext was null.");
 
-        SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(unlockedSymbols, storedContext, InteractionHand.MAIN_HAND);
+        SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(unlockedSymbols, storedContext);
         Minecraft.getInstance().setScreen(symbolSelectScreen);
 
         MarkDrawingContext.clearStoredContext();
