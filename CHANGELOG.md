@@ -1,12 +1,32 @@
+### 1.5.1
+- Fixed crash when drawing a symbol from offhand. 
+
 ### 1.5.0
+- Added new symbols: House, Checkmark, Heart, Skull, Pickaxe
+  - Symbol selection UI is opened by using Chalk/Chalk Box while sneaking. 
+  - Some symbols are unlocked by completing an advancement, others are unlocked by default. (_configurable_)
+
 - Chalk Box
   - Chalk Box can now be opened by Right-Clicking it in inventory.
   - You can now insert chalks in Chalk Box by right-clicking it with item (same as bundles).
-  - Items that can be placed in the Chalk Box are now controlled by a tag 'chalk:allowed_in_chalk_box'. You still can only draw with chalks though.
+  - Using Chalk Box on the block while it is empty will now open the GUI instead of doing nothing.
+  - Added sounds to closing and adding glow.
 
 - Tags:
-  - Changed naming to be inline with vanilla: chalk:chalk -> chalk:chalks, etc.
-  - Added chalks to forge:chalks tag.
+  - Added `chalk:chalk_cannot_draw_on` block tag which controls what blocks isn't suitable for drawing marks on.
+  - Changed naming to be inline with vanilla: `chalk:chalk` -> `chalk:chalks`, etc.
+  - Added chalks to `forge:chalks` tag.
+
+- Marks are now properly placed and rotated when generated as part of a structure.
+- Player's are now holding chalks pointing forward.
+- Removed ability to draw already glowing marks by holding glow item in offhand. You'll need to click again to apply glow. 
+- Glowing marks will now glow properly when Rubidium is installed.
+
+- Tweaked textures
+- Added several advancements.
+- Added config for mark rotation offset.
+
+### WARNING - All arrow marks, drawn in previous versions of the mod, will be changed to a dot due to some changes to Chalk Mark blockstate. 
 
 ### 1.4.0 - 2023-02-10
 

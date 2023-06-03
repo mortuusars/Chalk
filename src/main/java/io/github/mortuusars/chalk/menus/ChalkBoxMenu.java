@@ -2,14 +2,18 @@ package io.github.mortuusars.chalk.menus;
 
 import com.mojang.datafixers.util.Pair;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBox;
+import io.github.mortuusars.chalk.items.ChalkBoxItem;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class ChalkBoxMenu extends AbstractContainerMenu {
 
     public final ItemStack chalkBoxStack;
+    private final Player player;
     public Pair<Integer, Integer> chalkBoxCoords = Pair.of(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
     private final int chalkBoxSlotId;
@@ -25,8 +30,9 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     public ChalkBoxMenu(final int pContainerId, final Inventory playerInventory, ItemStack chalkBoxStack, @Nullable IItemHandler itemHandler) {
         super(Chalk.Menus.CHALK_BOX.get(), pContainerId);
         this.chalkBoxStack = chalkBoxStack;
+        this.player = playerInventory.player;
 
-        final boolean glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
+        final boolean glowingEnabled = Config.CHALK_BOX_GLOWING.get();
 
         // Order of adding slots is kinda important. QuickMoveStack depends on correct order.
 
@@ -48,10 +54,32 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
         }
 
         if (glowingEnabled){
-            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68));
+            addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68) {
+                @Override
+                public void set(@NotNull ItemStack stack) {
+                    if (player.level instanceof ClientLevel clientLevel && this.getItem().isEmpty()
+                            && ChalkBox.getGlowLevel(chalkBoxStack) <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS)) {
+                        Vec3 pos = player.position();
+                        clientLevel.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.PLAYERS, 1f, 1f);
+                        clientLevel.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOWING.get(), SoundSource.PLAYERS, 1f, 1f);
+                    }
+
+                    super.set(stack);
+                }
+            });
         }
 
         addPlayerSlots(playerInventory);
+    }
+
+    @Override
+    public void removed(@NotNull Player pPlayer) {
+        super.removed(pPlayer);
+        pPlayer.playSound(Chalk.SoundEvents.CHALK_BOX_CLOSE.get(), 0.85f, 0.9f + pPlayer.level.random.nextFloat() * 0.2f);
+
+        // I still have no clue why updates are stopping when ChalkBox is opened by right click in inv.
+        // But this fixes inventory not syncing after closing.
+        pPlayer.inventoryMenu.resumeRemoteUpdates();
     }
 
     public static ChalkBoxMenu fromBuffer(int containerID, Inventory playerInventory, FriendlyByteBuf dataBuffer) {
@@ -62,7 +90,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     }
 
     public int getGlowingUses(){
-        return ChalkBox.getGlow(chalkBoxStack);
+        return ChalkBox.getGlowLevel(chalkBoxStack);
     }
 
     @Override
@@ -91,7 +119,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@NotNull Player player) {
-        return player.getInventory().findSlotMatchingItem(chalkBoxStack) == chalkBoxSlotId;
+        return chalkBoxSlotId < 0 || player.getInventory().getItem(chalkBoxSlotId).getItem() instanceof ChalkBoxItem;
     }
 
     private void addPlayerSlots(Inventory playerInventory) {
@@ -106,12 +134,12 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
                     chalkBoxCoords = Pair.of(column * 18 + 8, 98 + row * 18);
                     addSlot(new Slot(playerInventory, index, column * 18 + 8, 98 + row * 18) {
                         @Override
-                        public boolean mayPlace(ItemStack pStack) {
+                        public boolean mayPlace(@NotNull ItemStack pStack) {
                             return false;
                         }
 
                         @Override
-                        public boolean mayPickup(Player pPlayer) {
+                        public boolean mayPickup(@NotNull Player pPlayer) {
                             return false;
                         }
 
@@ -133,12 +161,12 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
                 chalkBoxCoords = Pair.of(index * 18 + 8, 156);
                 addSlot(new Slot(playerInventory, index, index * 18 + 8, 156) {
                     @Override
-                    public boolean mayPlace(ItemStack pStack) {
+                    public boolean mayPlace(@NotNull ItemStack pStack) {
                         return false;
                     }
 
                     @Override
-                    public boolean mayPickup(Player pPlayer) {
+                    public boolean mayPickup(@NotNull Player pPlayer) {
                         return false;
                     }
 

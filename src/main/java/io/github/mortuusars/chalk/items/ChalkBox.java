@@ -2,7 +2,7 @@ package io.github.mortuusars.chalk.items;
 
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +34,7 @@ public class ChalkBox {
         if (slot == ChalkBox.GLOWINGS_SLOT_INDEX)
             return stack.is(Chalk.Tags.Items.GLOWINGS);
         else
-            return stack.is(Chalk.Tags.Items.ALLOWED_IN_CHALK_BOX);
+            return stack.getItem() instanceof ChalkItem;
     }
 
     /**
@@ -62,14 +62,14 @@ public class ChalkBox {
             updateSlotContents(chalkBoxStack, slot, itemStack);
     }
 
-    public static int getGlow(ItemStack chalkBoxStack) {
+    public static int getGlowLevel(ItemStack chalkBoxStack) {
         validateChalkBoxStack(chalkBoxStack);
         return chalkBoxStack.getOrCreateTag().getInt(GLOW_TAG_KEY);
     }
 
     public static void consumeGlow(ItemStack chalkBoxStack) {
         validateChalkBoxStack(chalkBoxStack);
-        setGlow(chalkBoxStack, Math.max(getGlow(chalkBoxStack) - 1, 0));
+        setGlow(chalkBoxStack, Math.max(getGlowLevel(chalkBoxStack) - 1, 0));
         updateGlow(chalkBoxStack);
     }
 
@@ -79,12 +79,12 @@ public class ChalkBox {
     }
 
     private static void updateGlow(ItemStack chalkBoxStack){
-        if (getGlow(chalkBoxStack) > 0)
+        if (getGlowLevel(chalkBoxStack) > 0)
             return;
 
         ItemStack glowingItemStack = getItemInSlot(chalkBoxStack, GLOWINGS_SLOT_INDEX);
         if (!glowingItemStack.isEmpty()){
-            setGlow(chalkBoxStack, CommonConfig.CHALK_BOX_GLOWING_USES.get());
+            setGlow(chalkBoxStack, Config.CHALK_BOX_GLOWING_USES.get());
             glowingItemStack.shrink(1);
             setSlot(chalkBoxStack, GLOWINGS_SLOT_INDEX, glowingItemStack);
         }

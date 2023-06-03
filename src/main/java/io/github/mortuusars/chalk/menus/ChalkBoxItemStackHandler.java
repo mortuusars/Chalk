@@ -28,16 +28,13 @@ public class ChalkBoxItemStackHandler extends ItemStackHandler {
 
     @Override
     protected void onContentsChanged(int slot) {
-        int prevGlowingUses = ChalkBox.getGlow(chalkBoxStack);
+        int prevGlowingUses = ChalkBox.getGlowLevel(chalkBoxStack);
 
         ChalkBox.setSlot(chalkBoxStack, slot, getStackInSlot(slot));
 
-        if (slot == ChalkBox.GLOWINGS_SLOT_INDEX && ChalkBox.getGlow(chalkBoxStack) > prevGlowingUses) {
+        if (slot == ChalkBox.GLOWINGS_SLOT_INDEX && ChalkBox.getGlowLevel(chalkBoxStack) > prevGlowingUses) {
             // Refresh glow stack:
             this.stacks.set(slot, ChalkBox.getItemInSlot(chalkBoxStack, slot));
-//            ItemStack glowingStack = getStackInSlot(slot);
-//            glowingStack.shrink(1);
-//            setStackInSlot(slot, glowingStack);
         }
     }
 }

@@ -5,7 +5,7 @@ import net.minecraft.world.item.DyeColor;
 import java.util.HashMap;
 
 public class ChalkColors {
-    public static final HashMap<DyeColor, Integer> Colors = new HashMap<>(){{
+    public static final HashMap<DyeColor, Integer> COLORS = new HashMap<>(){{
         put(DyeColor.BLACK, 0x252525);
         put(DyeColor.RED, 0xeb4a39);
         put(DyeColor.GREEN, 0x51a80b);
@@ -25,6 +25,6 @@ public class ChalkColors {
     }};
 
     public static int fromDyeColor(DyeColor color){
-        return Colors.get(color);
+        return COLORS.get(color);
     }
 }

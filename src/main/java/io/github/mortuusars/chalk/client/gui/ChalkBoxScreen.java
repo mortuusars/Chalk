@@ -3,7 +3,7 @@ package io.github.mortuusars.chalk.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -14,20 +14,13 @@ import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
 public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
-
     public static final ResourceLocation TEXTURE = new ResourceLocation(Chalk.ID, "textures/gui/chalk_box.png");
-
     private static final int GLOWING_BAR_WIDTH = 72;
-
-    private final boolean glowingEnabled;
-
     private final int maxGlowingUses;
 
     public ChalkBoxScreen(ChalkBoxMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-
-        glowingEnabled = CommonConfig.CHALK_BOX_GLOWING.get();
-        maxGlowingUses = CommonConfig.CHALK_BOX_GLOWING_USES.get();
+        maxGlowingUses = Config.CHALK_BOX_GLOWING_USES.get();
 
         this.minecraft = Minecraft.getInstance();
     }
@@ -38,6 +31,11 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         this.imageHeight = 180;
         this.inventoryLabelY = this.imageHeight - 94;
         super.init();
+    }
+
+    @Override
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 
     @Override
@@ -67,7 +65,7 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
         RenderSystem.setShaderTexture(0, TEXTURE);
         blit(poseStack, getGuiLeft(), getGuiTop(), 0,0, imageWidth, imageHeight);
 
-        if (glowingEnabled){
+        if (Config.CHALK_BOX_GLOWING.get()){
             // Chalk Slots
             blit(poseStack, getGuiLeft() + 52, getGuiTop() + 17, 0, 180, 72, 36);
 

@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#minecraft:leaves",
+    "#minecraft:saplings",
+    "#minecraft:flowers",
+    "minecraft:slime_block",
+    "minecraft:honeycomb_block",
+    "minecraft:scaffolding",
+    "minecraft:sculk",
+    "minecraft:sculk_catalyst",
+    "minecraft:sculk_shrieker",
+    "minecraft:sculk_sensor"
+  ]
+}

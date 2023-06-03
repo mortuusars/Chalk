@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "chalk:item/chalk",
   "textures": {
     "layer0": "chalk:item/red_chalk"
   }

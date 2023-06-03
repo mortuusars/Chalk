@@ -6,7 +6,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 
 public class PositionUtils {
-
     /**
      * Returns coords of a center of BlockPos
      */
@@ -19,6 +18,7 @@ public class PositionUtils {
      */
     public static Vector3f blockCenterOffsetToFace(BlockPos blockPos, Direction facing, float offset){
         Vector3f vec = blockCenter(blockPos);
+
         Vec3i normal = facing.getNormal();
         return new Vector3f(vec.x() - (normal.getX() * offset), vec.y() - (normal.getY() * offset), vec.z() - (normal.getZ() * offset));
     }

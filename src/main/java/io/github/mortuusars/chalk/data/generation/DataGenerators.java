@@ -22,6 +22,7 @@ public class DataGenerators {
         ModBlockTagsProvider blockTagsProvider = new ModBlockTagsProvider(dataGenerator, existingFileHelper);
         dataGenerator.addProvider(gatherDataEvent.includeServer(), new ModItemTagsProvider(dataGenerator, blockTagsProvider, existingFileHelper));
         dataGenerator.addProvider(gatherDataEvent.includeServer(), blockTagsProvider);
+        dataGenerator.addProvider(gatherDataEvent.includeServer(), new Advancements(dataGenerator, existingFileHelper));
 
         // Client
         dataGenerator.addProvider(gatherDataEvent.includeClient(), new BlockStateGenerator(dataGenerator, existingFileHelper));

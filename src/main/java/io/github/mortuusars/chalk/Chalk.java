@@ -1,7 +1,9 @@
 package io.github.mortuusars.chalk;
 
-import io.github.mortuusars.chalk.blocks.ChalkMarkBlock;
-import io.github.mortuusars.chalk.config.CommonConfig;
+import io.github.mortuusars.chalk.advancement.ChalkDrawTrigger;
+import io.github.mortuusars.chalk.advancement.ConsecutiveSleepingTrigger;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
+import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;
 import io.github.mortuusars.chalk.loot.LootTableModification;
@@ -41,7 +43,8 @@ public class Chalk
     public static final Logger LOGGER = LogManager.getLogger();
 
     public Chalk() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.COMMON);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -68,8 +71,8 @@ public class Chalk
                         () -> new ChalkMarkBlock(color, BlockBehaviour.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, color.getMaterialColor())
                                 .instabreak()
                                 .noOcclusion()
-                                .emissiveRendering((state, level, pos) -> state.getValue(ChalkMarkBlock.GLOWING))
                                 .noCollission()
+                                .emissiveRendering((state, level, pos) -> state.getValue(ChalkMarkBlock.GLOWING))
                                 .sound(SoundType.GRAVEL))));
             }
         }
@@ -104,12 +107,12 @@ public class Chalk
         public static final class Items {
             public static final TagKey<Item> CHALKS = ItemTags.create(new ResourceLocation("chalk:chalks"));
             public static final TagKey<Item> FORGE_CHALKS = ItemTags.create(new ResourceLocation("forge:chalks"));
-            public static final TagKey<Item> ALLOWED_IN_CHALK_BOX = ItemTags.create(new ResourceLocation("chalk:allowed_in_chalk_box"));
             public static final TagKey<Item> GLOWINGS = ItemTags.create(new ResourceLocation("chalk:glowings"));
         }
 
         public static final class Blocks {
             public static final TagKey<Block> CHALK_MARKS = BlockTags.create(new ResourceLocation("chalk:chalk_marks"));
+            public static final TagKey<Block> CHALK_CANNOT_DRAW_ON = BlockTags.create(new ResourceLocation("chalk:chalk_cannot_draw_on"));
         }
     }
 
@@ -118,6 +121,16 @@ public class Chalk
 
         public static final RegistryObject<MenuType<ChalkBoxMenu>> CHALK_BOX = MENUS.register("chalk_box",
                 () -> IForgeMenuType.create(ChalkBoxMenu::fromBuffer));
+    }
+
+    public static class CriteriaTriggers {
+        public static final ConsecutiveSleepingTrigger CONSECUTIVE_SLEEPING = new ConsecutiveSleepingTrigger();
+        public static final ChalkDrawTrigger CHALK_DRAW_COLORS = new ChalkDrawTrigger();
+
+        public static void register() {
+            net.minecraft.advancements.CriteriaTriggers.register(CONSECUTIVE_SLEEPING);
+            net.minecraft.advancements.CriteriaTriggers.register(CHALK_DRAW_COLORS);
+        }
     }
 
     public static class SoundEvents {
@@ -129,10 +142,14 @@ public class Chalk
                 () -> new SoundEvent(Chalk.resource("item.chalk_box_change")));
         public static final RegistryObject<SoundEvent> CHALK_BOX_OPEN = SOUND_EVENTS.register("item.chalk_box_open",
                 () -> new SoundEvent(Chalk.resource("item.chalk_box_open")));
+        public static final RegistryObject<SoundEvent> CHALK_BOX_CLOSE = SOUND_EVENTS.register("item.chalk_box_close",
+                () -> new SoundEvent(Chalk.resource("item.chalk_box_close")));
         public static final RegistryObject<SoundEvent> MARK_DRAW = SOUND_EVENTS.register("item.chalk_draw",
                 () -> new SoundEvent(Chalk.resource("item.chalk_draw")));
-        public static final RegistryObject<SoundEvent> MARK_GLOW_APPLIED = SOUND_EVENTS.register("block.mark_glow_applied",
-                () -> new SoundEvent(Chalk.resource("block.mark_glow_applied")));
+        public static final RegistryObject<SoundEvent> GLOW_APPLIED = SOUND_EVENTS.register("item.glow_applied",
+                () -> new SoundEvent(Chalk.resource("item.glow_applied")));
+        public static final RegistryObject<SoundEvent> GLOWING = SOUND_EVENTS.register("ambient.glowing",
+                () -> new SoundEvent(Chalk.resource("ambient.glowing")));
         public static final RegistryObject<SoundEvent> MARK_REMOVED = SOUND_EVENTS.register("block.mark_removed",
                 () -> new SoundEvent(Chalk.resource("block.mark_removed")));
     }
