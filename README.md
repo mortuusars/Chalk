@@ -1,4 +1,4 @@
-<div align=center  
+<div align=center>
 <a href="https://www.curseforge.com/minecraft/mc-mods/chalk"><img src="https://i.imgur.com/R28CPFc.png" width="256"><a>
   
 Forge mod for Minecraft.
