@@ -1,17 +1,11 @@
-<div align=center
-
+<div align=center  
+<a href="https://www.curseforge.com/minecraft/mc-mods/chalk"><img src="https://i.imgur.com/R28CPFc.png" width="256"><a>
+  
 Forge mod for Minecraft.
-
-</div>
-
-<div align=center
+### [Changelog](CHANGELOG.md)
   
-<a href="https://www.curseforge.com/minecraft/mc-mods/chalk"><img src="https://github.com/mortuusars/Chalk/blob/master/media/All_Chalks_Large.png" width="500"><a>
-
-[Changelog](CHANGELOG.md)
-  
-Never lose your way again.
-
-https://www.curseforge.com/minecraft/mc-mods/chalk
+[Curseforge](https://www.curseforge.com/minecraft/mc-mods/chalk)
+ | 
+[Modrinth](https://modrinth.com/mod/chalk-mod)
   
 </div>
