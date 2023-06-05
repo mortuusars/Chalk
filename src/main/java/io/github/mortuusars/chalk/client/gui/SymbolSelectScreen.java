@@ -58,7 +58,7 @@ public class SymbolSelectScreen extends Screen {
     private final MarkDrawingContext drawingContext;
     private final InteractionHand drawingHand;
 
-    private final DyeColor color;
+    private final int color;
     private final float r;
     private final float g;
     private final float b;
@@ -88,7 +88,6 @@ public class SymbolSelectScreen extends Screen {
         this.drawingContext = context;
         this.drawingHand = context.getDrawingHand();
 
-
         this.minecraft = Minecraft.getInstance();
         this.player = minecraft.player;
         Preconditions.checkArgument(player != null, "Player cannot be null.");
@@ -97,13 +96,11 @@ public class SymbolSelectScreen extends Screen {
 
         ItemStack itemInHand = minecraft.player.getItemInHand(drawingHand);
 
-        color = itemInHand.getItem() instanceof IDrawingTool drawingTool ?
-                drawingTool.getMarkColor(itemInHand).orElse(DyeColor.WHITE) : DyeColor.WHITE;
-        int markColor = ChalkColors.fromDyeColor(this.color);
-        r = (float)(markColor >> 16 & 255) / 255.0F;
-        g = (float)(markColor >> 8 & 255) / 255.0F;
-        b = (float)(markColor & 255) / 255.0F;
-        hoverBorderColor = markColor + (0xFF << 24);
+        this.color = itemInHand.getItem() instanceof IDrawingTool drawingTool ? drawingTool.getMarkColorValue(itemInHand) : ChalkColors.fromDyeColor(DyeColor.WHITE);
+        r = (float)(this.color >> 16 & 255) / 255.0F;
+        g = (float)(this.color >> 8 & 255) / 255.0F;
+        b = (float)(this.color & 255) / 255.0F;
+        hoverBorderColor = this.color + (0xFF << 24);
         markFacing = drawingContext.getMarkFacing();
         BlockPos surfacePos = drawingContext.getMarkBlockPos().relative(markFacing.getOpposite());
         surfaceState = minecraft.level != null ? minecraft.level.getBlockState(surfacePos) : Blocks.AIR.defaultBlockState();
@@ -133,7 +130,7 @@ public class SymbolSelectScreen extends Screen {
             player.setForcedPose(Pose.CROUCHING);
 
         // BG
-         fillGradient(poseStack, 0, 0, width, height, 0x15000000, 0x35000000);
+        fillGradient(poseStack, 0, 0, width, height, 0x15000000, 0x35000000);
 
         super.render(poseStack, mouseX, mouseY, pPartialTick);
 
@@ -284,7 +281,7 @@ public class SymbolSelectScreen extends Screen {
         Mark mark = createMark(symbol, player.getItemInHand(drawingHand));
 
         if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
-            Packets.sendToServer(new ServerboundDrawMarkPacket(mark, drawingContext.getMarkBlockPos(), drawingHand));
+            Packets.sendToServer(new ServerboundDrawMarkPacket(mark.color, mark.createBlockState(player.getItemInHand(drawingHand)), drawingContext.getMarkBlockPos(), drawingHand));
             player.swing(drawingHand);
             return true;
         }
@@ -296,7 +293,7 @@ public class SymbolSelectScreen extends Screen {
         if (!(itemInHand.getItem() instanceof IDrawingTool drawingTool))
             throw new IllegalStateException("Item in hand is not IDrawingTool. [%s]".formatted(itemInHand));
 
-        return drawingContext.createMark(color, symbol, drawingTool.getGlowing(itemInHand));
+        return drawingTool.getMark(itemInHand, drawingContext, symbol);
     }
 
     public void close() {

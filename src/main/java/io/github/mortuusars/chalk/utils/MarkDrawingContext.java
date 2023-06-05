@@ -9,13 +9,14 @@ import io.github.mortuusars.chalk.core.SymbolUnlocking;
 import io.github.mortuusars.chalk.data.Lang;
 import io.github.mortuusars.chalk.network.Packets;
 import io.github.mortuusars.chalk.network.packet.ClientboundSelectSymbolPacket;
+import io.github.mortuusars.chalk.render.ChalkColors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -96,11 +97,11 @@ public class MarkDrawingContext {
         }
     }
 
-    public Mark createRegularMark(DyeColor color, boolean glowing) {
+    public Mark createRegularMark(int color, boolean glowing) {
         return createMark(color, getInitialOrientation() == SymbolOrientation.CENTER ? MarkSymbol.CENTER : MarkSymbol.ARROW, glowing);
     }
 
-    public Mark createMark(DyeColor color, MarkSymbol symbol, boolean glowing) {
+    public Mark createMark(int color, MarkSymbol symbol, boolean glowing) {
         Direction face = getMarkFacing();
         MarkSymbol.OrientationBehavior rotBehavior = symbol.getOrientationBehavior();
 
@@ -127,20 +128,21 @@ public class MarkDrawingContext {
         if (!(oldMarkState.getBlock() instanceof ChalkMarkBlock markBlock))
             return true;
 
-        if (mark.color() != markBlock.getColor())
+        if (mark.color != ChalkColors.fromDyeColor(markBlock.getColor()))
             return true;
-        if (mark.facing() != oldMarkState.getValue(ChalkMarkBlock.FACING))
+        if (mark.facing != oldMarkState.getValue(ChalkMarkBlock.FACING))
             return true;
-        else if (mark.symbol() != oldMarkState.getValue(ChalkMarkBlock.SYMBOL))
+        else if (mark.symbol != oldMarkState.getValue(ChalkMarkBlock.SYMBOL))
             return true;
-        else if (mark.orientation() != oldMarkState.getValue(ChalkMarkBlock.ORIENTATION))
+        else if (mark.orientation != oldMarkState.getValue(ChalkMarkBlock.ORIENTATION))
             return true;
         else
-            return (mark.glowing() && !oldMarkState.getValue(ChalkMarkBlock.GLOWING));
+            return (mark.glowing && !oldMarkState.getValue(ChalkMarkBlock.GLOWING));
     }
 
     public boolean draw(Mark mark) {
-        return MarkDrawHelper.draw(player, level, getMarkBlockPos(), mark, drawingHand);
+        ItemStack drawingItemstack = player.getItemInHand(drawingHand);
+        return MarkDrawHelper.draw(player, level, getMarkBlockPos(), mark.createBlockState(drawingItemstack), mark.color, drawingHand);
     }
 
     private static boolean canBeDrawnOn(BlockPos pos, Direction face, Level level) {

@@ -4,7 +4,6 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.network.packet.ClientboundSelectSymbolPacket;
 import io.github.mortuusars.chalk.network.packet.ServerboundDrawMarkPacket;
 import io.github.mortuusars.chalk.network.packet.ServerboundOpenChalkBoxPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;

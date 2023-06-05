@@ -2,8 +2,10 @@ package io.github.mortuusars.chalk.items;
 
 import com.google.common.base.Preconditions;
 import io.github.mortuusars.chalk.Chalk;
+import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
+import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.data.Lang;
 import io.github.mortuusars.chalk.menus.ChalkBoxItemStackHandler;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
@@ -35,6 +37,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -148,7 +151,7 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
             return InteractionResult.CONSUME;
         }
 
-        if (drawMark(drawingContext, drawingContext.createRegularMark(((ChalkItem) selectedChalk.getItem()).getColor(),
+        if (drawMark(drawingContext, drawingContext.createRegularMark(ChalkColors.fromDyeColor(((ChalkItem) selectedChalk.getItem()).getColor()),
                 ChalkBox.getGlowLevel(chalkBox) > 0)))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
 
@@ -248,7 +251,7 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
     }
 
     @Override
-    public void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, Mark mark) {
+    public void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, BlockState markBlockState) {
         if (player.isCreative())
             return;
 
@@ -264,8 +267,23 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
 
         ChalkBox.setSlot(chalkBox, selectedChalkIndex, resultChalk);
 
-        if (mark.glowing())
+        if (markBlockState.getValue(ChalkMarkBlock.GLOWING))
             ChalkBox.consumeGlow(chalkBox);
+    }
+
+    @Override
+    public Mark getMark(ItemStack itemInHand, MarkDrawingContext drawingContext, MarkSymbol symbol) {
+        Preconditions.checkArgument(itemInHand.getItem() instanceof ChalkBoxItem, "ChalkBox expected in player's hand.");
+
+        int selectedChalkIndex = getSelectedChalkIndex(itemInHand);
+
+        if (selectedChalkIndex == -1)
+            return null;
+
+        ItemStack selectedChalk = ChalkBox.getItemInSlot(itemInHand, selectedChalkIndex);
+        DyeColor color = selectedChalk.getItem() instanceof ChalkItem chalkItem ? chalkItem.getColor() : DyeColor.WHITE;
+
+        return drawingContext.createMark(ChalkColors.fromDyeColor(color), symbol, getGlowing(itemInHand));
     }
 
     @Override
@@ -278,6 +296,11 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
 
         ItemStack selectedChalk = ChalkBox.getItemInSlot(chalkBoxStack, selectedChalkIndex);
         return selectedChalk.getItem() instanceof IDrawingTool drawingTool ? drawingTool.getMarkColor(selectedChalk) : Optional.empty();
+    }
+
+    @Override
+    public int getMarkColorValue(ItemStack chalkBoxStack) {
+        return getMarkColor(chalkBoxStack).map(ChalkColors::fromDyeColor).orElse(-1);
     }
 
     @Override
