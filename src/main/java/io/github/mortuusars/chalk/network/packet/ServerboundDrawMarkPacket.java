@@ -6,6 +6,7 @@ import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.utils.MarkDrawHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,16 +18,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, InteractionHand drawingHand) {
+public record ServerboundDrawMarkPacket(int color, BlockState blockState, BlockPos markBlockPos, InteractionHand drawingHand) {
     public static ServerboundDrawMarkPacket fromBuffer(FriendlyByteBuf buffer) {
         return new ServerboundDrawMarkPacket(
-                Mark.fromBuffer(buffer),
+                buffer.readInt(),
+                NbtUtils.readBlockState(buffer.readAnySizeNbt()),
                 buffer.readBlockPos(),
                 buffer.readEnum(InteractionHand.class));
     }
 
     public void toBuffer(FriendlyByteBuf buffer) {
-        mark.toBuffer(buffer);
+        buffer.writeInt(color);
+        buffer.writeNbt(NbtUtils.writeBlockState(blockState));
         buffer.writeBlockPos(markBlockPos);
         buffer.writeEnum(drawingHand);
     }
@@ -55,6 +58,6 @@ public record ServerboundDrawMarkPacket(Mark mark, BlockPos markBlockPos, Intera
             return true;
         }
 
-        return MarkDrawHelper.draw(player, level, markBlockPos, mark, drawingHand);
+        return MarkDrawHelper.draw(player, level, markBlockPos, blockState, color, drawingHand);
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -18,9 +19,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 public interface IDrawingTool {
+
+    Mark getMark(ItemStack itemInHand, MarkDrawingContext drawingContext, MarkSymbol symbol);
+
+    int getMarkColorValue(ItemStack stack);
+
     Optional<DyeColor> getMarkColor(ItemStack stack);
+
     boolean getGlowing(ItemStack stack);
-    void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, Mark mark);
+    void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, BlockState markBlockState);
 
     default MarkDrawingContext createDrawingContext(UseOnContext context) {
         Preconditions.checkArgument(context.getPlayer() != null, "Player should not be null here.");
@@ -48,7 +55,7 @@ public interface IDrawingTool {
             return false;
 
         if (drawingContext.draw(mark)) {
-            onMarkDrawn(drawingContext.getPlayer(), drawingContext.getDrawingHand(), drawingContext.getMarkBlockPos(), mark);
+            onMarkDrawn(drawingContext.getPlayer(), drawingContext.getDrawingHand(), drawingContext.getMarkBlockPos(), mark.createBlockState(drawingContext.getPlayer().getItemInHand(drawingContext.getDrawingHand())));
             return true;
         }
 

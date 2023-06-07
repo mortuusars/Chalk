@@ -91,7 +91,7 @@ public class ChalkBox {
     }
 
     private static void validateChalkBoxStack(@NotNull ItemStack stack) {
-        Preconditions.checkArgument(!stack.isEmpty() && stack.is(Chalk.Items.CHALK_BOX.get()));
+        Preconditions.checkArgument(!stack.isEmpty() && stack.getItem() instanceof ChalkBoxItem);
     }
 
     private static void validateSlotIndex(int slot) {

@@ -1,15 +1,14 @@
 package io.github.mortuusars.chalk.event;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.client.gui.ChalkBoxScreen;
+import io.github.mortuusars.chalk.core.MarkSymbol;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.render.ChalkMarkBakedModel;
 import io.github.mortuusars.chalk.render.ChalkMarkBlockColor;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;

@@ -4,6 +4,8 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.IDrawingTool;
 import io.github.mortuusars.chalk.core.Mark;
+import io.github.mortuusars.chalk.core.MarkSymbol;
+import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,7 +59,7 @@ public class ChalkItem extends Item implements IDrawingTool {
             return InteractionResult.CONSUME;
         }
 
-        if (drawMark(drawingContext, drawingContext.createRegularMark(color, false)))
+        if (drawMark(drawingContext, drawingContext.createRegularMark(ChalkColors.fromDyeColor(color), false)))
             return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
         else if (drawingContext.hasExistingMark())
             return InteractionResult.PASS;
@@ -65,13 +68,23 @@ public class ChalkItem extends Item implements IDrawingTool {
     }
 
     @Override
-    public void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, Mark mark) {
+    public void onMarkDrawn(Player player, InteractionHand hand, BlockPos markBlockPos, BlockState markBlockState) {
         if (player.isCreative())
             return;
 
         ItemStack result = damageAndDestroy(player.getItemInHand(hand), player);
         if (result.isEmpty())
             player.setItemInHand(hand, ItemStack.EMPTY);
+    }
+
+    @Override
+    public Mark getMark(ItemStack itemInHand, MarkDrawingContext drawingContext, MarkSymbol symbol) {
+        return drawingContext.createMark(ChalkColors.fromDyeColor(getColor()), symbol, getGlowing(itemInHand));
+    }
+
+    @Override
+    public int getMarkColorValue(ItemStack stack) {
+        return ChalkColors.fromDyeColor(getColor());
     }
 
     @Override
