@@ -57,7 +57,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
             addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68) {
                 @Override
                 public void set(@NotNull ItemStack stack) {
-                    if (player.level instanceof ClientLevel clientLevel && this.getItem().isEmpty()
+                    if (player.level() instanceof ClientLevel clientLevel && this.getItem().isEmpty()
                             && ChalkBox.getGlowLevel(chalkBoxStack) <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS)) {
                         Vec3 pos = player.position();
                         clientLevel.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.PLAYERS, 1f, 1f);
@@ -75,7 +75,7 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
     @Override
     public void removed(@NotNull Player pPlayer) {
         super.removed(pPlayer);
-        pPlayer.playSound(Chalk.SoundEvents.CHALK_BOX_CLOSE.get(), 0.85f, 0.9f + pPlayer.level.random.nextFloat() * 0.2f);
+        pPlayer.playSound(Chalk.SoundEvents.CHALK_BOX_CLOSE.get(), 0.85f, 0.9f + pPlayer.level().random.nextFloat() * 0.2f);
 
         // I still have no clue why updates are stopping when ChalkBox is opened by right click in inv.
         // But this fixes inventory not syncing after closing.

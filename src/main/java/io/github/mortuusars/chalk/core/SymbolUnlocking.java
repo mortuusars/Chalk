@@ -1,6 +1,7 @@
 package io.github.mortuusars.chalk.core;
 
 import com.mojang.datafixers.util.Pair;
+import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.Config;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -32,7 +33,12 @@ public class SymbolUnlocking {
     }
 
     private static boolean hasAdvancement(ServerPlayer player, ResourceLocation advancementID) {
-        MinecraftServer server = player.getLevel().getServer();
+        MinecraftServer server = player.level().getServer();
+        if (server == null) {
+            Chalk.LOGGER.error("Cannot check advancements: server is null");
+            return false;
+        }
+
         Advancement advancement = server.getAdvancements().getAdvancement(advancementID);
 
         if (advancement == null)

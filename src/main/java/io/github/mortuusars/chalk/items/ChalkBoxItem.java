@@ -74,7 +74,8 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().screen instanceof AbstractContainerScreen<?> screen) {
 
             if (screen instanceof CreativeModeInventoryScreen creativeScreen
-                    && creativeScreen.getSelectedTab() != CreativeModeTab.TAB_INVENTORY.getId())
+                    //TODO: Open in creative inventory
+                    /*&& creativeScreen.getCurrentPage().getDefaultTab().getSelectedTab() != CreativeModeTab.TAB_INVENTORY.getId()*/)
                 return; // Cannot open while in other tabs than inventory.
 
             Slot slotUnderMouse = screen.getSlotUnderMouse();
@@ -90,9 +91,9 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
     public boolean overrideOtherStackedOnMe(@NotNull ItemStack stack, @NotNull ItemStack otherStack, @NotNull Slot slot, @NotNull ClickAction action, @NotNull Player player, @NotNull SlotAccess slotAccess) {
         // Open
         if (stack.getItem() == this && otherStack.isEmpty() && action == ClickAction.SECONDARY && slot.container instanceof Inventory) {
-            if (player.level.isClientSide) {
+            if (player.level().isClientSide) {
                 if (Minecraft.getInstance().screen instanceof CreativeModeInventoryScreen creativeScreen
-                        && creativeScreen.getSelectedTab() != CreativeModeTab.TAB_INVENTORY.getId()) {
+                        /*&& creativeScreen.getSelectedTab() != CreativeModeTab.TAB_INVENTORY.getId()*/) {
                     // There's some problems with opening Chalk Box while in the creative tabs other than inventory.
                     // IDK how to fix it.
                     return false;
@@ -110,7 +111,7 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
                 if (ChalkBox.getItemInSlot(stack, i).isEmpty()) {
                     ChalkBox.setSlot(stack, i, otherStack);
                     player.playSound(Chalk.SoundEvents.CHALK_BOX_CHANGE.get(),
-                            0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+                            0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
                     otherStack.setCount(0);
                     return true; // Handled
                 }
@@ -183,9 +184,9 @@ public class ChalkBoxItem extends Item implements IDrawingTool {
                     new SimpleMenuProvider( (containerID, playerInventory, playerEntity) ->
                             new ChalkBoxMenu(containerID, playerInventory, usedStack, new ChalkBoxItemStackHandler(usedStack)),
                             usedStack.getHoverName()), buffer -> buffer.writeItem(usedStack.copy()));
-            player.level.playSound(null, player.position().x, player.position().y, player.position().z,
+            player.level().playSound(null, player.position().x, player.position().y, player.position().z,
                     Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
-                    0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+                    0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
         }
     }
 

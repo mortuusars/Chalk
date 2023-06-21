@@ -1,7 +1,6 @@
 package io.github.mortuusars.chalk.block;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.MarkSymbol;
@@ -45,6 +44,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
 
 import java.util.Map;
 import java.util.Random;
@@ -253,11 +253,6 @@ public class ChalkMarkBlock extends Block {
     @Override
     public boolean isPathfindable(BlockState p_196266_1_, BlockGetter blockGetter, BlockPos p_196266_3_, PathComputationType p_196266_4_) {
         return true;
-    }
-
-    @Override
-    public PushReaction getPistonPushReaction(BlockState p_149656_1_) {
-        return PushReaction.DESTROY;
     }
 
     @Override

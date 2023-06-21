@@ -12,7 +12,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +28,6 @@ public class ChalkItem extends Item implements IDrawingTool {
 
     public ChalkItem(DyeColor dyeColor, Properties properties) {
         super(properties
-                .tab(CreativeModeTab.TAB_TOOLS)
                 .stacksTo(1)
                 .defaultDurability(64)
                 .setNoRepair());
@@ -104,8 +102,8 @@ public class ChalkItem extends Item implements IDrawingTool {
         chalkStack.setDamageValue(chalkStack.getDamageValue() + 1);
         if (chalkStack.getDamageValue() >= chalkStack.getMaxDamage()) {
             Vec3 playerPos = player.position();
-            player.level.playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
-                    SoundSource.PLAYERS, 0.9f, 0.9f + player.level.random.nextFloat() * 0.2f);
+            player.level().playSound(player, playerPos.x, playerPos.y, playerPos.z, Chalk.SoundEvents.CHALK_BROKEN.get(),
+                    SoundSource.PLAYERS, 0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
             return ItemStack.EMPTY;
         }
 

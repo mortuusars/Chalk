@@ -1,0 +1,10 @@
+{
+  "type": "chalk:loot_table_addition",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/spawn_bonus_chest"
+    }
+  ],
+  "lootTable": "chalk:chests/village_chalk_loot"
+}

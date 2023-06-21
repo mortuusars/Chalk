@@ -1,12 +1,13 @@
 package io.github.mortuusars.chalk;
 
+import com.mojang.serialization.Codec;
 import io.github.mortuusars.chalk.advancement.ChalkDrawTrigger;
 import io.github.mortuusars.chalk.advancement.ConsecutiveSleepingTrigger;
 import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
 import io.github.mortuusars.chalk.items.ChalkItem;
-import io.github.mortuusars.chalk.loot.LootTableModification;
+import io.github.mortuusars.chalk.loot.LootTableAdditionModifier;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -14,15 +15,15 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -51,9 +52,9 @@ public class Chalk
         Blocks.BLOCKS.register(modEventBus);
         Items.ITEMS.register(modEventBus);
         Menus.MENUS.register(modEventBus);
+        LootModifiers.LOOT_MODIFIERS.register(modEventBus);
         SoundEvents.SOUND_EVENTS.register(modEventBus);
 
-        MinecraftForge.EVENT_BUS.addListener(LootTableModification::LootTablesLoad);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -68,7 +69,9 @@ public class Chalk
         static {
             for (DyeColor color : DyeColor.values()) {
                 MARKS.put(color, BLOCKS.register(color + "_chalk_mark",
-                        () -> new ChalkMarkBlock(color, BlockBehaviour.Properties.of(Material.REPLACEABLE_FIREPROOF_PLANT, color.getMaterialColor())
+                        () -> new ChalkMarkBlock(color, BlockBehaviour.Properties.of()
+                                .mapColor(color)
+                                .pushReaction(PushReaction.DESTROY)
                                 .instabreak()
                                 .noOcclusion()
                                 .noCollission()
@@ -89,7 +92,6 @@ public class Chalk
 
         public static final RegistryObject<ChalkBoxItem> CHALK_BOX = ITEMS.register("chalk_box",
                 () -> new ChalkBoxItem(new Item.Properties()
-                        .tab(CreativeModeTab.TAB_TOOLS)
                         .stacksTo(1)));
 
         static {
@@ -101,6 +103,11 @@ public class Chalk
         public static ChalkItem getChalk(DyeColor color){
             return CHALKS.get(color).get();
         }
+    }
+
+    public static class LootModifiers {
+        private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIERS = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, Chalk.ID);
+        public static final RegistryObject<Codec<LootTableAdditionModifier>> LOOT_TABLE_ADDITION = LOOT_MODIFIERS.register("loot_table_addition", LootTableAdditionModifier.CODEC);
     }
 
     public static class Tags {
@@ -137,20 +144,20 @@ public class Chalk
         private static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Chalk.ID);
 
         public static final RegistryObject<SoundEvent> CHALK_BROKEN = SOUND_EVENTS.register("item.chalk_broken",
-                () -> new SoundEvent(Chalk.resource("item.chalk_broken")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_broken")));
         public static final RegistryObject<SoundEvent> CHALK_BOX_CHANGE = SOUND_EVENTS.register("item.chalk_box_change",
-                () -> new SoundEvent(Chalk.resource("item.chalk_box_change")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box_change")));
         public static final RegistryObject<SoundEvent> CHALK_BOX_OPEN = SOUND_EVENTS.register("item.chalk_box_open",
-                () -> new SoundEvent(Chalk.resource("item.chalk_box_open")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box_open")));
         public static final RegistryObject<SoundEvent> CHALK_BOX_CLOSE = SOUND_EVENTS.register("item.chalk_box_close",
-                () -> new SoundEvent(Chalk.resource("item.chalk_box_close")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box_close")));
         public static final RegistryObject<SoundEvent> MARK_DRAW = SOUND_EVENTS.register("item.chalk_draw",
-                () -> new SoundEvent(Chalk.resource("item.chalk_draw")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_draw")));
         public static final RegistryObject<SoundEvent> GLOW_APPLIED = SOUND_EVENTS.register("item.glow_applied",
-                () -> new SoundEvent(Chalk.resource("item.glow_applied")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.glow_applied")));
         public static final RegistryObject<SoundEvent> GLOWING = SOUND_EVENTS.register("ambient.glowing",
-                () -> new SoundEvent(Chalk.resource("ambient.glowing")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("ambient.glowing")));
         public static final RegistryObject<SoundEvent> MARK_REMOVED = SOUND_EVENTS.register("block.mark_removed",
-                () -> new SoundEvent(Chalk.resource("block.mark_removed")));
+                () -> SoundEvent.createVariableRangeEvent(Chalk.resource("block.mark_removed")));
     }
 }

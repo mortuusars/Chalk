@@ -37,7 +37,7 @@ public interface IDrawingTool {
 
     default MarkDrawingContext createDrawingContext(@NotNull Player player, BlockPos clickedPos, Vec3 clickLocation,
                                                     Direction clickedFace, InteractionHand drawingHand) {
-        Level level = player.level;
+        Level level = player.level();
         Direction facing = clickedFace;
         BlockPos surfacePos = clickedPos;
 

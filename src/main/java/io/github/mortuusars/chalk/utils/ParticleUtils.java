@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.utils;
 
-import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.render.ChalkColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,6 +7,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.Level;
+import org.joml.Vector3f;
 
 public class ParticleUtils {
 

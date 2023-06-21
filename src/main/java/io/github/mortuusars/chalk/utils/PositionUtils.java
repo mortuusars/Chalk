@@ -1,9 +1,9 @@
 package io.github.mortuusars.chalk.utils;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import org.joml.Vector3f;
 
 public class PositionUtils {
     /**

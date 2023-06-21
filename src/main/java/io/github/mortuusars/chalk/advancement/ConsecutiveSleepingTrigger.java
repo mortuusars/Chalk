@@ -14,8 +14,8 @@ public class ConsecutiveSleepingTrigger extends SimpleCriterionTrigger<Consecuti
     private static final ResourceLocation ID = Chalk.resource("consecutive_sleeping_pos");
 
     @Override
-    protected @NotNull TriggerInstance createInstance(JsonObject json, EntityPredicate.@NotNull Composite player, @NotNull DeserializationContext conditionsParser) {
-        return new TriggerInstance(player, MinMaxBounds.Ints.fromJson(json.get("count")), DistancePredicate.fromJson(json.get("distance")));
+    protected @NotNull TriggerInstance createInstance(JsonObject json, ContextAwarePredicate predicate, @NotNull DeserializationContext conditionsParser) {
+        return new TriggerInstance(predicate, MinMaxBounds.Ints.fromJson(json.get("count")), DistancePredicate.fromJson(json.get("distance")));
     }
 
     public void trigger(ServerPlayer player, PlayerSleepInfo sleepInfo) {
@@ -31,8 +31,8 @@ public class ConsecutiveSleepingTrigger extends SimpleCriterionTrigger<Consecuti
         private final MinMaxBounds.Ints count;
         private final DistancePredicate distance;
 
-        public TriggerInstance(EntityPredicate.Composite player, MinMaxBounds.Ints count, DistancePredicate distance) {
-            super(ConsecutiveSleepingTrigger.ID, player);
+        public TriggerInstance(ContextAwarePredicate predicate, MinMaxBounds.Ints count, DistancePredicate distance) {
+            super(ConsecutiveSleepingTrigger.ID, predicate);
             this.count = count;
             this.distance = distance;
         }

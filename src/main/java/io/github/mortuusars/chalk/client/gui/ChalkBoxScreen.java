@@ -1,13 +1,12 @@
 package io.github.mortuusars.chalk.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.menus.ChalkBoxMenu;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,52 +38,49 @@ public class ChalkBoxScreen extends AbstractContainerScreen<ChalkBoxMenu> {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        this.renderBackground(poseStack);
-        super.render(poseStack, mouseX, mouseY, partialTick);
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.renderBackground(graphics);
+        super.render(graphics, mouseX, mouseY, partialTick);
 
         if (menu.chalkBoxCoords != null) {
-            itemRenderer.renderGuiItem(menu.chalkBoxStack, getGuiLeft() + menu.chalkBoxCoords.getFirst(),
-                    getGuiTop() + menu.chalkBoxCoords.getSecond());
+            graphics.renderItem(menu.chalkBoxStack,getGuiLeft() + menu.chalkBoxCoords.getFirst(),getGuiTop() + menu.chalkBoxCoords.getSecond());
         }
 
+        PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
         poseStack.translate(0, 0, 200);
-        fill(poseStack, getGuiLeft() + menu.chalkBoxCoords.getFirst() - 1, getGuiTop() + menu.chalkBoxCoords.getSecond() - 1,
+        graphics.fill(getGuiLeft() + menu.chalkBoxCoords.getFirst() - 1, getGuiTop() + menu.chalkBoxCoords.getSecond() - 1,
                 getGuiLeft() + menu.chalkBoxCoords.getFirst() + 17, getGuiTop() + menu.chalkBoxCoords.getSecond() + 17,
                 0x20c8c8c8);
         poseStack.popPose();
 
-        this.renderTooltip(poseStack, mouseX, mouseY);
+        this.renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack poseStack, float partialTick, int mouseX, int mouseY) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1, 1,1, 1);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        blit(poseStack, getGuiLeft(), getGuiTop(), 0,0, imageWidth, imageHeight);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        graphics.blit(TEXTURE, getGuiLeft(), getGuiTop(), 0,0, imageWidth, imageHeight);
 
         if (Config.CHALK_BOX_GLOWING.get()){
             // Chalk Slots
-            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 17, 0, 180, 72, 36);
+            graphics.blit(TEXTURE, getGuiLeft() + 52, getGuiTop() + 17, 0, 180, 72, 36);
 
             // Bar + Slot
-            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 57, 0, 217, 72, 28);
+            graphics.blit(TEXTURE, getGuiLeft() + 52, getGuiTop() + 57, 0, 217, 72, 28);
 
             int barSize = (int)Math.ceil((Math.min(menu.getGlowingUses(), maxGlowingUses) / (float) maxGlowingUses) * GLOWING_BAR_WIDTH);
             int glowingBarFillLevel = Math.min(GLOWING_BAR_WIDTH, barSize);
 
             // Fill
-            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 57, 72, 217, glowingBarFillLevel, 5);
+            graphics.blit(TEXTURE, getGuiLeft() + 52, getGuiTop() + 57, 72, 217, glowingBarFillLevel, 5);
 
         }
         else {
             // Chalk slots
-            blit(poseStack, getGuiLeft() + 52, getGuiTop() + 32, 0, 180, 72, 36);
+            graphics.blit(TEXTURE, getGuiLeft() + 52, getGuiTop() + 32, 0, 180, 72, 36);
         }
 
-        fill(poseStack, getGuiLeft() + menu.chalkBoxCoords.getFirst() - 1, getGuiTop() + menu.chalkBoxCoords.getSecond() - 1,
+        graphics.fill(getGuiLeft() + menu.chalkBoxCoords.getFirst() - 1, getGuiTop() + menu.chalkBoxCoords.getSecond() - 1,
                 getGuiLeft() + menu.chalkBoxCoords.getFirst() + 17, getGuiTop() + menu.chalkBoxCoords.getSecond() + 17,
                 0xAAc8c8c8);
     }

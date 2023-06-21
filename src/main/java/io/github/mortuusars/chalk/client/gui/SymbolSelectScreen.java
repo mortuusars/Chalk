@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.core.IDrawingTool;
@@ -16,6 +16,7 @@ import io.github.mortuusars.chalk.network.packet.ServerboundDrawMarkPacket;
 import io.github.mortuusars.chalk.render.ChalkColors;
 import io.github.mortuusars.chalk.utils.MarkDrawingContext;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -23,6 +24,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -91,7 +93,7 @@ public class SymbolSelectScreen extends Screen {
         this.minecraft = Minecraft.getInstance();
         this.player = minecraft.player;
         Preconditions.checkArgument(player != null, "Player cannot be null.");
-        this.level = player.level;
+        this.level = player.level();
         this.openTimestamp = level.getGameTime();
 
         ItemStack itemInHand = minecraft.player.getItemInHand(drawingHand);
@@ -123,18 +125,21 @@ public class SymbolSelectScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float pPartialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick) {
         // Keep sneaking while choosing a mark to not jerk player's camera:
         player.setPose(Pose.CROUCHING);
         if (player.getForcedPose() != Pose.CROUCHING)
             player.setForcedPose(Pose.CROUCHING);
 
         // BG
-        fillGradient(poseStack, 0, 0, width, height, 0x15000000, 0x35000000);
+        graphics.fillGradient(0, 0, width, height, 0x15000000, 0x35000000);
 
-        super.render(poseStack, mouseX, mouseY, pPartialTick);
+        super.render(graphics, mouseX, mouseY, pPartialTick);
 
         hoveredSymbol = null;
+
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 200);
 
         for (int i = 0; i < unlockedSymbols.size(); i++) {
             MarkSymbol symbol = unlockedSymbols.get(i);
@@ -148,50 +153,53 @@ public class SymbolSelectScreen extends Screen {
                 player.displayClientMessage(Component.translatable(symbol.getTranslationKey()), true);
             }
 
-            drawSymbolButton(poseStack, mouseX, mouseY, symbol, x, y, isHovering);
+            drawSymbolButton(graphics, mouseX, mouseY, symbol, x, y, isHovering);
         }
+
+        graphics.pose().popPose();
     }
 
-    private void drawSymbolButton(PoseStack poseStack, int mouseX, int mouseY, MarkSymbol symbol, int x, int y, boolean isHovering) {
-        renderBlockSurface(poseStack, mouseX, mouseY, x, y);
+    private void drawSymbolButton(GuiGraphics graphics, int mouseX, int mouseY, MarkSymbol symbol, int x, int y, boolean isHovering) {
+        renderBlockSurface(graphics, mouseX, mouseY, x, y);
 
         int borderColor = isHovering ? hoverBorderColor : DEFAULT_SYMBOL_BORDER_COLOR;
 
-        fill(poseStack, (int)(x - SYMBOL_BORDER_THICKNESS), y, x, y + SYMBOL_SIZE, borderColor);
-        fill(poseStack, x, (int)(y - SYMBOL_BORDER_THICKNESS), x + SYMBOL_SIZE, y, borderColor);
-        fill(poseStack, x + SYMBOL_SIZE, y, (int)(x + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS), y + SYMBOL_SIZE, borderColor);
-        fill(poseStack, x, y + SYMBOL_SIZE, x + SYMBOL_SIZE, (int)(y + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS), borderColor);
+        graphics.fill((int)(x - SYMBOL_BORDER_THICKNESS), y, x, y + SYMBOL_SIZE, borderColor);
+        graphics.fill(x, (int)(y - SYMBOL_BORDER_THICKNESS), x + SYMBOL_SIZE, y, borderColor);
+        graphics.fill(x + SYMBOL_SIZE, y, (int)(x + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS), y + SYMBOL_SIZE, borderColor);
+        graphics.fill(x, y + SYMBOL_SIZE, x + SYMBOL_SIZE, (int)(y + SYMBOL_SIZE + SYMBOL_BORDER_THICKNESS), borderColor);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(r, g, b, 1f);
         RenderSystem.enableBlend();
-        RenderSystem.setShaderTexture(0, SYMBOL_TEXTURES.get(symbol));
 
+        PoseStack poseStack = graphics.pose();
         poseStack.pushPose();
 
         poseStack.translate(x + SYMBOL_SIZE / 2f, y + SYMBOL_SIZE / 2f, 0);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(symbol.getDefaultOrientation().getRotation() + Config.SYMBOL_ROTATION_OFFSETS.get(symbol).get()));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(symbol.getDefaultOrientation().getRotation() + Config.SYMBOL_ROTATION_OFFSETS.get(symbol).get()));
         poseStack.translate(-x - SYMBOL_SIZE / 2f , -y - SYMBOL_SIZE / 2f, 0);
-
-        blit(poseStack, x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
+        poseStack.translate(0, 0, 100);
+        graphics.blit(SYMBOL_TEXTURES.get(symbol), x, y, SYMBOL_SIZE, SYMBOL_SIZE, 0, 0, 16, 16, 16, 16);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-        // Shadow overlay
-        fillGradient(new PoseStack(), x, y, x + SYMBOL_SIZE, y + SYMBOL_SIZE, 0x08FFFFFF, 0x20000000);
-
         poseStack.popPose();
+
+        // Shadow overlay
+        graphics.fillGradient(x, y, x + SYMBOL_SIZE, y + SYMBOL_SIZE, 0x08FFFFFF, 0x25000000);
     }
 
     @SuppressWarnings("DataFlowIssue")
-    private void renderBlockSurface(PoseStack poseStack, int mouseX, int mouseY, int x, int y) {
+    private void renderBlockSurface(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.applyModelViewMatrix();
+        Lighting.setupForFlatItems();
 
         PoseStack posestack1 = new PoseStack();
-        posestack1.translate(x, y, -100);
+        posestack1.translate(x, y, 0);
 
         int xRot = 0;
         int yRot = 0;
@@ -209,26 +217,20 @@ public class SymbolSelectScreen extends Screen {
             yRot = 90;
 
         posestack1.translate(SYMBOL_SIZE / 2f, SYMBOL_SIZE / 2f, SYMBOL_SIZE / 2f);
-        posestack1.mulPose(Vector3f.XP.rotationDegrees(xRot - 0.1f));
-        posestack1.mulPose(Vector3f.YP.rotationDegrees(yRot - 0.1f));
+        posestack1.mulPose(Axis.XP.rotationDegrees(xRot - 0.1f));
+        posestack1.mulPose(Axis.YP.rotationDegrees(yRot - 0.1f));
         posestack1.translate(-SYMBOL_SIZE / 2f, -SYMBOL_SIZE / 2f, -SYMBOL_SIZE / 2f);
 
         posestack1.translate(0, 48, 0);
         posestack1.scale(1.0F, -1.0F, 1.0F);
         posestack1.scale(SYMBOL_SIZE, SYMBOL_SIZE, SYMBOL_SIZE);
 
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        Lighting.setupForFlatItems();
+        MultiBufferSource.BufferSource bufferSource = graphics.bufferSource();
 
-//        minecraft.getBlockRenderer().getModelRenderer().tesselateWithoutAO(minecraft.level,
-//                minecraft.getBlockRenderer().getBlockModel(surfaceState),
-//                surfaceState, drawingContext.getMarkBlockPos(), posestack1,
-//                multibuffersource$buffersource.getBuffer(RenderType.solid()), true, level.random,
-//                0, OverlayTexture.NO_OVERLAY);
-        minecraft.getBlockRenderer().renderSingleBlock(surfaceState, posestack1, minecraft.renderBuffers().bufferSource(),
+        minecraft.getBlockRenderer().renderSingleBlock(surfaceState, posestack1, bufferSource,
                 LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
-        multibuffersource$buffersource.endBatch();
+        bufferSource.endBatch();
         RenderSystem.enableDepthTest();
         Lighting.setupFor3DItems();
         RenderSystem.applyModelViewMatrix();
@@ -281,7 +283,8 @@ public class SymbolSelectScreen extends Screen {
         Mark mark = createMark(symbol, player.getItemInHand(drawingHand));
 
         if (drawingContext.canDraw() && (!drawingContext.hasExistingMark() || drawingContext.shouldMarkReplaceAnother(mark))) {
-            Packets.sendToServer(new ServerboundDrawMarkPacket(mark.color, mark.createBlockState(player.getItemInHand(drawingHand)), drawingContext.getMarkBlockPos(), drawingHand));
+            Packets.sendToServer(new ServerboundDrawMarkPacket(mark.color,
+                    NbtUtils.writeBlockState(mark.createBlockState(player.getItemInHand(drawingHand))), drawingContext.getMarkBlockPos(), drawingHand));
             player.swing(drawingHand);
             return true;
         }

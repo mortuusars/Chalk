@@ -28,7 +28,8 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: 'parchment', version: "${parchment_version}"
+//    mappings channel: 'parchment', version: "${parchment_version}"
+    mappings channel: 'official', version: "1.20.1"
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -148,9 +149,9 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")) // Adds JEI API as a compile dependency
-    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))  // Adds JEI API as a compile dependency
-    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")) // Adds the full JEI mod as a runtime dependency
+//    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")) // Adds JEI API as a compile dependency
+//    compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))  // Adds JEI API as a compile dependency
+//    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")) // Adds the full JEI mod as a runtime dependency
 
     // Locally sourced extra mods for runtime (i.e. testing) - thanks AE2 for this idea
     for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {

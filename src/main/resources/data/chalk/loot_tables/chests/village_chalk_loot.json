@@ -6,39 +6,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "weight": 2,
-          "name": "chalk:chalk_box",
-          "functions": [
-            {
-              "function": "minecraft:set_nbt",
-              "tag": "{Items: [{id: \"chalk:white_chalk\", Count: 1b, tag: {Damage: 23}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_gray_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:red_chalk\", Count: 1b, tag: {Damage: 17}}, {id: \"minecraft:air\", Count: 1b}]}\n"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "name": "chalk:chalk_box",
-          "functions": [
-            {
-              "function": "minecraft:set_nbt",
-              "tag": "{Items: [{id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_gray_chalk\", Count: 1b, tag: {Damage: 6}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:white_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:light_blue_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}]}\n"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
-          "weight": 2,
-          "name": "chalk:chalk_box",
-          "functions": [
-            {
-              "function": "minecraft:set_nbt",
-              "tag": "{Items: [{id: \"chalk:blue_chalk\", Count: 1b, tag: {Damage: 3}}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:pink_chalk\", Count: 1b, tag: {Damage: 50}}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"minecraft:air\", Count: 1b}, {id: \"chalk:yellow_chalk\", Count: 1b, tag: {Damage: 0}}, {id: \"minecraft:air\", Count: 1b}]}\n"
-            }
-          ]
-        },
-        {
-          "type": "minecraft:item",
           "weight": 5,
           "name": "chalk:white_chalk"
         },

@@ -95,7 +95,8 @@ public enum SymbolOrientation implements StringRepresentable {
      * Returns a point representing where on a block face was clicked. 0.0 to 1.0.
      */
     private static Point2d getClickedBlockSpaceCoords(Vec3 location, Direction face) {
-        BlockPos pos = new BlockPos(location.x, location.y, location.z);
+        BlockPos pos = BlockPos.containing(location);
+//        BlockPos pos = new BlockPos((int) location.x, (int) location.y, (int) location.z);
         final double x = location.x - pos.getX();
         final double y = location.y - pos.getY();
         final double z = location.z - pos.getZ();

@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.utils;
 
-import com.mojang.math.Vector3f;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.DummyDrawingTool;
@@ -17,7 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
+import org.joml.Vector3f;
 
 import java.util.Random;
 
@@ -32,8 +32,8 @@ public class MarkDrawHelper {
             if (player instanceof ServerPlayer serverPlayer && level instanceof ServerLevel serverLevel) {
                 drawingTool.getMarkColor(drawingItemstack).ifPresent(color -> {
                     BlockPos surfacePos = markPos.relative(markBlockState.getValue(ChalkMarkBlock.FACING).getOpposite());
-                    BlockState surfaceState = player.level.getBlockState(surfacePos);
-                    MaterialColor surfaceMaterialColor = surfaceState.getMapColor(player.level, surfacePos);
+                    BlockState surfaceState = player.level().getBlockState(surfacePos);
+                    MapColor surfaceMaterialColor = surfaceState.getMapColor(player.level(), surfacePos);
                     Chalk.CriteriaTriggers.CHALK_DRAW_COLORS.trigger(serverPlayer, surfaceMaterialColor, color);
                 });
 

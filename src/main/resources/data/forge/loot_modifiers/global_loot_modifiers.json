@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "entries": [
+    "chalk:bonus_chest_chalks",
+    "chalk:desert_pyramid_chest_chalks",
+    "chalk:dungeon_chest_chalks",
+    "chalk:village_chest_chalks"
+  ]
+}

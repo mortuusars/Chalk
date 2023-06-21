@@ -3,9 +3,10 @@ package io.github.mortuusars.chalk.network.packet;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.block.ChalkMarkBlock;
 import io.github.mortuusars.chalk.core.IDrawingTool;
-import io.github.mortuusars.chalk.core.Mark;
 import io.github.mortuusars.chalk.utils.MarkDrawHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,18 +19,18 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public record ServerboundDrawMarkPacket(int color, BlockState blockState, BlockPos markBlockPos, InteractionHand drawingHand) {
+public record ServerboundDrawMarkPacket(int color, CompoundTag blockStateNBT, BlockPos markBlockPos, InteractionHand drawingHand) {
     public static ServerboundDrawMarkPacket fromBuffer(FriendlyByteBuf buffer) {
         return new ServerboundDrawMarkPacket(
                 buffer.readInt(),
-                NbtUtils.readBlockState(buffer.readAnySizeNbt()),
+                buffer.readAnySizeNbt(),
                 buffer.readBlockPos(),
                 buffer.readEnum(InteractionHand.class));
     }
 
     public void toBuffer(FriendlyByteBuf buffer) {
         buffer.writeInt(color);
-        buffer.writeNbt(NbtUtils.writeBlockState(blockState));
+        buffer.writeNbt(blockStateNBT);
         buffer.writeBlockPos(markBlockPos);
         buffer.writeEnum(drawingHand);
     }
@@ -50,7 +51,7 @@ public record ServerboundDrawMarkPacket(int color, BlockState blockState, BlockP
             return true;
         }
 
-        Level level = player.level;
+        Level level = player.level();
         BlockState existingState = level.getBlockState(markBlockPos);
 
         if (!(existingState.isAir() || existingState.getBlock() instanceof ChalkMarkBlock)) {
@@ -58,6 +59,7 @@ public record ServerboundDrawMarkPacket(int color, BlockState blockState, BlockP
             return true;
         }
 
+        BlockState blockState = NbtUtils.readBlockState(level.holderLookup(Registries.BLOCK), blockStateNBT);
         return MarkDrawHelper.draw(player, level, markBlockPos, blockState, color, drawingHand);
     }
 }

@@ -38,7 +38,7 @@ public class MarkDrawingContext {
 
     public MarkDrawingContext(Player player, @NotNull BlockHitResult hitResult, InteractionHand drawingHand) {
         this.player = player;
-        this.level = player.level;
+        this.level = player.level();
         this.hitResult = hitResult;
         this.drawingHand = drawingHand;
         this.initialOrientation = SymbolOrientation.fromClickLocationAll(hitResult.getLocation(), hitResult.getDirection());
