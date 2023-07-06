@@ -1,3 +1,6 @@
+### 1.6.1
+- Fixed crash when opening a loot chest. 
+
 ### 1.6.0
 - Internal changes to allow adding more colors.
 
