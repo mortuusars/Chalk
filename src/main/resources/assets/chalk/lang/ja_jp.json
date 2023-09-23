@@ -1,5 +1,5 @@
 {
-  "block.chalk.chalk_mark_block": "チョークの印"
+  "block.chalk.chalk_mark_block": "チョークの印",
 
   "item.chalk.black_chalk": "黒色のチョーク",
   "item.chalk.red_chalk": "赤色のチョーク",
@@ -21,7 +21,7 @@
   "item.chalk.chalk_box": "チョークボックス",
   "item.chalk.chalk_box.tooltip.drawing_with": "装填中：",
   "item.chalk.chalk_box.tooltip.open": "<右クリックして開く>",
-  "container.chalk.chalk_box": "チョークボックス"
+  "container.chalk.chalk_box": "チョークボックス",
 
   "chalk.subtitles.chalk_broken": "チョークが破壊される",
   "chalk.subtitles.mark_drawn": "チョークで描かれる",
