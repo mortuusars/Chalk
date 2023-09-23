@@ -1,7 +1,7 @@
 {
   "block.chalk.chalk_mark_block": "Рисунок мелом",
 
-  "item.chalk.black_chalk": "Черный мелок",
+  "item.chalk.black_chalk": "Чёрный мелок",
   "item.chalk.red_chalk": "Красный мелок",
   "item.chalk.green_chalk": "Зелёный мелок",
   "item.chalk.brown_chalk": "Коричневый мелок",
@@ -18,7 +18,39 @@
   "item.chalk.orange_chalk": "Оранжевый мелок",
   "item.chalk.white_chalk": "Белый мелок",
 
-  "item.chalk.chalk_box": "Коробок для Мела",
+  "item.chalk.chalk_box": "Коробок для мела",
   "item.chalk.chalk_box.tooltip.drawing_with": "Рисуем с: ",
-  "container.chalk.chalk_box": "Коробок для Мела"
+  "item.chalk.chalk_box.tooltip.open": "<ПКМ чтобы открыть>",
+  "container.chalk.chalk_box": "Коробок для мела",
+
+  "chalk.subtitles.chalk_broken": "Мелок сломан",
+  "chalk.subtitles.mark_drawn": "Мелком рисуют",
+  "chalk.subtitles.chalk_box_changed": "Коробок для мела шуршит",
+  "chalk.subtitles.chalk_box_opens": "Коробок для мела открывается",
+  "chalk.subtitles.chalk_box_closes": "Коробок для мела закрывается",
+  "chalk.subtitles.glow_applied": "Рисунок начинает светиться",
+  "chalk.subtitles.mark_removed": "Рисунок стёрт",
+
+  "gui.chalk.symbol.center": "Точка",
+  "gui.chalk.symbol.arrow": "Стрелка",
+  "gui.chalk.symbol.house": "Дом",
+  "gui.chalk.symbol.check": "Галочка",
+  "gui.chalk.symbol.cross": "Крестик",
+  "gui.chalk.symbol.heart": "Сердце",
+  "gui.chalk.symbol.skull": "Череп",
+  "gui.chalk.symbol.pickaxe": "Кирка",
+
+  "gui.chalk.no_symbols_unlocked": "Вы пока не умеете рисовать никаких особых рисунков",
+  "gui.chalk.unlocked_symbol_message": "Вы научились рисовать %s мелком",
+
+  "advancement.chalk.get_skeleton_skull": "Связанный костьми",
+  "advancement.chalk.get_skeleton_skull.description": "Получите череп",
+  "advancement.chalk.sleep_three_times_in_one_place": "Дом там, где кровать",
+  "advancement.chalk.sleep_three_times_in_one_place.description": "Поспите на одной и той же кровати три раза подряд",
+  "advancement.chalk.black_chalk_on_black_block": "В одиночку в темноте",
+  "advancement.chalk.black_chalk_on_black_block.description": "Нарисуйте что-нибудь чёрным мелком на чёрном блоке в темноте",
+  "advancement.chalk.draw_mark_in_maze": "Сюда!",
+  "advancement.chalk.draw_mark_in_maze.description": "Нарисуйте что-нибудь мелком в запутанной местности",
+  "advancement.chalk.vandalism": "Вандализм",
+  "advancement.chalk.vandalism.description": "Нарисуйте что-нибудь мелком в деревне"
 }
