@@ -1,3 +1,6 @@
+### 1.6.2
+- Symbol Selection screen is now using a key bind for inventory instead of hardcoded E key.
+
 ### 1.6.1
 - Fixed crash when opening a loot chest. 
 
