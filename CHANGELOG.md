@@ -2,9 +2,6 @@
 - Symbol Selection screen is now using a key bind for inventory instead of hardcoded E key.
 - Fixed Japanese localization error that prevented it to work correctly.
 
-### 1.6.1
-- Fixed crash when opening a loot chest. 
-
 ### 1.6.0
 - Internal changes to allow adding more colors.
 
