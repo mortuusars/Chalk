@@ -2,6 +2,7 @@ package io.github.mortuusars.chalk.client.gui;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -236,12 +237,12 @@ public class SymbolSelectScreen extends Screen {
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (pKeyCode == GLFW.GLFW_KEY_E) {
+        if (Minecraft.getInstance().options.keyInventory.matches(pKeyCode, pScanCode)) {
             this.close();
             return true;
         }
 
-        int key = pKeyCode - 48;
+        int key = pKeyCode - InputConstants.KEY_0; // Offset
         if (key >= 1 && key <= Math.min(unlockedSymbols.size(), 9)) {
             tryDrawSymbol(unlockedSymbols.get(key - 1));
             this.close();

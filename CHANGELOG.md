@@ -1,3 +1,12 @@
+### 1.6.2
+- Symbol Selection screen is now using a key bind for inventory instead of hardcoded E key.
+
+### 1.6.1
+- Fixed crash when opening a loot chest. 
+
+### 1.6.0
+- Internal changes to allow adding more colors.
+
 ### 1.5.1
 - Fixed crash when drawing a symbol from offhand. 
 
