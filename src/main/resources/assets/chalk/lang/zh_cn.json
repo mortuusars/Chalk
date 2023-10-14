@@ -1,4 +1,6 @@
 {
+  "block.chalk.chalk_mark_block": "粉笔标记",
+  
   "item.chalk.black_chalk": "黑色粉笔",
   "item.chalk.red_chalk": "红色粉笔",
   "item.chalk.green_chalk": "绿色粉笔",
@@ -15,5 +17,40 @@
   "item.chalk.magenta_chalk": "品红色粉笔",
   "item.chalk.orange_chalk": "橙色粉笔",
   "item.chalk.white_chalk": "白色粉笔",
-  "block.chalk.chalk_mark_block": "粉笔标记"
+  
+  "item.chalk.chalk_box": "粉笔盒",
+  "item.chalk.chalk_box.tooltip.drawing_with": "绘制时使用：",
+  "item.chalk.chalk_box.tooltip.open": "<右键打开>",
+  "container.chalk.chalk_box": "粉笔盒",
+
+  "chalk.subtitles.chalk_broken": "粉笔损坏",
+  "chalk.subtitles.mark_drawn": "粉笔绘图",
+  "chalk.subtitles.chalk_box_changed": "粉笔盒沙沙作响",
+  "chalk.subtitles.chalk_box_opens": "打开粉笔盒",
+  "chalk.subtitles.chalk_box_closes": "关闭粉笔盒",
+  "chalk.subtitles.glow_applied": "粉笔标记开始发光",
+  "chalk.subtitles.mark_removed": "粉笔标记被擦除",
+
+  "gui.chalk.symbol.center": "点",
+  "gui.chalk.symbol.arrow": "箭",
+  "gui.chalk.symbol.house": "房子",
+  "gui.chalk.symbol.check": "勾",
+  "gui.chalk.symbol.cross": "叉",
+  "gui.chalk.symbol.heart": "心",
+  "gui.chalk.symbol.skull": "骷髅",
+  "gui.chalk.symbol.pickaxe": "镐",
+
+  "gui.chalk.no_symbols_unlocked": "你还没有学会绘制任何特殊记号",
+  "gui.chalk.unlocked_symbol_message": "你学会了用粉笔绘制 %s ",
+
+  "advancement.chalk.get_skeleton_skull": "骨血相连",
+  "advancement.chalk.get_skeleton_skull.description": "获得一个骷髅头颅",
+  "advancement.chalk.sleep_three_times_in_one_place": "床在家就在",
+  "advancement.chalk.sleep_three_times_in_one_place.description": "连续三晚在同一地点入睡",
+  "advancement.chalk.black_chalk_on_black_block": "独处于黑暗",
+  "advancement.chalk.black_chalk_on_black_block.description": "在黑夜中使用黑色粉笔在黑色方块上绘图",
+  "advancement.chalk.draw_mark_in_maze": "朝这儿走！",
+  "advancement.chalk.draw_mark_in_maze.description": "在迷宫般的结构中绘图",
+  "advancement.chalk.vandalism": "乱涂乱画",
+  "advancement.chalk.vandalism.description": "在村庄中用粉笔绘图"
 }
