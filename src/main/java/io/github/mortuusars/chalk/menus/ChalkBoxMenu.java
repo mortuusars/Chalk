@@ -5,7 +5,6 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.config.Config;
 import io.github.mortuusars.chalk.items.ChalkBox;
 import io.github.mortuusars.chalk.items.ChalkBoxItem;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
@@ -57,11 +56,11 @@ public class ChalkBoxMenu extends AbstractContainerMenu {
             addSlot(new SlotItemHandler(itemHandler, ChalkBox.GLOWINGS_SLOT_INDEX, 80, 68) {
                 @Override
                 public void set(@NotNull ItemStack stack) {
-                    if (player.level instanceof ClientLevel clientLevel && this.getItem().isEmpty()
+                    if (player.level.isClientSide && this.getItem().isEmpty()
                             && ChalkBox.getGlowLevel(chalkBoxStack) <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS)) {
                         Vec3 pos = player.position();
-                        clientLevel.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.PLAYERS, 1f, 1f);
-                        clientLevel.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOWING.get(), SoundSource.PLAYERS, 1f, 1f);
+                        player.level.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.PLAYERS, 1f, 1f);
+                        player.level.playSound(player, pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOWING.get(), SoundSource.PLAYERS, 1f, 1f);
                     }
 
                     super.set(stack);

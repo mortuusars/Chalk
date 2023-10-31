@@ -1,3 +1,7 @@
+### 1.6.3
+- Fixed glow uses being consumed twice per one mark drawn.
+- Fixed glow disappearing when playing on dedicated server. 
+
 ### 1.6.2
 - Symbol Selection screen is now using a key bind for inventory instead of hardcoded E key.
 - Fixed Japanese localization error that prevented it to work correctly.

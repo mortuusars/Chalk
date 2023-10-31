@@ -54,11 +54,6 @@ public interface IDrawingTool {
         if (drawingContext.hasExistingMark() && !drawingContext.shouldMarkReplaceAnother(mark))
             return false;
 
-        if (drawingContext.draw(mark)) {
-            onMarkDrawn(drawingContext.getPlayer(), drawingContext.getDrawingHand(), drawingContext.getMarkBlockPos(), mark.createBlockState(drawingContext.getPlayer().getItemInHand(drawingContext.getDrawingHand())));
-            return true;
-        }
-
-        return false;
+        return drawingContext.draw(mark);
     }
 }
