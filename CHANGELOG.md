@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.1 - 2026-09-06
+- Added config option to disable glowing mark emitting particles
+
 ## 2.0.0 - 2026-08-24
 Note:
 _This release heavily changes existing chalk systems._<br>

@@ -119,5 +119,6 @@
   "chalk.configuration.chalk_box_tooltip_contents": "Підказка з вмістом Коробки для Крейди",
   "chalk.configuration.symbols": "Символи",
   "chalk.configuration.unlocking": "Відкриття символів",
-  "chalk.configuration.unlocking_chat_message": "Відкриття символу показується у чаті"
+  "chalk.configuration.unlocking_chat_message": "Відкриття символу показується у чаті",
+  "chalk.configuration.glowing_mark_particles": "Частинки сяючих малюнків"
 }

@@ -169,7 +169,7 @@ public class MarkBlock extends BaseEntityBlock {
 
     @Override
     public void animateTick(BlockState blockState, Level level, BlockPos pos, RandomSource random) {
-        if (level.getBlockEntity(pos) instanceof MarkBlockEntity markBlockEntity) {
+        if (Config.Common.GLOWING_MARK_PARTICLES.get() && level.getBlockEntity(pos) instanceof MarkBlockEntity markBlockEntity) {
             markBlockEntity.getMarks().forEach((facing, mark) -> {
                 if (mark.glowing() && random.nextInt(90) == 0) {
                     ParticleUtils.spawnParticle(level, ParticleTypes.END_ROD, PositionUtils.blockCenterOffsetToFace(pos, facing,

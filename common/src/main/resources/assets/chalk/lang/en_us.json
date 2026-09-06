@@ -119,5 +119,6 @@
   "chalk.configuration.chalk_box_tooltip_contents": "Chalk Box Contents Tooltip",
   "chalk.configuration.symbols": "Symbols",
   "chalk.configuration.unlocking": "Unlocking",
-  "chalk.configuration.unlocking_chat_message": "Unlocking Chat Message"
+  "chalk.configuration.unlocking_chat_message": "Unlocking Chat Message",
+  "chalk.configuration.glowing_mark_particles": "Glowing Mark Particles"
 }

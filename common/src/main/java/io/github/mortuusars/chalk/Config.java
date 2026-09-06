@@ -171,6 +171,7 @@ public class Config {
     public static class Common {
         public static final ModConfigSpec SPEC;
         public static final ModConfigSpec.BooleanValue LOOT;
+        public static final ModConfigSpec.BooleanValue GLOWING_MARK_PARTICLES;
 
         static {
             ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -180,6 +181,10 @@ public class Config {
                               "Villages (Planes and Savanna), Cartographer village houses",
                         "Default: true")
                   .define("generate_chalk_in_loot_chests", true);
+
+            GLOWING_MARK_PARTICLES = builder
+                  .comment("Glowing marks will occasionally emit sparkling particles. Default: true")
+                  .define("glowing_mark_particles", true);
 
             SPEC = builder.build();
         }
