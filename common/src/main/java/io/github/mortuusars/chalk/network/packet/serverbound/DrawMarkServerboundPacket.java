@@ -1,11 +1,10 @@
 package io.github.mortuusars.chalk.network.packet.serverbound;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.advancements.AdvancementUtils;
 import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.item.MarkDrawable;
-import io.github.mortuusars.chalk.network.packet.Packet;
+import io.github.mortuusars.mortaar.network.packet.Packet;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -17,13 +16,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public record DrawMarkC2SP(Holder<MarkSymbol> symbol, MarkDrawingContext drawingContext) implements Packet {
-    public static final CustomPacketPayload.Type<DrawMarkC2SP> TYPE = new CustomPacketPayload.Type<>(Chalk.resource("draw_mark"));
+public record DrawMarkServerboundPacket(Holder<MarkSymbol> symbol, MarkDrawingContext drawingContext) implements Packet {
+    public static final CustomPacketPayload.Type<DrawMarkServerboundPacket> TYPE = new CustomPacketPayload.Type<>(Chalk.resource("draw_mark"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, DrawMarkC2SP> STREAM_CODEC = StreamCodec.composite(
-          ByteBufCodecs.holderRegistry(Chalk.Registries.MARK_SYMBOL), DrawMarkC2SP::symbol,
-          MarkDrawingContext.STREAM_CODEC, DrawMarkC2SP::drawingContext,
-          DrawMarkC2SP::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, DrawMarkServerboundPacket> STREAM_CODEC = StreamCodec.composite(
+          ByteBufCodecs.holderRegistry(Chalk.Registries.MARK_SYMBOL), DrawMarkServerboundPacket::symbol,
+          MarkDrawingContext.STREAM_CODEC, DrawMarkServerboundPacket::drawingContext,
+          DrawMarkServerboundPacket::new
     );
 
     @Override

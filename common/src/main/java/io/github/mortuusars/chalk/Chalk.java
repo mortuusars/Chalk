@@ -3,6 +3,9 @@ package io.github.mortuusars.chalk;
 import io.github.mortuusars.chalk.advancements.trigger.MarkDrawnTrigger;
 import io.github.mortuusars.chalk.advancements.trigger.ConsecutiveSleepingTrigger;
 import io.github.mortuusars.chalk.advancements.trigger.MarkGlowingTrigger;
+import io.github.mortuusars.chalk.network.packet.clientbound.SelectSymbolAndDrawMarkClientboundPacket;
+import io.github.mortuusars.chalk.network.packet.serverbound.DestroyMarkServerboundPacket;
+import io.github.mortuusars.chalk.network.packet.serverbound.DrawMarkServerboundPacket;
 import io.github.mortuusars.chalk.world.block.MarkBlockEntity;
 import io.github.mortuusars.chalk.world.block.MarkBlock;
 import io.github.mortuusars.chalk.world.block.OldChalkMarkBlock;
@@ -14,6 +17,8 @@ import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
 import io.github.mortuusars.chalk.world.chalk.ChalkColors;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
+import io.github.mortuusars.mortaar.Register;
+import io.github.mortuusars.mortaar.Registrar;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -44,6 +49,8 @@ public class Chalk {
     public static final String ID = "chalk";
     public static final Logger LOGGER = LogManager.getLogger();
 
+    public static final Registrar REGISTRAR = Register.registrar(ID);
+
     public static void init() {
         Blocks.init();
         BlockEntityTypes.init();
@@ -52,6 +59,11 @@ public class Chalk {
         CriteriaTriggers.init();
         MenuTypes.init();
         SoundEvents.init();
+
+        Register.serverboundPacket(DrawMarkServerboundPacket.TYPE, DrawMarkServerboundPacket.STREAM_CODEC);
+        Register.serverboundPacket(DestroyMarkServerboundPacket.TYPE, DestroyMarkServerboundPacket.STREAM_CODEC);
+
+        Register.clientboundPacket(SelectSymbolAndDrawMarkClientboundPacket.TYPE, SelectSymbolAndDrawMarkClientboundPacket.STREAM_CODEC);
     }
 
     public static ResourceLocation resource(String path) {
@@ -59,7 +71,7 @@ public class Chalk {
     }
 
     public static class Blocks {
-        public static final Supplier<MarkBlock> MARK = Register.block("mark",
+        public static final Supplier<MarkBlock> MARK = REGISTRAR.block("mark",
               () -> new MarkBlock(BlockBehaviour.Properties.of()
                     .pushReaction(PushReaction.DESTROY)
                     .replaceable()
@@ -74,7 +86,7 @@ public class Chalk {
         @Deprecated(since = "2.0.0", forRemoval = true)
         public static final Map<DyeColor, Supplier<OldChalkMarkBlock>> MARKS = Util.make(new LinkedHashMap<>(), map -> {
             for (DyeColor color : ChalkColors.COLORS.keySet()) {
-                map.put(color, Register.block(color + "_chalk_mark",
+                map.put(color, REGISTRAR.block(color + "_chalk_mark",
                         () -> new OldChalkMarkBlock(color, BlockBehaviour.Properties.of()
                                 .mapColor(color)
                                 .pushReaction(PushReaction.DESTROY)
@@ -91,12 +103,12 @@ public class Chalk {
     }
 
     public static class BlockEntityTypes {
-        public static final Supplier<BlockEntityType<MarkBlockEntity>> MARK = Register.blockEntityType("mark",
-              () -> Register.newBlockEntityType(MarkBlockEntity::new, Blocks.MARK.get()));
+        public static final Supplier<BlockEntityType<MarkBlockEntity>> MARK = REGISTRAR.blockEntityType("mark",
+              () -> REGISTRAR.newBlockEntityType(MarkBlockEntity::new, Blocks.MARK.get()));
         @SuppressWarnings("removal")
         @Deprecated(since = "2.0.0", forRemoval = true)
-        public static final Supplier<BlockEntityType<OldMarkBlockEntity>> CHALK_MARK = Register.blockEntityType("chalk_mark",
-              () -> Register.newBlockEntityType(OldMarkBlockEntity::new, Blocks.MARKS.values().stream().map(Supplier::get).toArray(Block[]::new)));
+        public static final Supplier<BlockEntityType<OldMarkBlockEntity>> CHALK_MARK = REGISTRAR.blockEntityType("chalk_mark",
+              () -> REGISTRAR.newBlockEntityType(OldMarkBlockEntity::new, Blocks.MARKS.values().stream().map(Supplier::get).toArray(Block[]::new)));
 
         static void init() {
         }
@@ -110,13 +122,13 @@ public class Chalk {
     }
 
     public static class Items {
-        public static final Supplier<ChalkItem> CHALK = Register.item("chalk",
+        public static final Supplier<ChalkItem> CHALK = REGISTRAR.item("chalk",
               () -> new ChalkItem(new Item.Properties()
                     .stacksTo(1)
                     .durability(64)
                     .food(Foods.CHALK)));
 
-        public static final Supplier<ChalkBoxItem> CHALK_BOX = Register.item("chalk_box",
+        public static final Supplier<ChalkBoxItem> CHALK_BOX = REGISTRAR.item("chalk_box",
               () -> new ChalkBoxItem(new Item.Properties()
                     .stacksTo(1)));
 
@@ -124,7 +136,7 @@ public class Chalk {
         @Deprecated(since = "2.0.0", forRemoval = true)
         public static Map<DyeColor, Supplier<OldChalkItem>> CHALKS = Util.make(new LinkedHashMap<>(), map -> {
             for (DyeColor color : ChalkColors.COLORS.keySet()) {
-                map.put(color, Register.item(color + "_chalk", () -> new OldChalkItem(color, new Item.Properties()
+                map.put(color, REGISTRAR.item(color + "_chalk", () -> new OldChalkItem(color, new Item.Properties()
                       .stacksTo(1)
                       .durability(64))));
             }
@@ -135,7 +147,7 @@ public class Chalk {
     }
 
     public static class DataComponents {
-        public static final DataComponentType<ChalkBoxContents> CHALK_BOX_CONTENTS = Register.dataComponentType("chalk_box_contents",
+        public static final DataComponentType<ChalkBoxContents> CHALK_BOX_CONTENTS = REGISTRAR.dataComponentType("chalk_box_contents",
               builder -> builder.persistent(ChalkBoxContents.CODEC).networkSynchronized(ChalkBoxContents.STREAM_CODEC).cacheEncoding());
 
         static void init() {
@@ -143,7 +155,7 @@ public class Chalk {
     }
 
     public static class MenuTypes {
-        public static final Supplier<MenuType<ChalkBoxMenu>> CHALK_BOX = Register.menuType("chalk_box", ChalkBoxMenu::fromNetwork);
+        public static final Supplier<MenuType<ChalkBoxMenu>> CHALK_BOX = REGISTRAR.menuType("chalk_box", ChalkBoxMenu::fromNetwork);
 
         static void init() {
         }
@@ -151,30 +163,30 @@ public class Chalk {
 
     public static class CriteriaTriggers {
         public static final Supplier<ConsecutiveSleepingTrigger> CONSECUTIVE_SLEEPING =
-              Register.criterionTrigger("consecutive_sleeping", ConsecutiveSleepingTrigger::new);
+              REGISTRAR.criterionTrigger("consecutive_sleeping", ConsecutiveSleepingTrigger::new);
         public static final Supplier<MarkDrawnTrigger> MARK_DRAWN =
-              Register.criterionTrigger("mark_drawn", MarkDrawnTrigger::new);
+              REGISTRAR.criterionTrigger("mark_drawn", MarkDrawnTrigger::new);
         public static final Supplier<MarkGlowingTrigger> MARK_GLOWING =
-              Register.criterionTrigger("mark_glowing", MarkGlowingTrigger::new);
+              REGISTRAR.criterionTrigger("mark_glowing", MarkGlowingTrigger::new);
 
         static void init() {
         }
     }
 
     public static class SoundEvents {
-        public static final Supplier<SoundEvent> MARK_DRAWN = Register.soundEvent("item.chalk.draw",
+        public static final Supplier<SoundEvent> MARK_DRAWN = REGISTRAR.soundEvent("item.chalk.draw",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk.draw")));
-        public static final Supplier<SoundEvent> MARK_REMOVED = Register.soundEvent("block.mark.removed",
+        public static final Supplier<SoundEvent> MARK_REMOVED = REGISTRAR.soundEvent("block.mark.removed",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("block.mark.removed")));
-        public static final Supplier<SoundEvent> CHALK_BOX_OPEN = Register.soundEvent("item.chalk_box.open",
+        public static final Supplier<SoundEvent> CHALK_BOX_OPEN = REGISTRAR.soundEvent("item.chalk_box.open",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box.open")));
-        public static final Supplier<SoundEvent> CHALK_BOX_CLOSE = Register.soundEvent("item.chalk_box.close",
+        public static final Supplier<SoundEvent> CHALK_BOX_CLOSE = REGISTRAR.soundEvent("item.chalk_box.close",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box.close")));
-        public static final Supplier<SoundEvent> CHALK_BOX_CHANGE = Register.soundEvent("item.chalk_box.change",
+        public static final Supplier<SoundEvent> CHALK_BOX_CHANGE = REGISTRAR.soundEvent("item.chalk_box.change",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.chalk_box.change")));
-        public static final Supplier<SoundEvent> GLOW_APPLIED = Register.soundEvent("item.glow_applied",
+        public static final Supplier<SoundEvent> GLOW_APPLIED = REGISTRAR.soundEvent("item.glow_applied",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("item.glow_applied")));
-        public static final Supplier<SoundEvent> GLOWING = Register.soundEvent("ambient.glowing",
+        public static final Supplier<SoundEvent> GLOWING = REGISTRAR.soundEvent("ambient.glowing",
               () -> SoundEvent.createVariableRangeEvent(Chalk.resource("ambient.glowing")));
 
         static void init() {

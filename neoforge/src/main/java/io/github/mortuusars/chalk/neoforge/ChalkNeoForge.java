@@ -28,24 +28,6 @@ public class ChalkNeoForge {
 
         @Nullable IEventBus modEventBus = container.getEventBus();
         Preconditions.checkNotNull(modEventBus);
-
-        RegisterImpl.BLOCKS.register(modEventBus);
-        RegisterImpl.BLOCK_ENTITY_TYPES.register(modEventBus);
-        RegisterImpl.POI_TYPES.register(modEventBus);
-        RegisterImpl.ENTITY_TYPES.register(modEventBus);
-        RegisterImpl.ENTITY_DATA_SERIALIZERS.register(modEventBus);
-        RegisterImpl.ITEMS.register(modEventBus);
-        RegisterImpl.MENU_TYPES.register(modEventBus);
-        RegisterImpl.RECIPE_TYPES.register(modEventBus);
-        RegisterImpl.RECIPE_SERIALIZERS.register(modEventBus);
-        RegisterImpl.CRITERION_TRIGGERS.register(modEventBus);
-        RegisterImpl.ITEM_SUB_PREDICATES.register(modEventBus);
-        RegisterImpl.SOUND_EVENTS.register(modEventBus);
-        RegisterImpl.COMMAND_ARGUMENT_TYPES.register(modEventBus);
-        RegisterImpl.WORLD_GEN_FEATURES.register(modEventBus);
-        RegisterImpl.DATA_COMPONENT_TYPES.register(modEventBus);
-        RegisterImpl.PARTICLE_TYPES.register(modEventBus);
-        RegisterImpl.CUSTOM_STATS.register(modEventBus);
         LootModifiers.LOOT_MODIFIERS.register(modEventBus);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {

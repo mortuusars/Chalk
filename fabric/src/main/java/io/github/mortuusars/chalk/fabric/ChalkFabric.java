@@ -6,11 +6,8 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.world.chalk.ChalkColors;
 import io.github.mortuusars.chalk.event.CommonEvents;
-import io.github.mortuusars.chalk.network.fabric.FabricC2SPackets;
-import io.github.mortuusars.chalk.network.fabric.FabricS2CPackets;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
@@ -71,17 +68,7 @@ public class ChalkFabric implements ModInitializer {
             event.accept(Chalk.Items.CHALK_BOX.get());
         });
 
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            PlatformImpl.server = server;
-        });
-        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-            PlatformImpl.server = null;
-        });
-
         LootTableEvents.MODIFY.register(ChalkFabric::modifyLoot);
-
-        FabricC2SPackets.register();
-        FabricS2CPackets.register();
     }
 
     private static void modifyLoot(ResourceKey<LootTable> tableKey, LootTable.Builder builder,

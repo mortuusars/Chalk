@@ -9,8 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
-import io.github.mortuusars.chalk.network.Packets;
-import io.github.mortuusars.chalk.network.packet.serverbound.DrawMarkC2SP;
+import io.github.mortuusars.chalk.network.packet.serverbound.DrawMarkServerboundPacket;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
@@ -570,7 +569,7 @@ public class SymbolSelectScreen extends Screen {
     }
 
     protected void tryDrawSymbol(Holder<MarkSymbol> symbol) {
-        Packets.sendToServer(new DrawMarkC2SP(symbol, context));
+        new DrawMarkServerboundPacket(symbol, context).sendToServer();
         player.swing(context.hand());
     }
 

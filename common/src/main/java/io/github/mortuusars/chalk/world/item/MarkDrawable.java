@@ -3,8 +3,7 @@ package io.github.mortuusars.chalk.world.item;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.advancements.AdvancementUtils;
-import io.github.mortuusars.chalk.network.Packets;
-import io.github.mortuusars.chalk.network.packet.clientbound.SelectSymbolAndDrawMarkS2CP;
+import io.github.mortuusars.chalk.network.packet.clientbound.SelectSymbolAndDrawMarkClientboundPacket;
 import io.github.mortuusars.chalk.util.GridCell;
 import io.github.mortuusars.chalk.util.PositionUtils;
 import io.github.mortuusars.chalk.world.block.MarkBlock;
@@ -15,7 +14,6 @@ import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
-import io.github.mortuusars.mortaar.util.supporter.Supporter;
 import io.github.mortuusars.mortaar.util.supporter.Supporters;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -101,7 +99,7 @@ public interface MarkDrawable {
                   .filter(holder -> isSymbolAvailable(serverPlayer, context, holder))
                   .toList();
 
-            Packets.sendToClient(new SelectSymbolAndDrawMarkS2CP(availableSymbols, context), serverPlayer);
+            new SelectSymbolAndDrawMarkClientboundPacket(availableSymbols, context).sendToClient(serverPlayer);
         }
     }
 

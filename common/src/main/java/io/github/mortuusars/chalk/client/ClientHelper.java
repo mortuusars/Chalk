@@ -1,7 +1,6 @@
 package io.github.mortuusars.chalk.client;
 
-import io.github.mortuusars.chalk.network.Packets;
-import io.github.mortuusars.chalk.network.packet.serverbound.DestroyMarkC2SP;
+import io.github.mortuusars.chalk.network.packet.serverbound.DestroyMarkServerboundPacket;
 import io.github.mortuusars.chalk.world.block.MarkBlock;
 import io.github.mortuusars.chalk.world.chalk.DrawnMark;
 import net.minecraft.client.Minecraft;
@@ -27,7 +26,7 @@ public class ClientHelper {
               && level.getWorldBorder().isWithinBounds(pos)
               && level.getBlockState(pos).getBlock() instanceof MarkBlock) {
             if (MarkBlock.getMarkAt(level, hitResult.getLocation()) instanceof DrawnMark mark) {
-                Packets.sendToServer(new DestroyMarkC2SP(pos, mark.facing()));
+                new DestroyMarkServerboundPacket(pos, mark.facing()).sendToServer();
             }
 
             return true;
@@ -45,7 +44,7 @@ public class ClientHelper {
               && level.getWorldBorder().isWithinBounds(pos)
               && level.getBlockState(pos).getBlock() instanceof MarkBlock
               && MarkBlock.getMarkAt(level, hitResult.getLocation()) instanceof DrawnMark mark) {
-            Packets.sendToServer(new DestroyMarkC2SP(pos, mark.facing()));
+            new DestroyMarkServerboundPacket(pos, mark.facing()).sendToServer();
         }
     }
 }

@@ -5,7 +5,6 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.ChalkClient;
 import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.client.render.MarkBlockColor;
-import io.github.mortuusars.chalk.network.fabric.FabricS2CPacketHandler;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -29,7 +28,5 @@ public class ChalkFabricClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(Chalk.Blocks.MARK.get(), RenderType.cutout());
 
         MenuScreens.register(Chalk.MenuTypes.CHALK_BOX.get(), ChalkBoxScreen::new);
-
-        FabricS2CPacketHandler.register();
     }
 }

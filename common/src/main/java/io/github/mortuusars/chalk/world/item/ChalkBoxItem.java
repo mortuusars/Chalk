@@ -1,12 +1,12 @@
 package io.github.mortuusars.chalk.world.item;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.Platform;
 import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
+import io.github.mortuusars.mortaar.Platform;
 import io.github.mortuusars.mortaar.world.item.ApplicationTargetItem;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -19,6 +19,7 @@ import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -82,7 +83,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
     }
 
     @Override
-    public boolean shouldRenderSlotTooltipWhileCarrying(Level level, ItemStack carried, ItemStack hovered) {
+    public boolean shouldRenderSlotTooltipWhileCarrying(Player player, AbstractContainerMenu menu, Slot slot, ItemStack carried) {
         return ChalkBoxContents.canHold(carried);
     }
 
