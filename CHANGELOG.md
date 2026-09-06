@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.2 - 2026-09-06
+- Updated localization files
+
 ## 2.0.1 - 2026-09-06
 - Added config option to disable glowing mark emitting particles
 
