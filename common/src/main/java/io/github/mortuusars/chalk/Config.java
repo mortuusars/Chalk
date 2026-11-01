@@ -5,7 +5,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
 import net.minecraft.world.item.DyeColor;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -52,7 +51,23 @@ public class Config {
                             "blue:#5583F8",
                             "purple:#C061FF",
                             "magenta:#F85EC4",
-                            "pink:#FF87A9"
+                            "pink:#FF87A9",
+                            "maroon:#7B2713",
+                            "rose:#FF5E64",
+                            "coral:#DF7758",
+                            "indigo:#331E57",
+                            "navy:#153D64",
+                            "slate:#4C5E86",
+                            "olive:#8C8F2A",
+                            "amber:#D7AF00",
+                            "beige:#E1D5A3",
+                            "teal:#2F7B67",
+                            "mint:#38CE7D",
+                            "aqua:#5EF0CC",
+                            "verdant:#255714",
+                            "forest:#32A326",
+                            "ginger:#CF6121",
+                            "tan:#F49C5D"
                       ), () -> "", Server::validateChalkColorsDefinition);
 
                 ADD_DYED_CHALKS_TO_TAB = builder
@@ -108,33 +123,33 @@ public class Config {
 
         private static boolean validateChalkColorsDefinition(Object object) {
             if (!(object instanceof String value)) {
-                Chalk.LOGGER.error("[{}] is not valid value for chalk_colors.", object);
+                // Chalk.LOGGER.error("[{}] is not valid value for chalk_colors.", object);
                 return false;
             }
 
             if (!value.contains(":")) {
-                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", value);
+                // Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", value);
                 return false;
             }
 
             String[] split = value.trim().split(":");
 
             if (split.length != 2) {
-                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", value);
+                // Chalk.LOGGER.error("[{}] is not valid chalk color mapping. Should be in format '<dye>:<hex-color>'.", value);
                 return false;
             }
 
+            /* Disabled because DyeDepot colors will be removed if the mod is not installed
             @Nullable DyeColor dyeColor = DyeColor.byName(split[0].trim(), null);
-
             if (dyeColor == null) {
-                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a known DyeColor.", value, split[0].trim());
+                // Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a known DyeColor.", value, split[0].trim());
                 return false;
-            }
+            }*/
 
             try {
                 Long.parseLong(split[1].trim().replace("#", ""), 16);
             } catch (NumberFormatException e) {
-                Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a valid hex color value.", value, split[1].trim());
+                // Chalk.LOGGER.error("[{}] is not valid chalk color mapping. '{}' is not a valid hex color value.", value, split[1].trim());
                 return false;
             }
 

@@ -41,7 +41,10 @@ dependencies {
 
     modLocalRuntime("curse.maven:embeddium-908741:6118392")
 
-    modLocalRuntime("tschipp.carryon:carryon-neoforge-${minecraft_version}:${carry_on_version}" )
+    modLocalRuntime("tschipp.carryon:carryon-neoforge-${minecraft_version}:${carry_on_version}")
+
+    // modImplementation("curse.maven:dyenamics-509276:9011797")
+    // modImplementation("maven.modrinth:dye-depot:9aHqSxUo")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive = false }
     shadowBundle(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
