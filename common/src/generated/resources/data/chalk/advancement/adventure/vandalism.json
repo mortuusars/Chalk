@@ -17,11 +17,8 @@
     "hidden": true,
     "icon": {
       "components": {
-        "minecraft:dyed_color": {
-          "rgb": 12435390
-        }
+        "minecraft:dyed_color": 12435390
       },
-      "count": 1,
       "id": "chalk:chalk"
     },
     "title": {

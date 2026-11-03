@@ -26,6 +26,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -145,7 +146,7 @@ public interface MarkDrawable {
 
         if (placeMark(player.level(), context.markPos(), context.markFacing(), mark) instanceof Mark drawnMark) {
             onMarkDrawn(player, context, drawnMark);
-            player.swing(context.hand());
+            player.swing(context.hand(), SwingAnimation.DEFAULT, true);
             return true;
         }
 
@@ -178,21 +179,17 @@ public interface MarkDrawable {
 
     default void onMarkDrawn(Player player, MarkDrawingContext context, Mark mark) {
         if (player instanceof ServerPlayer serverPlayer) {
-            float R = (mark.color() & 0x00FF0000) >> 16;
-            float G = (mark.color() & 0x0000FF00) >> 8;
-            float B = (mark.color() & 0x000000FF);
-
             Vector3f pos = PositionUtils.blockCenterOffsetToFace(context.markPos(), context.markFacing(), 0.25f);
 
-            serverPlayer.serverLevel().sendParticles(new DustParticleOptions(new Vector3f(R / 255, G / 255, B / 255), 2f),
+            serverPlayer.level().sendParticles(new DustParticleOptions(mark.color(), 2f),
                   pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
-            serverPlayer.serverLevel().playSound(null, pos.x(), pos.y(), pos.z(), Chalk.SoundEvents.MARK_DRAWN.get(),
+            serverPlayer.level().playSound(null, pos.x(), pos.y(), pos.z(), Chalk.SoundEvents.MARK_DRAWN.get(),
                   SoundSource.BLOCKS, 0.7f, serverPlayer.getRandom().nextFloat() * 0.2f + 0.8f);
 
             if (mark.glowing()) {
-                serverPlayer.serverLevel().playSound(null, context.markPos(),
+                serverPlayer.level().playSound(null, context.markPos(),
                       Chalk.SoundEvents.GLOWING.get(), SoundSource.BLOCKS, 0.8f, 1f);
-                serverPlayer.serverLevel().sendParticles(ParticleTypes.END_ROD, pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
+                serverPlayer.level().sendParticles(ParticleTypes.END_ROD, pos.x(), pos.y(), pos.z(), 1, 0, 0, 0, 0);
             }
         }
     }
@@ -202,7 +199,9 @@ public interface MarkDrawable {
     static ItemStack findMatching(Inventory inventory, int color, @Nullable Supplier<ItemStack> fallback) {
         ItemStack anyDrawable = ItemStack.EMPTY;
 
-        for (ItemStack item : inventory.items) {
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            ItemStack item = inventory.getItem(i);
+
             if (!(item.getItem() instanceof MarkDrawable drawable)) {
                 continue;
             }

@@ -39,7 +39,6 @@
       "translate": "advancement.chalk.consumed_by_the_light.description"
     },
     "icon": {
-      "count": 1,
       "id": "chalk:chalk"
     },
     "title": {

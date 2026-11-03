@@ -2,110 +2,81 @@
   "type": "minecraft:chest",
   "pools": [
     {
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "components": {
-                "minecraft:dyed_color": {
-                  "rgb": -393218
-                }
-              },
-              "function": "minecraft:set_components"
+          "modifier": {
+            "type": "minecraft:set_components",
+            "components": {
+              "minecraft:dyed_color": -393218
             }
-          ],
+          },
           "name": "chalk:chalk",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "components": {
-                "minecraft:dyed_color": {
-                  "rgb": -6447721
-                }
-              },
-              "function": "minecraft:set_components"
+          "modifier": {
+            "type": "minecraft:set_components",
+            "components": {
+              "minecraft:dyed_color": -6447721
             }
-          ],
+          },
           "name": "chalk:chalk",
           "weight": 4
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "components": {
-                "minecraft:dyed_color": {
-                  "rgb": -12103854
-                }
-              },
-              "function": "minecraft:set_components"
+          "modifier": {
+            "type": "minecraft:set_components",
+            "components": {
+              "minecraft:dyed_color": -12103854
             }
-          ],
+          },
           "name": "chalk:chalk",
           "weight": 3
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "components": {
-                "minecraft:dyed_color": {
-                  "rgb": -14869215
-                }
-              },
-              "function": "minecraft:set_components"
+          "modifier": {
+            "type": "minecraft:set_components",
+            "components": {
+              "minecraft:dyed_color": -14869215
             }
-          ],
+          },
           "name": "chalk:chalk",
           "weight": 2
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "components": {
-                "minecraft:dyed_color": {
-                  "rgb": -75715
-                }
-              },
-              "function": "minecraft:set_components"
+          "modifier": {
+            "type": "minecraft:set_components",
+            "components": {
+              "minecraft:dyed_color": -75715
             }
-          ],
+          },
           "name": "chalk:chalk",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "components": {
-                "minecraft:dyed_color": {
-                  "rgb": -12930086
-                }
-              },
-              "function": "minecraft:set_components"
+          "modifier": {
+            "type": "minecraft:set_components",
+            "components": {
+              "minecraft:dyed_color": -12930086
             }
-          ],
+          },
           "name": "chalk:chalk",
           "weight": 5
         },
         {
           "type": "minecraft:item",
-          "functions": [
-            {
-              "components": {
-                "minecraft:dyed_color": {
-                  "rgb": -425955
-                }
-              },
-              "function": "minecraft:set_components"
+          "modifier": {
+            "type": "minecraft:set_components",
+            "components": {
+              "minecraft:dyed_color": -425955
             }
-          ],
+          },
           "name": "chalk:chalk",
           "weight": 5
         },
@@ -114,7 +85,7 @@
           "weight": 50
         }
       ],
-      "rolls": 2.0
+      "rolls": 2
     }
   ],
   "random_sequence": "chalk:chests/village_chalks"

@@ -5,13 +5,13 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.Chalk;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.*;
+import net.minecraft.core.registries.codec.RegistryFileCodec;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.RegistryFileCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +21,8 @@ import java.util.stream.Stream;
 
 import static io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol.OrientationBehavior.*;
 
-public record MarkSymbol(ResourceLocation texture, int rotationOffset, OrientationBehavior orientationBehavior,
-                         String group, int groupPriority, Optional<ResourceLocation> requiredAdvancement, boolean supporterOnly) {
+public record MarkSymbol(Identifier texture, int rotationOffset, OrientationBehavior orientationBehavior,
+                         String group, int groupPriority, Optional<Identifier> requiredAdvancement, boolean supporterOnly) {
 
     public static final String GROUP_PRIMARY = "primary";
     public static final ResourceKey<MarkSymbol> ARROW =
@@ -98,59 +98,60 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
     // --
 
     public static final Codec<MarkSymbol> DIRECT_CODEC = RecordCodecBuilder.create(i -> i.group(
-          ResourceLocation.CODEC.fieldOf("texture").forGetter(MarkSymbol::texture),
+          Identifier.CODEC.fieldOf("texture").forGetter(MarkSymbol::texture),
           Codec.intRange(-180, 180).optionalFieldOf("rotation_offset", 0).forGetter(MarkSymbol::rotationOffset),
           OrientationBehavior.CODEC.optionalFieldOf("orientation_behavior", FULL).forGetter(MarkSymbol::orientationBehavior),
           Codec.STRING.optionalFieldOf("group", "symbols").forGetter(MarkSymbol::group),
           Codec.INT.optionalFieldOf("group_priority", 9999).forGetter(MarkSymbol::groupPriority),
-          ResourceLocation.CODEC.optionalFieldOf("required_advancement").forGetter(MarkSymbol::requiredAdvancement),
+          Identifier.CODEC.optionalFieldOf("required_advancement").forGetter(MarkSymbol::requiredAdvancement),
           Codec.BOOL.optionalFieldOf("supporter_only", false).forGetter(MarkSymbol::supporterOnly)
     ).apply(i, MarkSymbol::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, MarkSymbol> DIRECT_STREAM_CODEC = StreamCodec.of(
           (buffer, symbol) -> {
-              ResourceLocation.STREAM_CODEC.encode(buffer, symbol.texture());
+              Identifier.STREAM_CODEC.encode(buffer, symbol.texture());
               ByteBufCodecs.INT.encode(buffer, symbol.rotationOffset());
               OrientationBehavior.STREAM_CODEC.encode(buffer, symbol.orientationBehavior());
               ByteBufCodecs.STRING_UTF8.encode(buffer, symbol.group());
               ByteBufCodecs.INT.encode(buffer, symbol.groupPriority());
-              ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC).encode(buffer, symbol.requiredAdvancement());
+              ByteBufCodecs.optional(Identifier.STREAM_CODEC).encode(buffer, symbol.requiredAdvancement());
               ByteBufCodecs.BOOL.encode(buffer, symbol.supporterOnly());
           },
           buffer -> new MarkSymbol(
-                ResourceLocation.STREAM_CODEC.decode(buffer),
+                Identifier.STREAM_CODEC.decode(buffer),
                 ByteBufCodecs.INT.decode(buffer),
                 OrientationBehavior.STREAM_CODEC.decode(buffer),
                 ByteBufCodecs.STRING_UTF8.decode(buffer),
                 ByteBufCodecs.INT.decode(buffer),
-                ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC).decode(buffer),
+                ByteBufCodecs.optional(Identifier.STREAM_CODEC).decode(buffer),
                 ByteBufCodecs.BOOL.decode(buffer)
           )
     );
 
     public static final Codec<Holder<MarkSymbol>> CODEC =
-          RegistryFileCodec.create(Chalk.Registries.MARK_SYMBOL, DIRECT_CODEC);
+          RegistryFileCodec.create(Chalk.Registries.MARK_SYMBOL, DIRECT_CODEC, false);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<MarkSymbol>> STREAM_CODEC =
           ByteBufCodecs.holder(Chalk.Registries.MARK_SYMBOL, DIRECT_STREAM_CODEC);
 
     // --
 
-    public static Optional<Holder.Reference<MarkSymbol>> get(RegistryAccess registryAccess, ResourceKey<MarkSymbol> key) {
-        return registryAccess.registryOrThrow(Chalk.Registries.MARK_SYMBOL).getHolder(key);
+    public static Optional<Holder.Reference<MarkSymbol>> get(HolderLookup.Provider registries, ResourceKey<MarkSymbol> key) {
+        return registries.get(key);
     }
 
-    public static Holder<MarkSymbol> getOrThrow(RegistryAccess registryAccess, ResourceKey<MarkSymbol> key) {
-        return registryAccess.registryOrThrow(Chalk.Registries.MARK_SYMBOL).getHolderOrThrow(key);
+    public static Holder<MarkSymbol> getOrThrow(HolderLookup.Provider registries, ResourceKey<MarkSymbol> key) {
+        return get(registries, key).orElseThrow();
     }
 
-    public static Holder<MarkSymbol> withFallback(RegistryAccess registryAccess, Optional<Holder<MarkSymbol>> symbol) {
-        Registry<MarkSymbol> registry = registryAccess.registryOrThrow(Chalk.Registries.MARK_SYMBOL);
-        return symbol
-              .or(() -> registry.getHolder(DEFAULT))
-              .or(registry::getAny)
-              .orElseThrow();
-    }
+//    public static Holder<MarkSymbol> withFallback(HolderLookup.Provider registries, Optional<Holder<MarkSymbol>> symbol) {
+//        HolderLookup.RegistryLookup<MarkSymbol> registry = registries.lookupOrThrow(Chalk.Registries.MARK_SYMBOL);
+//        registry.
+//        return symbol
+//              .or(() -> registry.get(DEFAULT))
+//              .or(registry::getAny)
+//              .orElseThrow();
+//    }
 
     public static Stream<Holder<MarkSymbol>> getAllHolders(HolderLookup.Provider lookup, boolean includeSupporterOnly) {
         Stream<Holder<MarkSymbol>> stream = lookup.lookupOrThrow(Chalk.Registries.MARK_SYMBOL)
@@ -200,14 +201,14 @@ public record MarkSymbol(ResourceLocation texture, int rotationOffset, Orientati
         register(context, HOE, 0, CARDINAL, GROUP_TOOLS, 50, adv("minecraft:story/iron_tools"), false);
     }
 
-    static Optional<ResourceLocation> adv(String id) {
-        return Optional.of(ResourceLocation.parse(id));
+    static Optional<Identifier> adv(String id) {
+        return Optional.of(Identifier.parse(id));
     }
 
     static void register(BootstrapContext<MarkSymbol> context, ResourceKey<MarkSymbol> key,
                          int rotationOffset, OrientationBehavior behavior, String group, int groupPriority,
-                         Optional<ResourceLocation> requiredAdvancement, boolean supporterOnly) {
-        ResourceLocation texture = key.location().withPrefix("block/mark/");
+                         Optional<Identifier> requiredAdvancement, boolean supporterOnly) {
+        Identifier texture = key.identifier().withPrefix("block/mark/");
         context.register(key, new MarkSymbol(texture, rotationOffset, behavior, group, groupPriority, requiredAdvancement, supporterOnly));
     }
 

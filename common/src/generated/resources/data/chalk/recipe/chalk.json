@@ -2,12 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    {
-      "item": "minecraft:calcite"
-    }
+    "minecraft:calcite"
   ],
   "result": {
-    "count": 1,
     "id": "chalk:chalk"
   }
 }

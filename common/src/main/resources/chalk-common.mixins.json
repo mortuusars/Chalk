@@ -5,15 +5,13 @@
   "minVersion": "0.8",
   "client": [
     "creative_mark_breaking.MultiPlayerGameModeMixin",
-    "keep_sneaking_while_selecting.LocalPlayerMixin",
-    "single_mark_outline.LevelRendererMixin",
-    "tooltip.ClientTooltipComponentMixin"
+    "keep_sneaking_while_selecting.KeyboardInputMixin",
+    "single_mark_outline.LevelExtractorMixin"
   ],
   "mixins": [
     "advancements.PlayerAdvancementsMixin",
     "advancements.PlayerMixin",
-    "chalk_dye_colors.DyedItemColorMixin",
-    "chalk_item_particles.LivingEntityMixin"
+    "chalk_item_particles.LivingEntityMixin",
   ],
   "injectors": {
     "defaultRequire": 1

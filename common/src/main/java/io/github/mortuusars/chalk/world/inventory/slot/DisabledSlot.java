@@ -1,14 +1,14 @@
 package io.github.mortuusars.chalk.world.inventory.slot;
 
 import io.github.mortuusars.chalk.Chalk;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class DisabledSlot extends Slot {
-    public static final ResourceLocation OVERLAY_SPRITE = Chalk.resource("disabled_slot_overlay");
+    public static final Identifier OVERLAY_SPRITE = Chalk.resource("disabled_slot_overlay");
 
     private boolean active = true;
 

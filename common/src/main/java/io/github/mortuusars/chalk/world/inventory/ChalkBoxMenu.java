@@ -10,10 +10,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,17 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
 
     public ChalkBoxMenu(int containerId, Inventory playerInventory, InteractionHand hand) {
         super(Chalk.MenuTypes.CHALK_BOX.get(), containerId, playerInventory, hand);
+        addSlotListener(new ContainerListener() {
+            @Override
+            public void slotChanged(@NonNull AbstractContainerMenu container, int slotIndex, @NonNull ItemStack itemStack) {
+                containerChanged(slotIndex, itemStack);
+            }
+
+            @Override
+            public void dataChanged(@NonNull AbstractContainerMenu container, int id, int value) {
+
+            }
+        });
     }
 
     @Override
@@ -32,7 +46,7 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
     }
 
     @Override
-    public void initializeContents(int stateId, List<ItemStack> items, ItemStack carried) {
+    public void initializeContents(int stateId, @NonNull List<ItemStack> items, @NonNull ItemStack carried) {
         super.initializeContents(stateId, items, carried);
         containerInitialized = true;
     }
@@ -43,19 +57,20 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
         while (items.size() < ChalkBoxContents.SLOTS) {
             items.add(ItemStack.EMPTY);
         }
-
-        SimpleContainer container = new SimpleContainer(items.stream().limit(ChalkBoxContents.SLOTS).toArray(ItemStack[]::new));
-        container.addListener(this::containerChanged);
-        return container;
+        return new SimpleContainer(items.stream().limit(ChalkBoxContents.SLOTS).toArray(ItemStack[]::new));
     }
 
-    protected void containerChanged(Container container) {
+    protected void containerChanged(int slotIndex, ItemStack itemStack) {
         if (!containerInitialized && getPlayer().level().isClientSide()) {
             return;
         }
 
+        if (slotIndex >= ChalkBoxContents.SLOTS) {
+            return;
+        }
+
         getContents().mutable()
-              .setItems(container)
+              .setItems(getContainer())
               .updateGlow()
               .toImmutable(getItemInHand());
     }
@@ -73,7 +88,7 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
 
                 addSlot(new Slot(getContainer(), index, x, y) {
                     @Override
-                    public boolean mayPlace(ItemStack stack) {
+                    public boolean mayPlace(@NonNull ItemStack stack) {
                         return ChalkBoxContents.canHold(getContainerSlot(), stack);
                     }
                 });
@@ -82,7 +97,7 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
 
         addSlot(new Slot(getContainer(), ChalkBoxContents.GLOWINGS_SLOT, 134, 35) {
             @Override
-            public boolean mayPlace(ItemStack stack) {
+            public boolean mayPlace(@NonNull ItemStack stack) {
                 return isGlowEnabled() && ChalkBoxContents.canHold(getContainerSlot(), stack);
             }
 
@@ -93,7 +108,7 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
 
             @Override
             public void set(@NotNull ItemStack stack) {
-                if (getPlayer().level().isClientSide && this.getItem().isEmpty()
+                if (getPlayer().level().isClientSide() && this.getItem().isEmpty()
                       && getGlow() <= 0 && stack.is(Chalk.Tags.Items.GLOWINGS)) {
                     Vec3 pos = getPlayer().position();
                     getPlayer().level().playSound(getPlayer(), pos.x, pos.y, pos.z, Chalk.SoundEvents.GLOW_APPLIED.get(), SoundSource.PLAYERS, 1f, 1f);
@@ -106,7 +121,7 @@ public class ChalkBoxMenu extends AbstractInHandContainerMenu {
     }
 
     @Override
-    public boolean clickMenuButton(Player player, int id) {
+    public boolean clickMenuButton(@NonNull Player player, int id) {
         if (id >= 100 && id < 100 + ChalkBoxContents.CHALK_SLOTS) {
             setSelectedSlot(id - 100);
             return true;

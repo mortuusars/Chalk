@@ -3,9 +3,14 @@ package io.github.mortuusars.chalk.advancements.trigger;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.advancements.PlayerSleepInfo;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.predicates.DistancePredicate;
+import net.minecraft.advancements.predicates.LocationPredicate;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,19 +26,20 @@ public class ConsecutiveSleepingTrigger extends SimpleCriterionTrigger<Consecuti
         this.trigger(player, triggerInstance -> triggerInstance.matches(player, sleepInfo));
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, Optional<LocationPredicate> location,
-                                  MinMaxBounds.Ints count, DistancePredicate distance) implements SimpleCriterionTrigger.SimpleInstance {
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player, Optional<LocationPredicate> location,
+                                  MinMaxBounds.Ints count,
+                                  DistancePredicate distance) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance ->
-                instance.group(
-                                EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
-                                LocationPredicate.CODEC.optionalFieldOf("location").forGetter(TriggerInstance::location),
-                                MinMaxBounds.Ints.CODEC.fieldOf("count").forGetter(TriggerInstance::count),
-                                DistancePredicate.CODEC.fieldOf("distance").forGetter(TriggerInstance::distance))
-                        .apply(instance, TriggerInstance::new));
+              instance.group(
+                          LootItemCondition.CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+                          LocationPredicate.CODEC.optionalFieldOf("location").forGetter(TriggerInstance::location),
+                          MinMaxBounds.Ints.CODEC.fieldOf("count").forGetter(TriggerInstance::count),
+                          DistancePredicate.CODEC.fieldOf("distance").forGetter(TriggerInstance::distance))
+                    .apply(instance, TriggerInstance::new));
 
         public boolean matches(ServerPlayer player, PlayerSleepInfo sleepInfo) {
             boolean locationMatches = this.location.map(p ->
-                    p.matches(player.serverLevel(), player.getX(), player.getY(), player.getZ())).orElse(true);
+                  p.matches(player.level(), player.getX(), player.getY(), player.getZ())).orElse(true);
             if (!locationMatches) {
                 return false;
             }
@@ -53,7 +59,7 @@ public class ConsecutiveSleepingTrigger extends SimpleCriterionTrigger<Consecuti
                 BlockPos pos = sleepPositions.get(i);
 
                 if (distance.matches(lastSleepPos.getX(), lastSleepPos.getY(), lastSleepPos.getZ(),
-                        pos.getX(), pos.getY(), pos.getZ()))
+                      pos.getX(), pos.getY(), pos.getZ()))
                     matchedDistanceCount++;
                 else
                     break;

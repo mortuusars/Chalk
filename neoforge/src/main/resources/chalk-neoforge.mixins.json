@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "plugin": "io.github.mortuusars.chalk.neoforge.ChalkMixinPlugin",
   "client": [
+    "MarkBlockEntityMixin"
   ],
   "mixins": [
     "NeoForgeMarkBlock"

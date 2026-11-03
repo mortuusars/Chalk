@@ -2,26 +2,22 @@ package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.ItemTagsProvider;
-import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.data.PackOutput;
+import net.minecraft.references.ItemIds;
+import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class ModItemTagsProvider extends ItemTagsProvider {
-    public ModItemTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider,
-                               BlockTagsProvider blockTagsProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), lookupProvider, blockTagsProvider.contentsGetter(), Chalk.ID, existingFileHelper);
+    public ModItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, Chalk.ID);
     }
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider provider) {
         tag(Chalk.Tags.Items.GLOWINGS)
-                .add(Items.GLOW_INK_SAC)
-                .add(Items.GLOWSTONE_DUST);
+                .add(ItemIds.GLOW_INK_SAC)
+                .add(ItemIds.GLOWSTONE_DUST);
     }
 }

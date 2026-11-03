@@ -1,0 +1,39 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "chalk:item/chalk_box_glowing",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -1
+            },
+            {
+              "type": "chalk:chalk_box_chalk_color"
+            }
+          ]
+        },
+        "when": [
+          true
+        ]
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "chalk:item/chalk_box",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -1
+        },
+        {
+          "type": "chalk:chalk_box_chalk_color"
+        }
+      ]
+    },
+    "property": "chalk:glowing"
+  }
+}

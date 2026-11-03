@@ -1,6 +1,5 @@
 package io.github.mortuusars.chalk.world.block;
 
-import com.mojang.serialization.MapCodec;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.client.ClientHelper;
@@ -11,7 +10,6 @@ import io.github.mortuusars.chalk.world.chalk.DrawnMark;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.MarkDrawable;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -19,10 +17,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -35,6 +33,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -44,12 +43,11 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Optional;
 
 public class MarkBlock extends BaseEntityBlock {
-    public static final MapCodec<MarkBlock> CODEC = simpleCodec(MarkBlock::new);
-
     public static final BooleanProperty GLOWING = BooleanProperty.create("glowing");
 
     public static final VoxelShape SHAPE_DOWN = Block.box(1.5D, 15.5D, 1.5D, 14.5D, 16D, 14.5D);
@@ -92,42 +90,43 @@ public class MarkBlock extends BaseEntityBlock {
     }
 
     @Override
-    protected @NotNull MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
-    @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+    public @Nullable BlockEntity newBlockEntity(@NonNull BlockPos pos, @NonNull BlockState state) {
         return new MarkBlockEntity(pos, state);
     }
 
     // --
 
     @Override
-    protected @NotNull RenderShape getRenderShape(BlockState state) {
+    protected @NotNull RenderShape getRenderShape(@NonNull BlockState state) {
         return RenderShape.MODEL;
     }
 
     @Override
-    protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+    protected int getLightDampening(@NonNull BlockState state) {
+        return super.getLightDampening(state);
+    }
+
+    @Override
+    protected boolean propagatesSkylightDown(@NonNull BlockState state) {
         return true;
     }
 
     @Override
-    protected @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    protected @NotNull VoxelShape getShape(@NonNull BlockState state, BlockGetter level, @NonNull BlockPos pos, @NonNull CollisionContext context) {
         return level.getBlockEntity(pos) instanceof MarkBlockEntity markBlockEntity
               ? COMBINED_SHAPES[markBlockEntity.getMarks().getMask()]
               : Shapes.empty();
     }
 
     @Override
-    public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
+    public boolean canSurvive(@NonNull BlockState state, LevelReader level, @NonNull BlockPos pos) {
         return !(level.getBlockEntity(pos) instanceof MarkBlockEntity markBlockEntity) || !markBlockEntity.getMarks().isEmpty();
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+    protected void neighborChanged(@NonNull BlockState state, @NonNull Level level, @NonNull BlockPos pos,
+                                   @NonNull Block block, @Nullable Orientation orientation, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, block, orientation, movedByPiston);
         recheckAndUpdate(level, pos);
     }
 
@@ -168,7 +167,7 @@ public class MarkBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void animateTick(BlockState blockState, Level level, BlockPos pos, RandomSource random) {
+    public void animateTick(@NonNull BlockState blockState, @NonNull Level level, @NonNull BlockPos pos, @NonNull RandomSource random) {
         if (Config.Common.GLOWING_MARK_PARTICLES.get() && level.getBlockEntity(pos) instanceof MarkBlockEntity markBlockEntity) {
             markBlockEntity.getMarks().forEach((facing, mark) -> {
                 if (mark.glowing() && random.nextInt(90) == 0) {
@@ -182,7 +181,8 @@ public class MarkBlock extends BaseEntityBlock {
     // -- Interact
 
     @Override
-    protected @NotNull ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
+    protected @NotNull InteractionResult useItemOn(@NonNull ItemStack stack, @NonNull BlockState state, @NonNull Level level,
+                                                   @NonNull BlockPos pos, Player player, @NonNull InteractionHand hand, @NonNull BlockHitResult hitResult) {
         ItemStack usedStack = player.getItemInHand(hand);
 
         if (Config.Server.GLOWING_ENABLED.get()
@@ -210,10 +210,10 @@ public class MarkBlock extends BaseEntityBlock {
                       serverPlayer, mark, pos, level.getBlockState(surfacePos).getMapColor(level, pos));
             }
 
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
 
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.PASS;
     }
 
     public ItemStack pick(Player player, LevelReader level, BlockPos pos, BlockState state, HitResult hitResult) {
@@ -233,11 +233,7 @@ public class MarkBlock extends BaseEntityBlock {
 
             if (level instanceof ServerLevel serverLevel) {
                 Vector3f centerOffset = PositionUtils.blockCenterOffsetToFace(pos, facing, 0.25f);
-                Vector3f color = new Vector3f(
-                      FastColor.ARGB32.red(mark.color()) / 255f,
-                      FastColor.ARGB32.green(mark.color()) / 255f,
-                      FastColor.ARGB32.blue(mark.color()) / 255f);
-                serverLevel.sendParticles(new DustParticleOptions(color, 2f),
+                serverLevel.sendParticles(new DustParticleOptions(mark.color(), 2f),
                       centerOffset.x(), centerOffset.y(), centerOffset.z(),
                       1, 0.1, 0.1, 0.1, 0.02);
 
@@ -256,7 +252,7 @@ public class MarkBlock extends BaseEntityBlock {
      * This method is not called when player is in creative mode, we handle that separately in {@link MultiPlayerGameModeMixin}.
      */
     @Override
-    protected void attack(BlockState state, Level level, BlockPos pos, Player player) {
+    protected void attack(@NonNull BlockState state, @NonNull Level level, @NonNull BlockPos pos, Player player) {
         if (player.level().isClientSide()) {
             ClientHelper.attackMarkBlock(pos);
         }
@@ -267,7 +263,7 @@ public class MarkBlock extends BaseEntityBlock {
      * Returning 0 here prevents usual block behavior.
      */
     @Override
-    protected float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos) {
+    protected float getDestroyProgress(@NonNull BlockState state, @NonNull Player player, @NonNull BlockGetter level, @NonNull BlockPos pos) {
         return 0;
     }
 

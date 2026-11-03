@@ -7,14 +7,14 @@ import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
 import io.github.mortuusars.mortaar.advancement.predicate.ColorPredicate;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.registries.codec.RegistryCodecs;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 public record MarkPredicate(Optional<HolderSet<MarkSymbol>> symbols, Optional<ColorPredicate> color, Optional<Boolean> glowing) {
     public static final Codec<MarkPredicate> CODEC = RecordCodecBuilder.create(i -> i.group(
-          RegistryCodecs.homogeneousList(Chalk.Registries.MARK_SYMBOL).optionalFieldOf("symbols").forGetter(MarkPredicate::symbols),
+          RegistryCodecs.holderSet(Chalk.Registries.MARK_SYMBOL).optionalFieldOf("symbols").forGetter(MarkPredicate::symbols),
           ColorPredicate.CODEC.optionalFieldOf("color").forGetter(MarkPredicate::color),
           Codec.BOOL.optionalFieldOf("glowing").forGetter(MarkPredicate::glowing)
     ).apply(i, MarkPredicate::new));

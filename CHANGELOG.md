@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.3 - 26.3 - 2026-11-08
+- Port to 26.3
+- **Chalk Box** is now using the same button scheme as a **Bundle**
+
 ## 2.0.3 - 2026-11-01
 - Chalks dyed with Dye Depot dyes will now have a full name (i.e. Maroon Chalk)
   - This setting might not have an effect in existing packs, unless chalk-server config is regenerated

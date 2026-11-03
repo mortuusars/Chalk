@@ -43,7 +43,7 @@
 
   "item.chalk.chalk_box": "Chalk Box",
   "item.chalk.chalk_box.tooltip.open": "§8[§7Use§8] in air to open",
-  "item.chalk.chalk_box.tooltip.insert": "§8[§7Right Click§8] with item to insert",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7Left Click§8] with item to insert",
   "item.chalk.chalk_box.tooltip.remove": "§8[§7Right Click§8] without item to remove selected",
   "item.chalk.chalk_box.tooltip.change_selected": "§8[§7Sneak + Use§8] in air to cycle selected",
   "item.chalk.chalk_box.tooltip.glow": "Glow: %s",

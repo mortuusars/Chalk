@@ -6,14 +6,19 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.advancements.predicate.MarkPredicate;
 import io.github.mortuusars.chalk.world.chalk.Mark;
 import io.github.mortuusars.mortaar.advancement.predicate.MapColorPredicate;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.predicates.BlockPredicate;
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.LocationPredicate;
+import net.minecraft.advancements.predicates.entity.EntityPredicate;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,7 +34,7 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
         this.trigger(player, triggerInstance -> triggerInstance.matches(player, drawingStack, markPos, mark, surfacePos));
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player,
+    public record TriggerInstance(Optional<Holder<LootItemCondition>> player,
                                   Optional<ItemPredicate> item,
                                   Optional<LocationPredicate> location,
                                   Optional<MarkPredicate> mark,
@@ -37,7 +42,8 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
                                   Optional<MapColorPredicate> surfaceColor) implements SimpleCriterionTrigger.SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(instance ->
-              instance.group(EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
+              instance.group(
+                          LootItemCondition.CODEC.optionalFieldOf("player").forGetter(TriggerInstance::player),
                           ItemPredicate.CODEC.optionalFieldOf("item").forGetter(TriggerInstance::item),
                           LocationPredicate.CODEC.optionalFieldOf("location").forGetter(TriggerInstance::location),
                           MarkPredicate.CODEC.optionalFieldOf("mark").forGetter(TriggerInstance::mark),
@@ -45,7 +51,7 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
                           MapColorPredicate.CODEC.optionalFieldOf("surface_color").forGetter(TriggerInstance::surfaceColor))
                     .apply(instance, TriggerInstance::new));
 
-        public static Criterion<MarkDrawnTrigger.TriggerInstance> structure(Holder<Structure> structureKey) {
+        public static Criterion<TriggerInstance> structure(Holder<Structure> structureKey) {
             TriggerInstance instance = new TriggerInstance(EntityPredicate.wrap(
                   Optional.empty()),
                   Optional.empty(),
@@ -77,23 +83,23 @@ public class MarkDrawnTrigger extends SimpleCriterionTrigger<MarkDrawnTrigger.Tr
 
         public boolean matches(ServerPlayer player, ItemStack item, BlockPos markPos, Mark mark, BlockPos surfacePos) {
             return (this.item.isEmpty() || this.item.get().test(item))
-                  && (this.location.isEmpty() || this.location.get().matches(player.serverLevel(), markPos.getX(), markPos.getY(), markPos.getZ()))
+                  && (this.location.isEmpty() || this.location.get().matches(player.level(), markPos.getX(), markPos.getY(), markPos.getZ()))
                   && (this.mark.isEmpty() || this.mark.get().matches(mark))
-                  && (this.surfaceBlock.isEmpty() || this.surfaceBlock.get().matches(player.serverLevel(), surfacePos))
+                  && (this.surfaceBlock.isEmpty() || this.surfaceBlock.get().matches(player.level(), surfacePos))
                   && (this.surfaceColor.isEmpty() || this.surfaceColor.get().matches(
-                        player.serverLevel().getBlockState(surfacePos).getMapColor(player.serverLevel(), surfacePos)));
+                        player.level().getBlockState(surfacePos).getMapColor(player.level(), surfacePos)));
         }
     }
 
     public static class Builder {
-        private @Nullable ContextAwarePredicate player;
+        private @Nullable Holder<LootItemCondition> player;
         private @Nullable ItemPredicate item;
         private @Nullable LocationPredicate location;
         private @Nullable MarkPredicate mark;
         private @Nullable BlockPredicate surfaceBlock;
         private @Nullable MapColorPredicate surfaceColor;
 
-        public Builder player(@Nullable ContextAwarePredicate player) {
+        public Builder player(@Nullable Holder<LootItemCondition> player) {
             this.player = player;
             return this;
         }

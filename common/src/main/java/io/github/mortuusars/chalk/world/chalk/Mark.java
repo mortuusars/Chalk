@@ -5,10 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.world.chalk.symbol.SymbolOrientation;
 import io.github.mortuusars.chalk.world.chalk.symbol.MarkSymbol;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.RegistryFixedCodec;
-import net.minecraft.util.FastColor;
+import net.minecraft.core.registries.codec.RegistryFixedCodec;
+import net.minecraft.util.ARGB;
 
 import java.util.Objects;
 
@@ -29,7 +28,7 @@ public record Mark(Holder<MarkSymbol> symbol, int color, SymbolOrientation orien
     }
 
     public Mark lerpColor(int targetColor, float delta) {
-        return withColor(FastColor.ARGB32.lerp(delta, color, targetColor));
+        return withColor(ARGB.srgbLerp(delta, color, targetColor));
     }
 
     public Mark withOrientation(SymbolOrientation orientation) {

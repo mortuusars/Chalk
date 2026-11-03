@@ -1,33 +1,26 @@
 package io.github.mortuusars.chalk.client.gui.screens;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.mortuusars.chalk.world.inventory.AbstractInHandContainerMenu;
 import io.github.mortuusars.chalk.world.inventory.slot.DisabledSlot;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
+import org.jspecify.annotations.NonNull;
 
 public class AbstractInHandContainerScreen<T extends AbstractInHandContainerMenu> extends AbstractContainerScreen<T> {
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    public AbstractInHandContainerScreen(T menu, Inventory playerInventory, Component title, ResourceLocation texture) {
-        super(menu, playerInventory, title);
+    public AbstractInHandContainerScreen(T menu, Inventory playerInventory, Component title, Identifier texture, int imageWidth, int imageHeight) {
+        super(menu, playerInventory, title, imageWidth, imageHeight);
         this.texture = texture;
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
-    }
-
-    public int getLeftPos() {
-        return leftPos;
-    }
-
-    public int getTopPos() {
-        return topPos;
     }
 
     @Override
@@ -37,10 +30,16 @@ public class AbstractInHandContainerScreen<T extends AbstractInHandContainerMenu
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         updateButtons();
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        renderTooltip(guiGraphics, mouseX, mouseY);
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(leftPos, topPos);
+        for (Slot slot : getMenu().slots) {
+            extractSlotOverlay(graphics, slot, mouseX, mouseY, partialTick);
+        }
+        graphics.pose().popMatrix();
+        extractTooltip(graphics, mouseX, mouseY);
     }
 
     protected void updateButtons() {
@@ -48,28 +47,34 @@ public class AbstractInHandContainerScreen<T extends AbstractInHandContainerMenu
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+    public void extractBackground(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(graphics, mouseX, mouseY, partialTick);
+
+        extractBackgroundBase(graphics, mouseX, mouseY, partialTick);
+
+        graphics.pose().pushMatrix();
+        graphics.pose().translate(leftPos, topPos);
+        for (Slot slot : getMenu().slots) {
+            extractSlotBackground(graphics, slot, mouseX, mouseY, partialTick);
+        }
+        graphics.pose().popMatrix();
     }
 
-    @Override
-    protected void renderSlot(GuiGraphics guiGraphics, Slot slot) {
-        super.renderSlot(guiGraphics, slot);
-        renderSlotOverlays(guiGraphics, slot);
+    protected void extractBackgroundBase(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, leftPos, topPos, 0, 0, imageWidth, imageHeight, 256, 256);
     }
 
-    protected void renderSlotOverlays(GuiGraphics guiGraphics, Slot slot) {
-        if (shouldRenderDisabledOverlayOver(slot)) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, 300);
-            RenderSystem.enableBlend();
-            guiGraphics.blitSprite(DisabledSlot.OVERLAY_SPRITE, slot.x - 1, slot.y - 1, 18, 18);
-            RenderSystem.disableBlend();
-            guiGraphics.pose().popPose();
+    protected void extractSlotBackground(@NonNull GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY, float partialTick) {
+
+    }
+
+    protected void extractSlotOverlay(@NonNull GuiGraphicsExtractor graphics, Slot slot, int mouseX, int mouseY, float partialTick) {
+        if (shouldShowDisabledOverlayOver(slot)) {
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, DisabledSlot.OVERLAY_SPRITE, slot.x - 1, slot.y - 1, 18, 18);
         }
     }
 
-    protected boolean shouldRenderDisabledOverlayOver(Slot slot) {
+    protected boolean shouldShowDisabledOverlayOver(Slot slot) {
         return slot instanceof DisabledSlot;
     }
 }

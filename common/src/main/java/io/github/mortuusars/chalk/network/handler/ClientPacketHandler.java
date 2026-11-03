@@ -3,6 +3,7 @@ package io.github.mortuusars.chalk.network.handler;
 import io.github.mortuusars.chalk.client.gui.screens.SymbolSelectScreen;
 import io.github.mortuusars.chalk.network.packet.clientbound.SelectSymbolAndDrawMarkClientboundPacket;
 import io.github.mortuusars.chalk.world.item.MarkDrawable;
+import io.github.mortuusars.mortaar.client.Minecrft;
 import net.minecraft.client.Minecraft;
 
 public class ClientPacketHandler {
@@ -13,7 +14,6 @@ public class ClientPacketHandler {
             return;
         }
 
-        SymbolSelectScreen symbolSelectScreen = new SymbolSelectScreen(packet.availableSymbols(), packet.context());
-        Minecraft.getInstance().setScreen(symbolSelectScreen);
+        Minecrft.get().gui.setScreen(new SymbolSelectScreen(packet.availableSymbols(), packet.context()));
     }
 }

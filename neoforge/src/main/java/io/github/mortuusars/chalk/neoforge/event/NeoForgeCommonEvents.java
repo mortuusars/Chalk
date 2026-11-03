@@ -14,13 +14,13 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.registries.DataPackRegistryEvent;
+import net.neoforged.neoforge.registries.NewDatapackRegistryEvent;
 
 @EventBusSubscriber(modid = Chalk.ID)
 public class NeoForgeCommonEvents {
     @SubscribeEvent
-    public static void addDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(Chalk.Registries.MARK_SYMBOL, MarkSymbol.DIRECT_CODEC, MarkSymbol.DIRECT_CODEC);
+    public static void addDatapackRegistries(NewDatapackRegistryEvent event) {
+        event.worldRegistry(Chalk.Registries.MARK_SYMBOL, MarkSymbol.DIRECT_CODEC, MarkSymbol.DIRECT_CODEC);
     }
 
     @SubscribeEvent
@@ -36,7 +36,7 @@ public class NeoForgeCommonEvents {
 
                     ItemStack stack = new ItemStack(Chalk.Items.CHALK.get());
                     int color = Chalk.Items.CHALK.get().getColorFromDye(stack, dyeColor);
-                    stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color, true));
+                    stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color));
                     event.accept(stack);
                 }
             }
@@ -47,14 +47,14 @@ public class NeoForgeCommonEvents {
 
     @SubscribeEvent
     public static void configLoaded(ModConfigEvent.Loading event) {
-        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
+        if (event.getConfig().getType() == ModConfig.Type.SYNCED) {
             Config.Server.loading();
         }
     }
 
     @SubscribeEvent
     public static void configLoaded(ModConfigEvent.Reloading event) {
-        if (event.getConfig().getType() == ModConfig.Type.SERVER) {
+        if (event.getConfig().getType() == ModConfig.Type.SYNCED) {
             Config.Server.reloading();
         }
     }

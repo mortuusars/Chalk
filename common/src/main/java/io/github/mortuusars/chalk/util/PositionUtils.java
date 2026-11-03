@@ -2,7 +2,6 @@ package io.github.mortuusars.chalk.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -19,9 +18,7 @@ public class PositionUtils {
      */
     public static Vector3f blockCenterOffsetToFace(BlockPos blockPos, Direction facing, float offset){
         Vector3f vec = blockCenter(blockPos);
-
-        Vec3i normal = facing.getNormal();
-        return new Vector3f(vec.x() - (normal.getX() * offset), vec.y() - (normal.getY() * offset), vec.z() - (normal.getZ() * offset));
+        return new Vector3f(vec.x() - (facing.getStepX() * offset), vec.y() - (facing.getStepY() * offset), vec.z() - (facing.getStepZ() * offset));
     }
 
     /**

@@ -11,21 +11,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.core.Holder;
 import net.neoforged.neoforge.common.loot.AddTableLootModifier;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 /**
  * Basically a copy of AddTableLootModifier just to allow disabling it through config.
  */
 public class ConfigurableAddTableLootModifier extends AddTableLootModifier {
-    public static final MapCodec<ConfigurableAddTableLootModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    IGlobalLootModifier.LOOT_CONDITIONS_CODEC.fieldOf("conditions").forGetter(glm -> glm.conditions),
-                    ResourceKey.codec(Registries.LOOT_TABLE).fieldOf("table").forGetter(ConfigurableAddTableLootModifier::table))
+    public static final MapCodec<ConfigurableAddTableLootModifier> CODEC = RecordCodecBuilder.mapCodec(instance -> codecStart(instance)
+            .and(ResourceKey.codec(Registries.LOOT_TABLE).fieldOf("table").forGetter(ConfigurableAddTableLootModifier::table))
             .apply(instance, ConfigurableAddTableLootModifier::new));
 
-    public ConfigurableAddTableLootModifier(LootItemCondition[] conditions, ResourceKey<LootTable> table) {
-        super(conditions, table);
+    public ConfigurableAddTableLootModifier(Optional<Holder<LootItemCondition>> condition, int priority, ResourceKey<LootTable> table) {
+        super(condition, priority, table);
     }
 
     @Override

@@ -24,7 +24,7 @@
 
   "item.chalk.chalk_box": "Коробка для мела",
   "item.chalk.chalk_box.tooltip.open": "§8[§7Использовать§8] в воздухе, чтобы открыть",
-  "item.chalk.chalk_box.tooltip.insert": "§8[§7ПКМ§8] с предметом, чтобы положить",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7ЛКМ§8] с предметом, чтобы положить",
   "item.chalk.chalk_box.tooltip.remove": "§8[§7ПКМ§8] без предмета, чтобы убрать выбранное",
   "item.chalk.chalk_box.tooltip.change_selected": "§8[§7Шифт + Использовать§8] в воздухе, чтобы выбрать другое",
   "item.chalk.chalk_box.tooltip.glow": "Свечение: %s",

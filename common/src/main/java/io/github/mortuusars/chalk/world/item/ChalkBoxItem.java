@@ -7,8 +7,8 @@ import io.github.mortuusars.chalk.world.chalk.MarkDrawingContext;
 import io.github.mortuusars.chalk.world.inventory.ChalkBoxMenu;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import io.github.mortuusars.mortaar.Platform;
+import io.github.mortuusars.mortaar.client.Minecrft;
 import io.github.mortuusars.mortaar.world.item.ApplicationTargetItem;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.*;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -24,12 +23,14 @@ import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTargetItem {
     public ChalkBoxItem(Properties properties) {
@@ -65,20 +66,21 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
               ? Optional.of(getContents(stack)) : Optional.empty();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context,
-                                @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+    public void appendHoverText(@NonNull ItemStack itemStack, @NonNull TooltipContext context, @NonNull TooltipDisplay display,
+                                @NonNull Consumer<Component> builder, @NonNull TooltipFlag tooltipFlag) {
         if (!Config.Client.CHALK_BOX_TOOLTIP_DETAILS.get()) {
             return;
         }
 
-        if (!Screen.hasShiftDown()) {
-            tooltipComponents.add(Component.translatable("item.chalk.tooltip.hold_for_details"));
+        if (!Minecrft.get().hasShiftDown()) {
+            builder.accept(Component.translatable("item.chalk.tooltip.hold_for_details"));
         } else {
-            tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.open"));
-            tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.insert"));
-            tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.remove"));
-            tooltipComponents.add(Component.translatable("item.chalk.chalk_box.tooltip.change_selected"));
+            builder.accept(Component.translatable("item.chalk.chalk_box.tooltip.open"));
+            builder.accept(Component.translatable("item.chalk.chalk_box.tooltip.insert"));
+            builder.accept(Component.translatable("item.chalk.chalk_box.tooltip.remove"));
+            builder.accept(Component.translatable("item.chalk.chalk_box.tooltip.change_selected"));
         }
     }
 
@@ -90,43 +92,39 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
     // -- Bar
 
     @Override
-    public boolean isBarVisible(ItemStack stack) {
+    public boolean isBarVisible(@NonNull ItemStack stack) {
         return Config.Server.CHALK_BOX_SHOW_DURABILITY_BAR.get()
               ? getSelectedChalk(stack).isBarVisible()
               : super.isBarVisible(stack);
     }
 
     @Override
-    public int getBarWidth(ItemStack stack) {
+    public int getBarWidth(@NonNull ItemStack stack) {
         return getSelectedChalk(stack).getBarWidth();
     }
 
     @Override
-    public int getBarColor(ItemStack stack) {
+    public int getBarColor(@NonNull ItemStack stack) {
         return getSelectedChalk(stack).getBarColor();
     }
 
     // --
 
     @Override
-    public boolean isEnchantable(@NotNull ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
-        if (action != ClickAction.SECONDARY || !slot.allowModification(player)) {
+    public boolean overrideOtherStackedOnMe(@NonNull ItemStack self, @NonNull ItemStack other, @NonNull Slot slot,
+                                            @NonNull ClickAction action, @NonNull Player player, @NonNull SlotAccess carriedItem) {
+        if (!slot.allowModification(player)) {
             return false;
         }
 
-        ChalkBoxContents contents = getContents(stack);
+        ChalkBoxContents contents = getContents(self);
 
         // Extract selected
-        if (other.isEmpty()) {
+        if (action == ClickAction.SECONDARY && other.isEmpty()) {
             ItemStack selectedChalk = contents.getSelectedChalk();
             if (!selectedChalk.isEmpty()) {
-                slot.set(contents.mutable().setItem(contents.selected(), ItemStack.EMPTY).toImmutable(stack));
-                access.set(selectedChalk.copy());
+                slot.set(contents.mutable().setItem(contents.selected(), ItemStack.EMPTY).toImmutable(self));
+                carriedItem.set(selectedChalk.copy());
                 player.level().playSound(player, player, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS, 1, 1);
                 player.resetAttackStrengthTicker();
                 return true;
@@ -134,8 +132,8 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
 
             ItemStack glowingItem = contents.getItem(ChalkBoxContents.GLOWINGS_SLOT);
             if (Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && !glowingItem.isEmpty()) {
-                slot.set(contents.mutable().setItem(ChalkBoxContents.GLOWINGS_SLOT, ItemStack.EMPTY).toImmutable(stack));
-                access.set(glowingItem.copy());
+                slot.set(contents.mutable().setItem(ChalkBoxContents.GLOWINGS_SLOT, ItemStack.EMPTY).toImmutable(self));
+                carriedItem.set(glowingItem.copy());
                 player.level().playSound(player, player, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS, 1, 1);
                 player.resetAttackStrengthTicker();
                 return true;
@@ -146,11 +144,11 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
         }
 
         // Insert chalk
-        if (other.getItem() instanceof ChalkItem) {
+        if (action == ClickAction.PRIMARY && other.getItem() instanceof ChalkItem) {
             for (int i = 0; i < ChalkBoxContents.CHALK_SLOTS; i++) {
                 if (contents.getItem(i).isEmpty()) {
-                    access.set(ItemStack.EMPTY);
-                    slot.set(contents.mutable().setItem(i, other.copy()).toImmutable(stack));
+                    carriedItem.set(ItemStack.EMPTY);
+                    slot.set(contents.mutable().setItem(i, other.copy()).toImmutable(self));
                     player.level().playSound(player, player, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS, 1, 1);
                     player.resetAttackStrengthTicker();
                     return true;
@@ -162,16 +160,19 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
         }
 
         // Insert glowing
-        if (Config.Server.GLOWING_ENABLED.get() && Config.Server.CHALK_BOX_GLOWING_ENABLED.get() && other.is(Chalk.Tags.Items.GLOWINGS)) {
+        if (action == ClickAction.PRIMARY
+              && Config.Server.GLOWING_ENABLED.get()
+              && Config.Server.CHALK_BOX_GLOWING_ENABLED.get()
+              && other.is(Chalk.Tags.Items.GLOWINGS)) {
             ItemStack existing = contents.getItem(ChalkBoxContents.GLOWINGS_SLOT);
             int glowBeforeInsertion = contents.glow();
 
             if (existing.isEmpty()) {
-                access.set(ItemStack.EMPTY);
+                carriedItem.set(ItemStack.EMPTY);
                 slot.set(contents.mutable()
                       .setItem(ChalkBoxContents.GLOWINGS_SLOT, other.copy())
                       .updateGlow()
-                      .toImmutable(stack));
+                      .toImmutable(self));
             } else if (existing.getCount() >= existing.getMaxStackSize() || !ItemStack.isSameItemSameComponents(existing, other)) {
                 player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
                 return true;
@@ -186,10 +187,10 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
                 slot.set(contents.mutable()
                       .setItem(ChalkBoxContents.GLOWINGS_SLOT, existing)
                       .updateGlow()
-                      .toImmutable(stack));
+                      .toImmutable(self));
 
                 other.split(insertedAmount);
-                access.set(other);
+                carriedItem.set(other);
             }
 
             player.level().playSound(player, player, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS, 1, 1);
@@ -203,8 +204,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
             return true;
         }
 
-        player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
-        return true;
+        return false;
     }
 
     @Override
@@ -227,8 +227,6 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
             return InteractionResult.SUCCESS;
         }
 
-        convertOldChalks(player, hand, stack);
-
         if (!(selectedChalk.getItem() instanceof MarkDrawable)) {
             Chalk.LOGGER.error("Cannot draw mark using a Chalk Box: selected chalk is not a drawable item, but {}.", selectedChalk.getItem());
             player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
@@ -248,23 +246,21 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
         }
 
         if (drawMark(player, drawingContext, createRegularMark(player, drawingContext, stack))) {
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.FAIL;
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
         if (player.isSecondaryUseActive()) {
-            convertOldChalks(player, hand, stack);
-
             ChalkBoxContents contents = getContents(stack);
             if (contents.getChalkCount() <= 1) {
                 player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.6f, 1f);
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             }
 
             int newSelected = contents.selected() + 1;
@@ -278,16 +274,17 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
             player.level().playSound(player, player, Chalk.SoundEvents.CHALK_BOX_CHANGE.get(), SoundSource.PLAYERS, 1, 1);
             player.resetAttackStrengthTicker();
 
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
             open(serverPlayer, hand);
         }
         player.resetAttackStrengthTicker();
-        return InteractionResultHolder.consume(stack);
+        return InteractionResult.CONSUME;
     }
 
+    @SuppressWarnings("deprecation")
     public void open(ServerPlayer player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
@@ -296,36 +293,18 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
             return;
         }
 
-        convertOldChalks(player, hand, stack);
-
         Component title = stack.has(DataComponents.CUSTOM_NAME)
               ? stack.getHoverName()
               : Component.translatable("container.chalk.chalk_box");
 
-        SimpleMenuProvider menuProvider = new SimpleMenuProvider((containerID, playerInventory, playerEntity) ->
+        SimpleMenuProvider menuProvider = new SimpleMenuProvider((containerID, playerInventory, _) ->
               new ChalkBoxMenu(containerID, playerInventory, hand), title);
 
         Platform.openMenu(player, menuProvider, buffer -> buffer.writeEnum(hand));
 
         player.level().playSound(null, player.position().x, player.position().y, player.position().z,
               Chalk.SoundEvents.CHALK_BOX_OPEN.get(), SoundSource.PLAYERS,
-              0.9f, 0.9f + player.level().random.nextFloat() * 0.2f);
-    }
-
-    @SuppressWarnings("removal")
-    protected void convertOldChalks(Player player, InteractionHand hand, ItemStack stack) {
-        ChalkBoxContents contents = getContents(stack);
-        if (contents.items().stream().anyMatch(s -> s.getItem() instanceof OldChalkItem)) {
-            List<ItemStack> items = contents.copyItems().stream()
-                  .map(s -> {
-                      if (s.getItem() instanceof OldChalkItem oldChalkItem) {
-                          return oldChalkItem.convert(s);
-                      }
-                      return s;
-                  })
-                  .toList();
-            player.setItemInHand(hand, contents.mutable().setItems(items).toImmutable(stack));
-        }
+              0.9f, 0.9f + player.level().getRandom().nextFloat() * 0.2f);
     }
 
     // -- Drawable
@@ -367,7 +346,7 @@ public class ChalkBoxItem extends Item implements MarkDrawable, ApplicationTarge
         }
 
         if (!player.isCreative()) {
-            selectedChalk.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.hand()));
+            selectedChalk.hurtAndBreak(1, player, context.hand().asEquipmentSlot());
 
             player.setItemInHand(context.hand(), contents.mutable()
                   .setItem(selectedChalkIndex, selectedChalk)

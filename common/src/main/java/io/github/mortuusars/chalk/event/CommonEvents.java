@@ -13,6 +13,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +37,12 @@ public class CommonEvents {
         if (!unlockedSymbols.isEmpty()) {
             if (unlockedSymbols.size() == 1) {
                 unlockedSymbols.getFirst().unwrapKey().ifPresent(key ->
-                      player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked", Component.translatable(
-                            key.location().toLanguageKey("mark_symbol")).withStyle(Style.EMPTY.withColor(0x53a5df))), false));
+                      player.sendSystemMessage(Component.translatable("chat.chalk.symbol_unlocked", Component.translatable(
+                            key.identifier().toLanguageKey("mark_symbol")).withStyle(Style.EMPTY.withColor(0x53a5df))), false));
             } else {
                 List<MutableComponent> symbolNames = unlockedSymbols.stream()
                       .filter(s -> s.unwrapKey().isPresent())
-                      .map(s -> Component.translatable(s.unwrapKey().orElseThrow().location().toLanguageKey("mark_symbol"))
+                      .map(s -> Component.translatable(s.unwrapKey().orElseThrow().identifier().toLanguageKey("mark_symbol"))
                             .withStyle(Style.EMPTY.withColor(0x53a5df)))
                       .toList();
 
@@ -54,35 +55,37 @@ public class CommonEvents {
                     symbolsListComponent.append(symbolNames.get(i));
                 }
 
-                player.displayClientMessage(Component.translatable("chat.chalk.symbol_unlocked", symbolsListComponent), false);
+                player.sendSystemMessage(Component.translatable("chat.chalk.symbol_unlocked", symbolsListComponent), false);
             }
 
-            player.playNotifySound(Chalk.SoundEvents.MARK_DRAWN.get(), SoundSource.PLAYERS, 1f, 1f);
+            player.level().playSound(null, player, Chalk.SoundEvents.MARK_DRAWN.get(), SoundSource.PLAYERS, 1f, 1f);
         }
     }
 
-    public static void onStoppedSleeping(ServerPlayer serverPlayer) {
-        boolean sleepingLongEnough = serverPlayer.isSleepingLongEnough();
+    public static void onStoppedSleeping(ServerPlayer player) {
+        boolean sleepingLongEnough = player.isSleepingLongEnough();
         if (!sleepingLongEnough) {
             return;
         }
 
-        List<String> tags = serverPlayer.getTags().stream().toList();
-
         List<BlockPos> sleepPositions = new ArrayList<>();
 
-        for (String tag : tags) {
-            if (tag.startsWith("ChalkConsecutiveSleepPositions")) {
-                serverPlayer.removeTag(tag);
-
-                String dataStr = tag.replace("ChalkConsecutiveSleepPositions", "");
-                PlayerSleepInfo sleepInfo = PlayerSleepInfo.deserialize(dataStr);
-                sleepPositions = new ArrayList<>(sleepInfo.sleepPositions());
+        @Nullable String tag = null;
+        for (String t : player.entityTags()) {
+            if (t.startsWith("ChalkConsecutiveSleepPositions")) {
+                tag = t;
                 break;
             }
         }
 
-        Optional<BlockPos> sleepingPos = serverPlayer.getSleepingPos();
+        if (tag != null) {
+            player.removeTag(tag);
+            String dataStr = tag.replace("ChalkConsecutiveSleepPositions", "");
+            PlayerSleepInfo sleepInfo = PlayerSleepInfo.deserialize(dataStr);
+            sleepPositions = new ArrayList<>(sleepInfo.sleepPositions());
+        }
+
+        Optional<BlockPos> sleepingPos = player.getSleepingPos();
         if (sleepingPos.isPresent()) {
             if (sleepPositions.size() > 20) {
                 sleepPositions.removeFirst();
@@ -92,10 +95,10 @@ public class CommonEvents {
 
             PlayerSleepInfo sleepInfo = new PlayerSleepInfo(sleepPositions);
 
-            Chalk.CriteriaTriggers.CONSECUTIVE_SLEEPING.get().trigger(serverPlayer, sleepInfo);
+            Chalk.CriteriaTriggers.CONSECUTIVE_SLEEPING.get().trigger(player, sleepInfo);
 
             String serializedDataStr = sleepInfo.serialize();
-            serverPlayer.addTag("ChalkConsecutiveSleepPositions" + serializedDataStr);
+            player.addTag("ChalkConsecutiveSleepPositions" + serializedDataStr);
         }
     }
 }

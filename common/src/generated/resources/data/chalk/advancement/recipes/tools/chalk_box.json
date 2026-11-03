@@ -33,7 +33,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "chalk:chalk_box"
+        "recipes": "chalk:chalk_box"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

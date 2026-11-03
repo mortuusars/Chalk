@@ -24,7 +24,7 @@
 
   "item.chalk.chalk_box": "Caja de tizas",
   "item.chalk.chalk_box.tooltip.open": "§8[§7Usar§8] en el aire para abrir",
-  "item.chalk.chalk_box.tooltip.insert": "§8[§7Clic derecho§8] con un objeto para insertar",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7Clic izquierdo§8] con un objeto para insertar",
   "item.chalk.chalk_box.tooltip.remove": "§8[§7Clic derecho§8] sin objeto para retirar el seleccionado",
   "item.chalk.chalk_box.tooltip.change_selected": "§8[§7Agacharse + Usar§8] en el aire para cambiar el seleccionado",
   "item.chalk.chalk_box.tooltip.glow": "Resplandor: %s",

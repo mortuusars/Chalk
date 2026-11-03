@@ -5,15 +5,17 @@ import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class ClientChalkBoxTooltip implements ClientTooltipComponent {
-    public static final ResourceLocation SLOTS_SPRITE = Chalk.resource("chalk_box/tooltip_slots");
-    public static final ResourceLocation GLOWING_SPRITE = Chalk.resource("chalk_box/tooltip_glowing");
+    public static final Identifier SLOTS_SPRITE = Chalk.resource("chalk_box/tooltip_slots");
+    public static final Identifier GLOWING_SPRITE = Chalk.resource("chalk_box/tooltip_glowing");
 
     public static final int ROWS = 3;
     public static final int COLUMNS = 3;
@@ -30,7 +32,7 @@ public class ClientChalkBoxTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(@NotNull Font font) {
         return backgroundHeight() + 3;
     }
 
@@ -48,8 +50,13 @@ public class ClientChalkBoxTooltip implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(@NotNull Font font, int x, int y, GuiGraphics graphics) {
-        graphics.blitSprite(SLOTS_SPRITE, x, y, 58, 60);
+    public void extractText(@NonNull GuiGraphicsExtractor graphics, @NonNull Font font, int x, int y) {
+        ClientTooltipComponent.super.extractText(graphics, font, x, y);
+    }
+
+    @Override
+    public void extractImage(@NonNull Font font, int x, int y, int w, int h, GuiGraphicsExtractor graphics) {
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOTS_SPRITE, x, y, 58, 60);
 
         int selectedIndex = contents.selected();
         int index = 0;
@@ -59,42 +66,42 @@ public class ClientChalkBoxTooltip implements ClientTooltipComponent {
                 int slotY = y + column * 18 + 3;
 
                 if (index == selectedIndex) {
-                    graphics.blitSprite(ChalkBoxScreen.SELECTED_CHALK_SLOT_OVERLAY_SPRITE, slotX - 1, slotY - 1, 20, 20);
+                    graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ChalkBoxScreen.SELECTED_CHALK_SLOT_OVERLAY_SPRITE, slotX - 1, slotY - 1, 20, 20);
                 }
 
                 if (contents.getItem(index).isEmpty()) {
-                    graphics.blitSprite(ChalkBoxScreen.CHALK_SLOT_PLACEHOLDER_SPRITE, slotX, slotY, 18, 18);
+                    graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ChalkBoxScreen.CHALK_SLOT_PLACEHOLDER_SPRITE, slotX, slotY, 18, 18);
                 }
 
-                renderSlotItem(font, graphics, index, slotX, slotY);
+                extractSlotItem(font, graphics, index, slotX, slotY);
 
                 index++;
             }
         }
 
         if (shouldShowGlow()) {
-            graphics.blitSprite(GLOWING_SPRITE, x + 58, y + 18, 28, 24);
+            graphics.blitSprite(RenderPipelines.GUI_TEXTURED, GLOWING_SPRITE, x + 58, y + 18, 28, 24);
 
             if (contents.getItem(index).isEmpty()) {
-                graphics.blitSprite(ChalkBoxScreen.GLOWING_SLOT_PLACEHOLDER_SPRITE, x + 59, y + 21, 18, 18);
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ChalkBoxScreen.GLOWING_SLOT_PLACEHOLDER_SPRITE, x + 59, y + 21, 18, 18);
             }
 
-            renderSlotItem(font, graphics, index, x + 59, y + 21);
+            extractSlotItem(font, graphics, index, x + 59, y + 21);
 
             if (contents.glow() > 0) {
                 int currentGlow = contents.glow();
                 int maxGlow = Config.Server.CHALK_BOX_GLOWING_AMOUNT_PER_ITEM.get();
                 int barSize = currentGlow == maxGlow ? 18 : 2 + Math.round((currentGlow - 1) * 14f / (maxGlow - 2));
                 int glowingBarFillLevel = Math.min(ChalkBoxScreen.GLOW_BAR_HEIGHT, barSize);
-                graphics.blitSprite(ChalkBoxScreen.GLOW_BAR_SPRITE, 5, 18, 0, 18 - glowingBarFillLevel,
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ChalkBoxScreen.GLOW_BAR_SPRITE, 5, 18, 0, 18 - glowingBarFillLevel,
                       x + 79, y + 21 + 18 - glowingBarFillLevel, 5, glowingBarFillLevel);
             }
         }
     }
 
-    protected void renderSlotItem(Font font, GuiGraphics graphics, int index, int x, int y) {
+    protected void extractSlotItem(Font font, GuiGraphicsExtractor graphics, int index, int x, int y) {
         ItemStack itemstack = this.contents.items().get(index);
-        graphics.renderItem(itemstack, x + 1, y + 1, index);
-        graphics.renderItemDecorations(font, itemstack, x + 1, y + 1);
+        graphics.item(itemstack, x + 1, y + 1, index);
+        graphics.itemDecorations(font, itemstack, x + 1, y + 1);
     }
 }

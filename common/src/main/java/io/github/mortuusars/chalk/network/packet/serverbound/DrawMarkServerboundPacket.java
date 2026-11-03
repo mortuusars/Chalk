@@ -45,7 +45,7 @@ public record DrawMarkServerboundPacket(Holder<MarkSymbol> symbol, MarkDrawingCo
 
         if (!drawable.isSymbolAvailable(serverPlayer, drawingContext, symbol)) {
             Chalk.LOGGER.error("{} tried to draw symbol '{}', but doesn't have it unlocked.", player,
-                  symbol.unwrapKey().map(k -> k.location().toString()).orElse("<unknown symbol>"));
+                  symbol.unwrapKey().map(k -> k.identifier().toString()).orElse("<unknown symbol>"));
             return false;
         }
 

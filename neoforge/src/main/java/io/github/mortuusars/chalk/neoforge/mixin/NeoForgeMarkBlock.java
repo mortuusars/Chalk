@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.extensions.IBlockExtension;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +20,12 @@ public abstract class NeoForgeMarkBlock extends Block implements IBlockExtension
     }
 
     @Override
-    public @NotNull ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader level,
-                                                @NotNull BlockPos pos, @NotNull Player player) {
-        return ((MarkBlock)(Object)this).pick(player, level, pos, state, target);
+    public @NotNull ItemStack getCloneItemStack(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state,
+                                                boolean includeData, @NotNull Player player) {
+        HitResult target = player.pick(player.blockInteractionRange(), 1.0F, false);
+        if (target instanceof BlockHitResult blockHit && blockHit.getBlockPos().equals(pos)) {
+            return ((MarkBlock)(Object)this).pick(player, level, pos, state, blockHit);
+        }
+        return super.getCloneItemStack(level, pos, state, includeData, player);
     }
 }

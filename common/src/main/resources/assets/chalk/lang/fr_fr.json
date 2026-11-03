@@ -41,7 +41,7 @@
 
   "item.chalk.chalk_box": "Boîte de craies",
   "item.chalk.chalk_box.tooltip.open": "§8[§7Clic droit§8] ou §8[§7Utiliser§8] en l’air pour ouvrir",
-  "item.chalk.chalk_box.tooltip.insert": "§8[§7Clic droit§8] avec un objet pour l’insérer",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7Clic gauche§8] avec un objet pour l’insérer",
   "item.chalk.chalk_box.tooltip.change_selected": "§8[§7S’accroupir + Utiliser§8] en l’air pour changer la §7craie sélectionnée",
 
   "container.chalk.chalk_box": "Boîte de craies",

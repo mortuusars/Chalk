@@ -10,7 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,10 +20,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class ChalkItem extends Item implements MarkDrawable {
     public ChalkItem(Properties properties) {
@@ -40,28 +43,31 @@ public class ChalkItem extends Item implements MarkDrawable {
     }
 
     public int getTintColor(ItemStack stack, int index) {
-        return FastColor.ARGB32.opaque(getMarkDrawingColor(stack));
+        return ARGB.opaque(getMarkDrawingColor(stack));
     }
 
     @Override
-    public @NotNull String getDescriptionId(ItemStack stack) {
+    public @NonNull Component getName(@NonNull ItemStack itemStack) {
+        //TODO: item_name should probably be used instead of this
         if (Config.Server.DYED_CHALK_NAMES.get()) {
-            if (!(stack.get(DataComponents.DYED_COLOR) instanceof DyedItemColor dyedColor)) {
-                return "item.chalk.white_chalk";
+            if (!(itemStack.get(DataComponents.DYED_COLOR) instanceof DyedItemColor dyedColor)) {
+                return Component.translatable("item.chalk.white_chalk");
             }
 
             if (Config.Server.CHALK_COLORS.inverse().get(dyedColor.rgb()) instanceof DyeColor dyeColor) {
-                return "item.chalk." + dyeColor.getName() + "_chalk";
+                return Component.translatable("item.chalk." + dyeColor.getName() + "_chalk");
             }
         }
 
-        return super.getDescriptionId(stack);
+        return super.getName(itemStack);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        if (!stack.has(DataComponents.DYED_COLOR)) {
-            tooltipComponents.add(Component.translatable("item.chalk.chalk.tooltip.dyeable").withStyle(ChatFormatting.GRAY));
+    public void appendHoverText(@NonNull ItemStack itemStack, @NonNull TooltipContext context, @NonNull TooltipDisplay display,
+                                @NonNull Consumer<Component> builder, @NonNull TooltipFlag tooltipFlag) {
+        if (!itemStack.has(DataComponents.DYED_COLOR)) {
+            builder.accept(Component.translatable("item.chalk.chalk.tooltip.dyeable").withStyle(ChatFormatting.GRAY));
         }
     }
 
@@ -89,7 +95,7 @@ public class ChalkItem extends Item implements MarkDrawable {
         }
 
         if (drawMark(player, drawingContext, createRegularMark(player, drawingContext, stack))) {
-            return InteractionResult.sidedSuccess(context.getLevel().isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.FAIL;
@@ -103,7 +109,7 @@ public class ChalkItem extends Item implements MarkDrawable {
         ItemStack stack = player.getItemInHand(context.hand());
         onChalkMarkDrawn(player, context.hand(), stack, context.markPos(), context.markFacing(), mark);
         if (!player.isCreative()) {
-            stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.hand()));
+            stack.hurtAndBreak(1, player, context.hand().asEquipmentSlot());
         }
     }
 
@@ -121,7 +127,7 @@ public class ChalkItem extends Item implements MarkDrawable {
 
     public static ItemStack create(int color, int damage) {
         ItemStack stack = new ItemStack(Chalk.Items.CHALK.get());
-        if (color != 0xFFFFFF) stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color, true));
+        if (color != 0xFFFFFF) stack.set(DataComponents.DYED_COLOR, new DyedItemColor(color));
         if (damage > 0) stack.setDamageValue(damage);
         return stack;
     }

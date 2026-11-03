@@ -34,7 +34,7 @@ public record DestroyMarkServerboundPacket(BlockPos pos, Direction face) impleme
             return false;
         }
 
-        if (!player.canInteractWithBlock(pos, 1.0)) {
+        if (!player.isWithinBlockInteractionRange(pos, 1.0)) {
             Chalk.LOGGER.error("Cannot handle {}: player is not in range: Player: [{}], Mark: [{}].",
                   TYPE.id(), player.blockPosition().toShortString(), pos.toShortString());
             return false;

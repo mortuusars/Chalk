@@ -43,7 +43,7 @@
 
   "item.chalk.chalk_box": "Коробка для Крейди",
   "item.chalk.chalk_box.tooltip.open": "§8[§7Використайте§8] у повітрі щоб відкрити",
-  "item.chalk.chalk_box.tooltip.insert": "§8[§7Права кнопка миші§8] з предметом щоб вкласти",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7Ліва кнопка миші§8] з предметом щоб вкласти",
   "item.chalk.chalk_box.tooltip.remove": "§8[§7Права кнопка миші§8] без предмета, щоб витягнути обрану",
   "item.chalk.chalk_box.tooltip.change_selected": "§8[§7Використайте крадучись§8] у повітрі щоб змінити обрану",
   "item.chalk.chalk_box.tooltip.glow": "Сяйво: %s",

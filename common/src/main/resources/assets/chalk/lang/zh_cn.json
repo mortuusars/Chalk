@@ -38,7 +38,7 @@
 
   "item.chalk.chalk_box": "粉笔盒",
   "item.chalk.chalk_box.tooltip.open": "§8[§7右键点击§8]或对空气§8[§7使用§8]打开",
-  "item.chalk.chalk_box.tooltip.insert": "§8[§7右键点击§8]放入物品",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7左键点击§8]放入物品",
   "item.chalk.chalk_box.tooltip.change_selected": "对空气§8[§7潜行+使用§8]切换选中的§7粉笔",
 
   "container.chalk.chalk_box": "粉笔盒",

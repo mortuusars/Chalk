@@ -1,8 +1,8 @@
 plugins {
-    id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
-    id 'architectury-plugin' version '3.4-SNAPSHOT'
-    id 'com.gradleup.shadow' version '8.3.6' apply false
-    id "me.modmuss50.mod-publish-plugin" version "2.1.1"
+    id 'architectury-plugin' version '3.5-SNAPSHOT'
+    id "dev.architectury.loom-no-remap" version "1.17-SNAPSHOT" apply false
+    id "com.gradleup.shadow" version "9.4.+" apply false
+    id "me.modmuss50.mod-publish-plugin" version "2.2.1"
 }
 
 architectury {
@@ -15,9 +15,10 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'dev.architectury.loom'
+    apply plugin: 'dev.architectury.loom-no-remap'
     apply plugin: 'architectury-plugin'
     apply plugin: 'maven-publish'
+    apply plugin: 'com.gradleup.shadow'
 
     base {
         archivesName = "$rootProject.archives_name-$project.name-$rootProject.minecraft_version"
@@ -41,7 +42,7 @@ subprojects {
         }
 
         maven {
-            name = "mortuusars github resources"
+            name = "Mortuusars Github Maven"
             url = "https://raw.githubusercontent.com/mortuusars/resources/main/maven/"
         }
 
@@ -113,33 +114,10 @@ subprojects {
             url = "https://maven.ryanhcode.dev/releases"
         }
 
-        // moddedmc.wiki, etc.
-        maven {
-            url "https://maven.sinytra.org"
-        }
-
         // EMI
         maven {
             name = "TerraformersMC"
             url = "https://maven.terraformersmc.com/"
-        }
-    }
-
-    loom {
-        silentMojangMappingsLicense()
-        runs {
-            client {
-                vmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:HotswapAgent=fatjar'
-            }
-        }
-    }
-
-    dependencies {
-        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
-
-        mappings loom.layered() {
-            officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-${parchment_version}@zip")
         }
     }
 
@@ -149,31 +127,87 @@ subprojects {
         // If you remove this line, sources will not be generated.
         withSourcesJar()
 
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
     tasks.withType(JavaCompile).configureEach {
-        it.options.release = 21
+        it.options.release = 25
+    }
+
+    configurations {
+        common
+        shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+        compileClasspath.extendsFrom common
+        runtimeClasspath.extendsFrom common
+
+        apiElements {
+            outgoing.artifacts.clear()
+            outgoing.artifact(shadowJar)
+        }
+        runtimeElements {
+            outgoing.artifacts.clear()
+            outgoing.artifact(shadowJar)
+        }
+    }
+
+    loom {
+        silentMojangMappingsLicense()
+
+        runs {
+            client {
+                programArgs "--username", "Dev"
+                vmArgs '-XX:+AllowEnhancedClassRedefinition', '-XX:HotswapAgent=fatjar'
+            }
+
+            register("client2") {
+                inherit(getByName("client"))
+
+                name("Second Client")
+                programArgs("--username", "AnotherDev")
+
+                client()
+            }
+        }
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    }
+
+    jar {
+        archiveClassifier = "raw"
+    }
+
+    // https://gist.github.com/shedaniel/18d4eebf940e9c3296e87d994ebb2838
+    shadowJar {
+        dependsOn(jar)
+        mainSpec.sourcePaths.clear()       // Remove default source set inclusion
+        from(zipTree(jar.archiveFile))     // Unpack jar output (preserves Loom modifications)
+
+        configurations = [project.configurations.shadowCommon]
+        archiveClassifier = null           // shadowJar becomes the main artifact
     }
 
     processResources {
         var expandProps = [
-                minecraft_version            : minecraft_version,
-                minecraft_version_range      : minecraft_version_range,
-                neoforge_version             : neoforge_version,
-                neoforge_version_range       : neoforge_version_range,
-                neoforge_loader_version_range: neoforge_loader_version_range,
-                mod_id                       : mod_id,
-                mod_name                     : mod_name,
-                mod_version                  : mod_version,
-                mod_authors                  : mod_authors,
-                mod_description              : mod_description,
-                mod_issues                   : mod_issues,
-                mod_page                     : mod_page,
-                mod_github                   : mod_github,
-                mod_license                  : mod_license,
-                maven_group                  : maven_group
+                minecraft_version                       : minecraft_version,
+                minecraft_version_range                 : minecraft_version_range,
+                neoforge_version                        : neoforge_version,
+                neoforge_version_range                  : neoforge_version_range,
+                neoforge_loader_version_range           : neoforge_loader_version_range,
+                fabric_supported_minecraft_versions     : fabric_supported_minecraft_versions,
+                required_forge_config_api_port_version  : required_forge_config_api_port_version,
+                mod_id                                  : mod_id,
+                mod_name                                : mod_name,
+                mod_version                             : mod_version,
+                mod_authors                             : mod_authors,
+                mod_description                         : mod_description,
+                mod_page                                : mod_page,
+                mod_issues                              : mod_issues,
+                mod_github                              : mod_github,
+                mod_license                             : mod_license,
+                maven_group                             : maven_group
         ]
         filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/neoforge.mods.toml', "*.mixins.json"]) {
             expand expandProps
@@ -243,9 +277,9 @@ def getLatestVersionChangelog() {
 
 project.ext.changelog = getLatestVersionChangelog()
 
-tasks.register('printLatestVersionChangelog') {
+task printLatestVersionChangelog {
     doLast {
-        println project.ext.changelog
+        println project.changelog
     }
 }
 

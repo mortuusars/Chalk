@@ -3,13 +3,5 @@
   "textures": {
     "layer0": "chalk:item/chalk_box",
     "layer1": "chalk:item/chalk_box_chalk"
-  },
-  "overrides": [
-    {
-      "model": "chalk:item/chalk_box_glowing",
-      "predicate": {
-        "chalk:glowing": 1.0
-      }
-    }
-  ]
+  }
 }

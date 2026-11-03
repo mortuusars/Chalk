@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class PlayerMixin {
     // Using mixin instead of events to have the same code for neoforge and fabric
     @Inject(method = "stopSleepInBed", at = @At("HEAD"))
-    private void onStopSleeping(boolean wakeImmediately, boolean updateLevelForSleepingPlayers, CallbackInfo ci) {
+    private void onStopSleeping(boolean forcefulWakeUp, boolean updateLevelList, CallbackInfo ci) {
         if (((Player)(Object)this) instanceof ServerPlayer serverPlayer) {
             CommonEvents.onStoppedSleeping(serverPlayer);
         }

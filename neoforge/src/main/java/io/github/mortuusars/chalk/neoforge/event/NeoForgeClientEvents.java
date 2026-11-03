@@ -4,12 +4,10 @@ import io.github.mortuusars.chalk.Chalk;
 import io.github.mortuusars.chalk.ChalkClient;
 import io.github.mortuusars.chalk.client.gui.screens.ChalkBoxScreen;
 import io.github.mortuusars.chalk.client.render.MarkBlockColor;
-import io.github.mortuusars.chalk.neoforge.client.NeoForgeMarkBakedModel;
-import io.github.mortuusars.chalk.world.item.ChalkBoxItem;
-import io.github.mortuusars.chalk.world.item.ChalkItem;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import io.github.mortuusars.chalk.client.ChalkBoxGlowingProperty;
+import io.github.mortuusars.chalk.client.ChalkBoxTintSource;
+import io.github.mortuusars.chalk.neoforge.client.NeoForgeMarkModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -18,6 +16,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
+
+import java.util.Map;
 
 @EventBusSubscriber(modid = Chalk.ID, value = Dist.CLIENT)
 public class NeoForgeClientEvents {
@@ -32,29 +33,33 @@ public class NeoForgeClientEvents {
     }
 
     @SubscribeEvent
-    public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, index) -> ((ChalkItem) stack.getItem()).getTintColor(stack, index), Chalk.Items.CHALK.get());
-        event.register((stack, index) -> ((ChalkBoxItem) stack.getItem()).getTintColor(stack, index), Chalk.Items.CHALK_BOX.get());
+    public static void registerItemTintSources(RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(Chalk.resource("chalk_box_chalk_color"), ChalkBoxTintSource.CODEC);
+    }
+
+    @SubscribeEvent
+    private static void registerSelectItemModelProperties(RegisterSelectItemModelPropertyEvent event) {
+        event.register(Chalk.resource("glowing"), ChalkBoxGlowingProperty.TYPE);
     }
 
     @SubscribeEvent
     private static void modelBake(ModelEvent.ModifyBakingResult event) {
+        Map<BlockState, BlockStateModel> models = event.getBakingResult().blockStateModels();
         for (BlockState blockState : Chalk.Blocks.MARK.get().getStateDefinition().getPossibleStates()) {
-            ModelResourceLocation variantMRL = BlockModelShaper.stateToModelLocation(blockState);
-            BakedModel existingModel = event.getModels().get(variantMRL);
+            BlockStateModel existingModel = models.get(blockState);
 
-            if (existingModel instanceof NeoForgeMarkBakedModel)
+            if (existingModel instanceof NeoForgeMarkModel)
                 Chalk.LOGGER.warn("Tried to replace {} model twice", blockState);
             else if (existingModel != null) {
-                NeoForgeMarkBakedModel customModel = new NeoForgeMarkBakedModel(existingModel);
-                event.getModels().put(variantMRL, customModel);
+                NeoForgeMarkModel customModel = new NeoForgeMarkModel(existingModel);
+                models.put(blockState, customModel);
             } else
-                Chalk.LOGGER.warn("{} model not found. MarkBakedModel would not be added for this blockstate.", variantMRL);
+                Chalk.LOGGER.warn("Model for {} not found. Mark model support will not be added for this blockstate.", blockState);
         }
     }
 
     @SubscribeEvent
-    private static void registerBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register(new MarkBlockColor(), Chalk.Blocks.MARK.get());
+    private static void registerBlockColors(RegisterColorHandlersEvent.BlockTintSources event) {
+        event.register(MarkBlockColor.allFaces(), Chalk.Blocks.MARK.get());
     }
 }

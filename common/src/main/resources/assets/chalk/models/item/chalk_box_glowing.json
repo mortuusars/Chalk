@@ -1,5 +1,5 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "chalk:item/chalk_box",
   "textures": {
     "layer0": "chalk:item/chalk_box_glowing",
     "layer1": "chalk:item/chalk_box_chalk"

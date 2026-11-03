@@ -2,19 +2,17 @@ package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
+import net.minecraft.references.BlockItemIds;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
 public class ModBlockTagsProvider extends BlockTagsProvider {
-    public ModBlockTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), provider, Chalk.ID, existingFileHelper);
+    public ModBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, Chalk.ID);
     }
 
     @Override
@@ -23,13 +21,13 @@ public class ModBlockTagsProvider extends BlockTagsProvider {
                 .addTag(BlockTags.LEAVES)
                 .addTag(BlockTags.SAPLINGS)
                 .addTag(BlockTags.FLOWERS)
-                .add(Blocks.SLIME_BLOCK)
-                .add(Blocks.HONEYCOMB_BLOCK)
-                .add(Blocks.SCAFFOLDING)
-                .add(Blocks.SCULK)
-                .add(Blocks.SCULK_CATALYST)
-                .add(Blocks.SCULK_SHRIEKER)
-                .add(Blocks.SCULK_SENSOR)
+                .add(BlockItemIds.SLIME_BLOCK.block())
+                .add(BlockItemIds.HONEYCOMB_BLOCK.block())
+                .add(BlockItemIds.SCAFFOLDING.block())
+                .add(BlockItemIds.SCULK.block())
+                .add(BlockItemIds.SCULK_CATALYST.block())
+                .add(BlockItemIds.SCULK_SHRIEKER.block())
+                .add(BlockItemIds.SCULK_SENSOR.block())
         ;
     }
 }

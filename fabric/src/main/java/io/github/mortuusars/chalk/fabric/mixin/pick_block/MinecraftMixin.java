@@ -27,11 +27,11 @@ public class MinecraftMixin {
     @Nullable
     public LocalPlayer player;
 
-    @WrapOperation(method = "pickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getCloneItemStack(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/item/ItemStack;"))
-    private ItemStack onPickBlock(Block instance, LevelReader level, BlockPos pos, BlockState state, Operation<ItemStack> original) {
-        if (player != null && instance instanceof MarkBlock markBlock && hitResult instanceof BlockHitResult result) {
-            return markBlock.pick(player, level, pos, state, result);
-        }
-        return original.call(instance, level, pos, state);
-    }
+//    @WrapOperation(method = "pick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/Block;getCloneItemStack(Lnet/minecraft/world/level/LevelReader;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/item/ItemStack;"))
+//    private ItemStack onPickBlock(Block instance, LevelReader level, BlockPos pos, BlockState state, Operation<ItemStack> original) {
+//        if (player != null && instance instanceof MarkBlock markBlock && hitResult instanceof BlockHitResult result) {
+//            return markBlock.pick(player, level, pos, state, result);
+//        }
+//        return original.call(instance, level, pos, state);
+//    }
 }

@@ -5,7 +5,6 @@
   "minVersion": "0.8",
   "plugin": "io.github.mortuusars.chalk.fabric.ChalkMixinPlugin",
   "client": [
-    "baked_models.ModelManagerMixin",
     "pick_block.MinecraftMixin"
   ],
   "mixins": [

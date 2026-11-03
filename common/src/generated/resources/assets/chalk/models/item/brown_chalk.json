@@ -1,6 +1,0 @@
-{
-  "parent": "chalk:item/chalk",
-  "textures": {
-    "layer0": "chalk:item/deprecated/brown_chalk"
-  }
-}

@@ -19,7 +19,6 @@
       "translate": "advancement.chalk.guiding_star.description"
     },
     "icon": {
-      "count": 1,
       "id": "minecraft:glowstone_dust"
     },
     "title": {

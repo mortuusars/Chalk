@@ -41,7 +41,7 @@
 
   "item.chalk.chalk_box": "Caixa de Giz",
   "item.chalk.chalk_box.tooltip.open": "§8[§7Clique Direito§8] ou §8[§7Usar§8] no ar para abrir",
-  "item.chalk.chalk_box.tooltip.insert": "§8[§7Clique Direito§8] com item para inserir",
+  "item.chalk.chalk_box.tooltip.insert": "§8[§7Clique Esquerdo§8] com item para inserir",
   "item.chalk.chalk_box.tooltip.change_selected": "§8[§7Agachar + Usar§8] no ar para mudar §7Giz§8 selecionado",
 
   "container.chalk.chalk_box": "Caixa de Giz",

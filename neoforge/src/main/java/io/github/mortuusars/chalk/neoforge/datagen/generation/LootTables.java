@@ -1,64 +1,64 @@
 package io.github.mortuusars.chalk.neoforge.datagen.generation;
 
 import io.github.mortuusars.chalk.Chalk;
-import io.github.mortuusars.chalk.Config;
 import io.github.mortuusars.chalk.world.item.ChalkItem;
 import io.github.mortuusars.chalk.world.item.component.ChalkBoxContents;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.EmptyLootItem;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
+import net.minecraft.world.level.storage.loot.entries.UniformContainerBase;
 import net.minecraft.world.level.storage.loot.functions.SetComponentsFunction;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.storage.loot.providers.number.ints.ContextIntProviders;
 
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.Optional;
 
 public class LootTables {
-    public static class ChestLootTables implements LootTableSubProvider {
-        private final HolderLookup.Provider provider;
+    private static final Optional<ItemStackTemplate> EMPTY = Optional.empty();
 
-        public ChestLootTables(HolderLookup.Provider provider) {
-            this.provider = provider;
+    public static class ChestLootTables implements LootTableSubProvider {
+        private final LootTableSubProvider.Context context;
+
+        public ChestLootTables(LootTableSubProvider.Context context) {
+            this.context = context;
         }
 
         @Override
-        public void generate(@NotNull BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
-            consumer.accept(Chalk.LootTables.ABANDONED_MINESHAFT_CHALKS,
+        public void run() {
+            context.accept(Chalk.LootTables.ABANDONED_MINESHAFT_CHALKS,
                   LootTable.lootTable().withPool(
                         LootPool.lootPool()
-                              .setRolls(ConstantValue.exactly(2))
+                              .setRolls(ContextIntProviders.exactly(2))
                               .add(chalkBox(List.of(
-                                    chalkStack(DyeColor.WHITE, 23), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    ItemStack.EMPTY, ItemStack.EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0),
-                                    ItemStack.EMPTY, chalkStack(DyeColor.RED, 17), ItemStack.EMPTY), 0)
+                                    chalkStack(DyeColor.WHITE, 23), EMPTY, EMPTY,
+                                    EMPTY, EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0),
+                                    EMPTY, chalkStack(DyeColor.RED, 17), EMPTY), 0)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    ItemStack.EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0), ItemStack.EMPTY,
-                                    ItemStack.EMPTY, chalkStack(DyeColor.WHITE, 0), ItemStack.EMPTY,
-                                    ItemStack.EMPTY, chalkStack(DyeColor.LIGHT_BLUE, 6), ItemStack.EMPTY,
-                                    new ItemStack(Items.GLOWSTONE_DUST, 7)), 3)
+                                    EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0), EMPTY,
+                                    EMPTY, chalkStack(DyeColor.WHITE, 0), EMPTY,
+                                    EMPTY, chalkStack(DyeColor.LIGHT_BLUE, 6), EMPTY,
+                                    Optional.of(new ItemStackTemplate(Items.GLOWSTONE_DUST, 7))), 3)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    chalkStack(DyeColor.BLUE, 5), ItemStack.EMPTY, chalkStack(DyeColor.PINK, 50),
-                                    ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.YELLOW, 0), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    new ItemStack(Items.GLOW_INK_SAC)), 5)
+                                    chalkStack(DyeColor.BLUE, 5), EMPTY, chalkStack(DyeColor.PINK, 50),
+                                    EMPTY, EMPTY, EMPTY,
+                                    chalkStack(DyeColor.YELLOW, 0), EMPTY, EMPTY,
+                                    Optional.of(new ItemStackTemplate(Items.GLOW_INK_SAC))), 5)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    ItemStack.EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0), ItemStack.EMPTY,
-                                    ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.GREEN, 14), ItemStack.EMPTY, ItemStack.EMPTY), 0)
+                                    EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0), EMPTY,
+                                    EMPTY, EMPTY, EMPTY,
+                                    chalkStack(DyeColor.GREEN, 14), EMPTY, EMPTY), 0)
                                     .setWeight(2))
                               .add(chalk(DyeColor.WHITE, 10))
                               .add(chalk(DyeColor.LIGHT_GRAY, 8))
@@ -66,25 +66,25 @@ public class LootTables {
                               .add(EmptyLootItem.emptyItem().setWeight(50))
                   ));
 
-            consumer.accept(Chalk.LootTables.DESERT_PYRAMID_CHALKS,
+            context.accept(Chalk.LootTables.DESERT_PYRAMID_CHALKS,
                   LootTable.lootTable().withPool(
                         LootPool.lootPool()
-                              .setRolls(ConstantValue.exactly(2))
+                              .setRolls(ContextIntProviders.exactly(2))
                               .add(chalkBox(List.of(
-                                    chalkStack(DyeColor.WHITE, 23), ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.LIGHT_GRAY, 12), ItemStack.EMPTY, ItemStack.EMPTY, chalkStack(DyeColor.RED, 0),
-                                    ItemStack.EMPTY), 0)
+                                    chalkStack(DyeColor.WHITE, 23), EMPTY, EMPTY, EMPTY,
+                                    chalkStack(DyeColor.LIGHT_GRAY, 12), EMPTY, EMPTY, chalkStack(DyeColor.RED, 0),
+                                    EMPTY), 0)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    ItemStack.EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 5), ItemStack.EMPTY,
-                                    chalkStack(DyeColor.WHITE, 0), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.LIGHT_BLUE, 15), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    new ItemStack(Items.GLOWSTONE_DUST, 4)), 4)
+                                    EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 5), EMPTY,
+                                    chalkStack(DyeColor.WHITE, 0), EMPTY, EMPTY,
+                                    chalkStack(DyeColor.LIGHT_BLUE, 15), EMPTY, EMPTY,
+                                    Optional.of(new ItemStackTemplate(Items.GLOWSTONE_DUST, 4))), 4)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    chalkStack(DyeColor.BLUE, 5), ItemStack.EMPTY, chalkStack(DyeColor.ORANGE, 26),
-                                    ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.YELLOW, 0), ItemStack.EMPTY, ItemStack.EMPTY), 0)
+                                    chalkStack(DyeColor.BLUE, 5), EMPTY, chalkStack(DyeColor.ORANGE, 26),
+                                    EMPTY, EMPTY, EMPTY,
+                                    chalkStack(DyeColor.YELLOW, 0), EMPTY, EMPTY), 0)
                                     .setWeight(2))
                               .add(chalk(DyeColor.WHITE, 5))
                               .add(chalk(DyeColor.LIGHT_GRAY, 5))
@@ -96,32 +96,32 @@ public class LootTables {
                               .add(EmptyLootItem.emptyItem().setWeight(60))
                   ));
 
-            consumer.accept(Chalk.LootTables.SIMPLE_DUNGEON_CHALKS,
+            context.accept(Chalk.LootTables.SIMPLE_DUNGEON_CHALKS,
                   LootTable.lootTable().withPool(
                         LootPool.lootPool()
-                              .setRolls(ConstantValue.exactly(2))
+                              .setRolls(ContextIntProviders.exactly(2))
                               .add(chalkBox(List.of(
-                                    chalkStack(DyeColor.WHITE, 23), ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.LIGHT_GRAY, 12), ItemStack.EMPTY, ItemStack.EMPTY, chalkStack(DyeColor.RED, 0),
-                                    ItemStack.EMPTY), 0)
+                                    chalkStack(DyeColor.WHITE, 23), EMPTY, EMPTY, EMPTY,
+                                    chalkStack(DyeColor.LIGHT_GRAY, 12), EMPTY, EMPTY, chalkStack(DyeColor.RED, 0),
+                                    EMPTY), 0)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    ItemStack.EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0), ItemStack.EMPTY,
-                                    chalkStack(DyeColor.WHITE, 7), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.LIGHT_BLUE, 15), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    new ItemStack(Items.GLOWSTONE_DUST, 7)), 2)
+                                    EMPTY, chalkStack(DyeColor.LIGHT_GRAY, 0), EMPTY,
+                                    chalkStack(DyeColor.WHITE, 7), EMPTY, EMPTY,
+                                    chalkStack(DyeColor.LIGHT_BLUE, 15), EMPTY, EMPTY,
+                                    Optional.of(new ItemStackTemplate(Items.GLOWSTONE_DUST, 7))), 2)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    chalkStack(DyeColor.BLUE, 5), ItemStack.EMPTY, chalkStack(DyeColor.PINK, 50),
-                                    ItemStack.EMPTY, ItemStack.EMPTY, ItemStack.EMPTY,
-                                    chalkStack(DyeColor.YELLOW, 0), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    new ItemStack(Items.GLOW_INK_SAC)), 5)
+                                    chalkStack(DyeColor.BLUE, 5), EMPTY, chalkStack(DyeColor.PINK, 50),
+                                    EMPTY, EMPTY, EMPTY,
+                                    chalkStack(DyeColor.YELLOW, 0), EMPTY, EMPTY,
+                                    Optional.of(new ItemStackTemplate(Items.GLOW_INK_SAC))), 5)
                                     .setWeight(2))
                               .add(chalkBox(List.of(
-                                    ItemStack.EMPTY, chalkStack(DyeColor.MAGENTA, 6), ItemStack.EMPTY,
-                                    ItemStack.EMPTY, chalkStack(DyeColor.CYAN, 0), ItemStack.EMPTY,
-                                    chalkStack(DyeColor.LIME, 4), ItemStack.EMPTY, ItemStack.EMPTY,
-                                    ItemStack.EMPTY), 0)
+                                    EMPTY, chalkStack(DyeColor.MAGENTA, 6), EMPTY,
+                                    EMPTY, chalkStack(DyeColor.CYAN, 0), EMPTY,
+                                    chalkStack(DyeColor.LIME, 4), EMPTY, EMPTY,
+                                    EMPTY), 0)
                                     .setWeight(2))
                               .add(chalk(DyeColor.WHITE, 5))
                               .add(chalk(DyeColor.LIGHT_GRAY, 5))
@@ -129,10 +129,10 @@ public class LootTables {
                               .add(EmptyLootItem.emptyItem().setWeight(50))
                   ));
 
-            consumer.accept(Chalk.LootTables.VILLAGE_CHALKS,
+            context.accept(Chalk.LootTables.VILLAGE_CHALKS,
                   LootTable.lootTable().withPool(
                         LootPool.lootPool()
-                              .setRolls(ConstantValue.exactly(2))
+                              .setRolls(ContextIntProviders.exactly(2))
                               .add(chalk(DyeColor.WHITE, 5))
                               .add(chalk(DyeColor.LIGHT_GRAY, 4))
                               .add(chalk(DyeColor.GRAY, 3))
@@ -144,23 +144,24 @@ public class LootTables {
                   ));
         }
 
-        private LootPoolSingletonContainer.Builder<?> chalk(DyeColor color, int weight) {
+        private UniformContainerBase.Builder<?> chalk(DyeColor color, int weight) {
             return LootItem.lootTableItem(Chalk.Items.CHALK.get())
                   .apply(SetComponentsFunction.setComponent(DataComponents.DYED_COLOR,
-                        new DyedItemColor(ChalkItem.getColorFromDye(color), true)))
+                        new DyedItemColor(ChalkItem.getColorFromDye(color))))
                   .setWeight(weight);
         }
 
-        private LootPoolSingletonContainer.Builder<?> chalkBox(List<ItemStack> items, int glowAmount) {
+        private UniformContainerBase.Builder<?> chalkBox(List<Optional<ItemStackTemplate>> items, int glowAmount) {
             for (int slot = 0; slot < items.size(); slot++) {
-                ItemStack stack = items.get(slot);
-                if (!stack.isEmpty() && !canChalkBoxHold(slot, stack)) {
-                    throw new IllegalStateException("Chalk Box slot '" + slot + "' cannot hold: " + stack);
+                Optional<ItemStackTemplate> stack = items.get(slot);
+                if (stack.isPresent() && !canChalkBoxHold(slot, stack.get())) {
+                    throw new IllegalStateException("Chalk Box slot '" + slot + "' cannot hold: " + stack.get());
                 }
             }
 
             return LootItem.lootTableItem(Chalk.Items.CHALK_BOX.get())
-                  .apply(SetComponentsFunction.setComponent(Chalk.DataComponents.CHALK_BOX_CONTENTS, new ChalkBoxContents(items, glowAmount)));
+                  .apply(SetComponentsFunction.setComponent(Chalk.DataComponents.CHALK_BOX_CONTENTS,
+                        ChalkBoxContents.fromTemplates(items, glowAmount)));
         }
 
         /**
@@ -168,26 +169,25 @@ public class LootTables {
          * As we cannot access server config here, or tags.
          */
         @SuppressWarnings("deprecation")
-        private boolean canChalkBoxHold(int slot, ItemStack stack) {
-            if (!stack.getItem().canFitInsideContainerItems()) {
+        private boolean canChalkBoxHold(int slot, ItemStackTemplate stack) {
+            if (!stack.item().value().canFitInsideContainerItems()) {
                 return false;
             } else if (slot == ChalkBoxContents.GLOWINGS_SLOT) {
-                return stack.is(Items.GLOWSTONE_DUST) || stack.is(Items.GLOW_INK_SAC);
+                return stack.item().value() == Items.GLOWSTONE_DUST || stack.item().value() == Items.GLOW_INK_SAC;
             } else {
-                return stack.getItem() instanceof ChalkItem;
+                return stack.item().value() instanceof ChalkItem;
             }
         }
 
-        private ItemStack chalkStack(DyeColor color, int damage) {
-            ItemStack stack = new ItemStack(Chalk.Items.CHALK.get());
+        private Optional<ItemStackTemplate> chalkStack(DyeColor color, int damage) {
+            DataComponentPatch.Builder components = DataComponentPatch.builder();
             if (color != DyeColor.WHITE) {
-                DyedItemColor dyedColor = new DyedItemColor(Chalk.Items.CHALK.get().getColorFromDye(stack, color), true);
-                stack.set(DataComponents.DYED_COLOR, dyedColor);
+                components.set(DataComponents.DYED_COLOR, new DyedItemColor(ChalkItem.getColorFromDye(color)));
             }
             if (damage > 0) {
-                stack.setDamageValue(damage);
+                components.set(DataComponents.DAMAGE, damage);
             }
-            return stack;
+            return Optional.of(new ItemStackTemplate(Chalk.Items.CHALK.get(), 1, components.build()));
         }
     }
 }

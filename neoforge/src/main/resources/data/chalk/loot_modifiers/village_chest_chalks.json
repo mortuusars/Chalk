@@ -1,27 +1,25 @@
 {
   "type": "chalk:add_table",
-  "conditions": [
-    {
-      "condition": "minecraft:any_of",
+  "condition": {
+      "type": "minecraft:any_of",
       "terms": [
         {
-          "condition": "neoforge:loot_table_id",
+          "type": "neoforge:loot_table_id",
           "loot_table_id": "minecraft:chests/village/village_cartographer"
         },
         {
-          "condition": "neoforge:loot_table_id",
+          "type": "neoforge:loot_table_id",
           "loot_table_id": "minecraft:chests/village/village_mason"
         },
         {
-          "condition": "neoforge:loot_table_id",
+          "type": "neoforge:loot_table_id",
           "loot_table_id": "minecraft:chests/village/village_plains_house"
         },
         {
-          "condition": "neoforge:loot_table_id",
+          "type": "neoforge:loot_table_id",
           "loot_table_id": "minecraft:chests/village/village_savanna_house"
         }
       ]
-    }
-  ],
+  },
   "table": "chalk:chests/village_chalks"
 }

@@ -48,11 +48,8 @@
     },
     "icon": {
       "components": {
-        "minecraft:dyed_color": {
-          "rgb": 16767818
-        }
+        "minecraft:dyed_color": 16767818
       },
-      "count": 1,
       "id": "chalk:chalk"
     },
     "title": {

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_dye",
+  "dye": "#minecraft:dyes",
+  "group": "dyed_chalk",
+  "result": {
+    "id": "chalk:chalk"
+  },
+  "target": "chalk:chalk"
+}
