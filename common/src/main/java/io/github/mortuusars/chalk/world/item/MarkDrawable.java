@@ -22,6 +22,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -90,7 +91,7 @@ public interface MarkDrawable {
             case FIXED -> SymbolOrientation.CENTER;
         };
 
-        return new Mark(symbol, getMarkDrawingColor(stack), orientation, shouldDrawGlowingMark(stack));
+        return new Mark(symbol, ARGB.opaque(getMarkDrawingColor(stack)), orientation, shouldDrawGlowingMark(stack));
     }
 
     default void selectSymbolAndDraw(Player player, MarkDrawingContext context) {

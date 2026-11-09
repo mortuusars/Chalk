@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0.4 - 2026-11-09
+- Fixed white marks being invisible in some cases
+
 ## 2.0.3 - 26.3 - 2026-11-08
 - Port to 26.3
 - **Chalk Box** is now using the same button scheme as a **Bundle**

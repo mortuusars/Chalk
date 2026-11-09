@@ -39,11 +39,11 @@ public class ChalkItem extends Item implements MarkDrawable {
 
     @Override
     public int getMarkDrawingColor(ItemStack stack) {
-        return DyedItemColor.getOrDefault(stack, 0xFFFFFF);
+        return DyedItemColor.getOrDefault(stack, 0xFFFFFFFF);
     }
 
     public int getTintColor(ItemStack stack, int index) {
-        return ARGB.opaque(getMarkDrawingColor(stack));
+        return getMarkDrawingColor(stack);
     }
 
     @Override
