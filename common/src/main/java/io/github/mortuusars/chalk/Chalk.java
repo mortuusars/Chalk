@@ -116,7 +116,7 @@ public class Chalk {
 
     public static class Foods {
         public static final FoodProperties CHALK = new FoodProperties.Builder()
-              .effect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 600, 0), 1.0F)
+              .effect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 400, 0), 1.0F)
               .alwaysEdible()
               .build();
     }

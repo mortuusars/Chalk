@@ -16,6 +16,7 @@ public class Config {
         public static final ModConfigSpec.ConfigValue<List<? extends String>> CHALK_DYE_COLORS_DEFINITION;
         public static final ModConfigSpec.BooleanValue ADD_DYED_CHALKS_TO_TAB;
         public static final ModConfigSpec.BooleanValue DYED_CHALK_NAMES;
+        public static final ModConfigSpec.BooleanValue CAN_EAT;
 
         // Chalk Box
         public static final ModConfigSpec.BooleanValue CHALK_BOX_SHOW_DURABILITY_BAR;
@@ -77,6 +78,10 @@ public class Config {
                 DYED_CHALK_NAMES = builder
                       .comment("Colored chalks will be named after a dye color if only a single dye was used to color it.", "Default: true")
                       .define("dyed_chalk_names", true);
+
+                CAN_EAT = builder
+                      .comment("Chalk can be eaten to get 20 seconds of strength effect.", "Default: true")
+                      .define("can_eat", true);
 
                 builder.pop();
             }
