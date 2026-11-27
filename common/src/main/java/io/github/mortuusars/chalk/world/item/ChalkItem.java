@@ -10,10 +10,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -22,10 +20,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class ChalkItem extends Item implements MarkDrawable {
@@ -72,6 +70,14 @@ public class ChalkItem extends Item implements MarkDrawable {
     }
 
     // --
+
+    @Override
+    public @NotNull InteractionResult use(@NonNull Level level, @NonNull Player player, @NonNull InteractionHand usedHand) {
+        if (!Config.Server.CAN_EAT.get()) {
+            return InteractionResult.PASS;
+        }
+        return super.use(level, player, usedHand);
+    }
 
     @Override
     public @NotNull InteractionResult useOn(UseOnContext context) {

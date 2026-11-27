@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.5 - 2026-11-27
+- Reduced Strength effect from eating Chalk from 30 to 20 seconds
+- Added `chalk.can_eat` server config option
+
 ## 2.0.4 - 2026-11-09
 - Fixed white marks being invisible in some cases
 

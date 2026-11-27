@@ -102,7 +102,7 @@ public class Chalk {
 
     public static class Consumables {
         public static final Consumable CHALK_STRENGTH = net.minecraft.world.item.component.Consumables.defaultFood()
-              .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.STRENGTH, 600, 0)))
+              .onConsume(new ApplyStatusEffectsConsumeEffect(new MobEffectInstance(MobEffects.STRENGTH, 400, 0)))
               .build();
     }
 

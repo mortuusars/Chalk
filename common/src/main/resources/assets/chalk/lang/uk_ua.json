@@ -124,20 +124,25 @@
   "tag.item.chalk.chalks": "Крейди",
   "tag.item.chalk.glowings": "Сяйва",
 
-  "chalk.configuration.glowing_enabled": "Сяйво увімкнене",
-  "chalk.configuration.chalk_dye_colors": "Кольори барвників крейди",
   "chalk.configuration.chalk": "Крейда",
+  "chalk.configuration.chalk_dye_colors": "Кольори барвників крейди",
   "chalk.configuration.add_dyed_chalks_to_tab": "Додати кольорову крейду до вкладки",
-  "chalk.configuration.amount_per_glowing_item": "Сяйво за предмет",
-  "chalk.configuration.show_durability_bar": "Показувати шкалу пошкоджень обраної крейди",
-  "chalk.configuration.symbol_selection_groups_sorting": "Сортування груп символів",
   "chalk.configuration.dyed_chalk_names": "Назви кольорової крейди",
-  "chalk.configuration.generate_chalk_in_loot_chests": "Генерувати крейду у луті",
-  "chalk.configuration.chalk_box_tooltip_details": "Підказка з інформацією Коробки для Крейди",
+  "chalk.configuration.can_eat": "Можна з’їсти",
+
   "chalk.configuration.chalk_box": "Коробка для Крейди",
-  "chalk.configuration.chalk_box_tooltip_contents": "Підказка з вмістом Коробки для Крейди",
+  "chalk.configuration.show_durability_bar": "Показувати шкалу пошкоджень обраної крейди",
+  "chalk.configuration.glowing_enabled": "Сяйво увімкнене",
+  "chalk.configuration.amount_per_glowing_item": "Сяйво за предмет",
+
   "chalk.configuration.symbols": "Символи",
   "chalk.configuration.unlocking": "Відкриття символів",
   "chalk.configuration.unlocking_chat_message": "Відкриття символу показується у чаті",
-  "chalk.configuration.glowing_mark_particles": "Частинки сяючих малюнків"
+
+  "chalk.configuration.generate_chalk_in_loot_chests": "Генерувати крейду у луті",
+  "chalk.configuration.glowing_mark_particles": "Частинки сяючих малюнків",
+
+  "chalk.configuration.symbol_selection_groups_sorting": "Сортування груп символів",
+  "chalk.configuration.chalk_box_tooltip_contents": "Підказка з вмістом Коробки для Крейди",
+  "chalk.configuration.chalk_box_tooltip_details": "Підказка з інформацією Коробки для Крейди"
 }
